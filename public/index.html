@@ -1817,41 +1817,23 @@
     })();
     </script>
 
+    <!-- Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <!-- ═══════════════════════════════════════════════════
-         N'Gola Pharma — API Client & Dynamic Features
+         N'Gola Pharma — Supabase Client & Dynamic Features
          ═══════════════════════════════════════════════════ -->
     <script>
     var NGolaApp = (function() {
-        // ── Config ──────────────────────────────────────────
-        // API_BASE : détecte automatiquement l'environnement
-        // - localhost → API Express locale
-        // - Netlify/prod → API backend déployée (Render, etc.)
-        var API_BASE = (function() {
-            var host = window.location.hostname;
-            if (host === 'localhost' || host === '127.0.0.1') {
-                return window.location.origin + '/api';
-            }
-            // En prod : pointer vers l'API backend quand elle sera déployée
-            // Pour l'instant, retourne l'origin (les appels échoueront gracieusement)
-            return window.location.origin + '/api';
-        })();
+        // ── Config Supabase ──────────────────────────────
+        var SUPABASE_URL = 'https://ueycknsdwthmtmpzptqp.supabase.co';
+        var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVleWNrbnNkd3RobXRtcHpwdHFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkxNjM4MzEsImV4cCI6MjEwNDczOTgzMX0.MHLnZVRgT7PbVtDfam4TThIuYwr6wCZCghhfFddgyig';
+        var _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         var searchTimer = null;
         var currentLang = 'fr';
 
         // ── Helpers ─────────────────────────────────────────
-        function api(path) {
-            return fetch(API_BASE + path)
-                .then(function(r) {
-                    if (!r.ok) throw new Error('API error ' + r.status);
-                    return r.json();
-                })
-                .catch(function(err) {
-                    console.warn('[N\'Gola] API indisponible:', err.message);
-                    throw err;
-                });
-        }
-
         function fmt(prix) {
             if (!prix && prix !== 0) return '—';
             return prix.toLocaleString('fr-FR') + ' FCFA';
@@ -1866,7 +1848,6 @@
 
         function nomAvecDosage(nom, dosage) {
             if (!dosage) return esc(nom || '');
-            // Éviter le doublon si le nom contient déjà le dosage
             if (nom && nom.toLowerCase().indexOf(dosage.toLowerCase()) !== -1) {
                 return esc(nom);
             }
@@ -1905,28 +1886,26 @@
                 if (q.length >= 2) fullSearch(q);
             });
 
-            // Close dropdown on click outside
             document.addEventListener('click', function(e) {
                 if (!document.getElementById('searchBar').contains(e.target)) {
                     dropdown.classList.remove('active');
                 }
             });
-
-            // Popular searches are handled via inline onclick
         }
 
         function liveSearch(q) {
             var dropdown = document.getElementById('searchDropdown');
-            // Search medications, pharmacies, and prices in parallel
+            var pattern = '%' + q + '%';
+
             Promise.all([
-                api('/medicaments?q=' + encodeURIComponent(q) + '&limit=4').catch(function() { return { data: [] }; }),
-                api('/pharmacies?q=' + encodeURIComponent(q) + '&limit=3').catch(function() { return { data: [] }; }),
-                api('/stocks/meilleurs-prix?q=' + encodeURIComponent(q)).catch(function() { return { data: [] }; })
+                _sb.from('medicaments').select('*').or('nom.ilike.' + pattern + ',dci.ilike.' + pattern).limit(4),
+                _sb.from('v_pharmacies').select('*').ilike('nom', pattern).limit(3),
+                _sb.from('v_meilleurs_prix').select('*').ilike('medicament_nom', pattern)
             ]).then(function(results) {
                 var meds = results[0].data || [];
                 var pharmas = results[1].data || [];
                 var prices = results[2].data || [];
-                // Attach best price to each med
+
                 var priceMap = {};
                 prices.forEach(function(p) { priceMap[p.medicament_id] = p; });
                 meds.forEach(function(m) {
@@ -1999,9 +1978,10 @@
             var list = document.getElementById('resultsList');
             list.innerHTML = '<div style="text-align:center;padding:40px"><div class="spinner"></div></div>';
 
+            var pattern = '%' + q + '%';
             Promise.all([
-                api('/medicaments?q=' + encodeURIComponent(q) + '&limit=20').catch(function() { return { data: [] }; }),
-                api('/pharmacies?q=' + encodeURIComponent(q) + '&limit=20').catch(function() { return { data: [] }; })
+                _sb.from('medicaments').select('*').or('nom.ilike.' + pattern + ',dci.ilike.' + pattern).limit(20),
+                _sb.from('v_pharmacies').select('*').or('nom.ilike.' + pattern + ',adresse.ilike.' + pattern).limit(20)
             ]).then(function(results) {
                 var meds = results[0].data || [];
                 var pharmas = results[1].data || [];
@@ -2079,10 +2059,9 @@
             var list = document.getElementById('resultsList');
             list.innerHTML = '<div style="text-align:center;padding:40px"><div class="spinner"></div></div>';
 
-            api('/pharmacies?quartier=' + encodeURIComponent(slug) + '&limit=50')
+            _sb.from('v_pharmacies').select('*').eq('quartier_slug', slug).limit(50)
                 .then(function(res) {
-                    var data = res.data || res || [];
-                    if (!Array.isArray(data)) data = [];
+                    var data = res.data || [];
                     document.getElementById('resultsCount').textContent =
                         data.length + ' pharmacie(s)';
                     if (data.length === 0) {
@@ -2106,7 +2085,7 @@
             var list = document.getElementById('resultsList');
             list.innerHTML = '<div style="text-align:center;padding:40px"><div class="spinner"></div></div>';
 
-            api('/pharmacies?garde=true&limit=50')
+            _sb.from('v_pharmacies').select('*').eq('est_de_garde', true).limit(50)
                 .then(function(res) {
                     var data = res.data || [];
                     document.getElementById('resultsCount').textContent =
@@ -2125,14 +2104,13 @@
         }
 
         // ── Show Best Prices (avec filtres DCI + garde) ────
-        var _bestPricesDciList = null; // cache DCI
+        var _bestPricesDciList = null;
 
         function showBestPrices(opts) {
             opts = opts || {};
             showResultsPanel(currentLang === 'en' ? 'Best prices' : 'Meilleurs prix');
             var list = document.getElementById('resultsList');
 
-            // Construire la barre de filtres
             var filtersHtml = '<div class="prix-filters" id="prixFilters">' +
                 '<div class="prix-filter-row">' +
                     '<select id="prixFilterDci" class="prix-filter-select" onchange="NGolaApp.showBestPrices({dci:this.value, garde:document.getElementById(\'prixFilterGarde\').checked})">' +
@@ -2151,11 +2129,15 @@
             list.innerHTML = filtersHtml +
                 '<div id="prixResultsList"><div style="text-align:center;padding:40px"><div class="spinner"></div></div></div>';
 
-            // Charger les DCI si pas encore fait, puis remplir le select
+            // Charger les DCI uniques
             var dciPromise = _bestPricesDciList
                 ? Promise.resolve(_bestPricesDciList)
-                : api('/medicaments/dci').then(function(dciData) {
-                    _bestPricesDciList = dciData || [];
+                : _sb.from('medicaments').select('dci').not('dci', 'is', null).then(function(res) {
+                    var seen = {};
+                    _bestPricesDciList = (res.data || []).reduce(function(acc, row) {
+                        if (row.dci && !seen[row.dci]) { seen[row.dci] = true; acc.push(row.dci); }
+                        return acc;
+                    }, []).sort();
                     return _bestPricesDciList;
                 });
 
@@ -2173,60 +2155,111 @@
                 if (opts.dci && sel) sel.value = opts.dci;
             });
 
-            // Construire l'URL avec filtres
-            var params = [];
-            if (opts.dci) params.push('dci=' + encodeURIComponent(opts.dci));
-            if (opts.garde) params.push('garde=true');
-            var url = '/stocks/meilleurs-prix' + (params.length ? '?' + params.join('&') : '');
+            // Charger les meilleurs prix
+            if (opts.garde) {
+                // Le filtre garde n'est pas dans v_meilleurs_prix,
+                // on requête les stocks directement avec jointures
+                _sb.from('stocks')
+                    .select('medicament_id, prix_fcfa, en_stock, medicaments(id, nom, dci, dosage), pharmacies!inner(id, nom, est_de_garde, quartier_id)')
+                    .eq('en_stock', true)
+                    .eq('pharmacies.est_de_garde', true)
+                    .order('prix_fcfa', { ascending: true })
+                    .then(function(res) {
+                        var rows = res.data || [];
 
-            api(url)
-                .then(function(res) {
-                    var data = res.data || [];
-                    var inner = document.getElementById('prixResultsList');
-                    document.getElementById('resultsCount').textContent =
-                        data.length + (currentLang === 'en' ? ' medication(s) compared' : ' médicament(s) comparés') +
-                        (opts.garde ? (currentLang === 'en' ? ' (on-duty)' : ' (de garde)') : '') +
-                        (opts.dci ? ' — DCI: ' + opts.dci : '');
-                    if (data.length === 0) {
-                        inner.innerHTML = '<div style="text-align:center;padding:40px;color:#999">' +
-                            (currentLang === 'en' ? 'No results for these filters' : 'Aucun résultat pour ces filtres') + '</div>';
-                        return;
-                    }
-                    var html = '';
-                    data.forEach(function(s) {
-                        html += '<div class="med-result" onclick="NGolaApp.showMedDetail(\'' + s.medicament_id + '\')">' +
-                            '<div class="med-result-header">' +
-                                '<div>' +
-                                    '<div class="med-result-name">' + nomAvecDosage(s.medicament_nom, s.dosage) + '</div>' +
-                                    (s.dci ? '<div class="med-result-dci">DCI: ' + esc(s.dci) + '</div>' : '') +
-                                '</div>' +
-                                '<div class="med-result-price">' + fmt(s.prix_fcfa) + '</div>' +
-                            '</div>' +
-                            '<div class="med-result-avail">' +
-                                (s.est_de_garde ? '<span style="color:#28a745;font-weight:700">&#9679; ' +
-                                    (currentLang === 'en' ? 'On duty' : 'De garde') + '</span> &bull; ' : '') +
-                                (currentLang === 'en' ? 'Best price at ' : 'Meilleur prix chez ') +
-                                esc(s.pharmacie_nom) + ' &bull; ' + esc(s.quartier_nom) +
-                            '</div>' +
-                        '</div>';
+                        // Filtrer par DCI si demandé
+                        if (opts.dci) {
+                            rows = rows.filter(function(r) { return r.medicaments && r.medicaments.dci === opts.dci; });
+                        }
+
+                        // Grouper par medicament_id, garder le moins cher
+                        var best = {};
+                        rows.forEach(function(r) {
+                            if (!best[r.medicament_id] || r.prix_fcfa < best[r.medicament_id].prix_fcfa) {
+                                best[r.medicament_id] = r;
+                            }
+                        });
+
+                        // Récupérer les noms de quartiers pour l'affichage
+                        var data = Object.keys(best).map(function(mid) {
+                            var r = best[mid];
+                            return {
+                                medicament_id: r.medicament_id,
+                                medicament_nom: r.medicaments ? r.medicaments.nom : '—',
+                                dosage: r.medicaments ? r.medicaments.dosage : '',
+                                dci: r.medicaments ? r.medicaments.dci : '',
+                                pharmacie_nom: r.pharmacies ? r.pharmacies.nom : '—',
+                                prix_fcfa: r.prix_fcfa,
+                                est_de_garde: true
+                            };
+                        });
+
+                        renderBestPrices(data, opts);
+                    })
+                    .catch(function() {
+                        var inner = document.getElementById('prixResultsList');
+                        if (inner) inner.innerHTML = '<div style="text-align:center;padding:40px;color:#dc3545">' +
+                            (currentLang === 'en' ? 'Connection error' : 'Erreur de connexion') + '</div>';
                     });
-                    inner.innerHTML = html;
+            } else {
+                // Utiliser la vue v_meilleurs_prix
+                var query = _sb.from('v_meilleurs_prix').select('*');
+                if (opts.dci) query = query.eq('dci', opts.dci);
+
+                query.then(function(res) {
+                    renderBestPrices(res.data || [], opts);
                 })
                 .catch(function() {
                     var inner = document.getElementById('prixResultsList');
                     if (inner) inner.innerHTML = '<div style="text-align:center;padding:40px;color:#dc3545">' +
                         (currentLang === 'en' ? 'Connection error' : 'Erreur de connexion') + '</div>';
                 });
+            }
+        }
+
+        function renderBestPrices(data, opts) {
+            var inner = document.getElementById('prixResultsList');
+            document.getElementById('resultsCount').textContent =
+                data.length + (currentLang === 'en' ? ' medication(s) compared' : ' médicament(s) comparés') +
+                (opts.garde ? (currentLang === 'en' ? ' (on-duty)' : ' (de garde)') : '') +
+                (opts.dci ? ' — DCI: ' + opts.dci : '');
+            if (data.length === 0) {
+                inner.innerHTML = '<div style="text-align:center;padding:40px;color:#999">' +
+                    (currentLang === 'en' ? 'No results for these filters' : 'Aucun résultat pour ces filtres') + '</div>';
+                return;
+            }
+            var html = '';
+            data.forEach(function(s) {
+                html += '<div class="med-result" onclick="NGolaApp.showMedDetail(\'' + s.medicament_id + '\')">' +
+                    '<div class="med-result-header">' +
+                        '<div>' +
+                            '<div class="med-result-name">' + nomAvecDosage(s.medicament_nom, s.dosage) + '</div>' +
+                            (s.dci ? '<div class="med-result-dci">DCI: ' + esc(s.dci) + '</div>' : '') +
+                        '</div>' +
+                        '<div class="med-result-price">' + fmt(s.prix_fcfa) + '</div>' +
+                    '</div>' +
+                    '<div class="med-result-avail">' +
+                        (s.est_de_garde ? '<span style="color:#28a745;font-weight:700">&#9679; ' +
+                            (currentLang === 'en' ? 'On duty' : 'De garde') + '</span> &bull; ' : '') +
+                        (currentLang === 'en' ? 'Best price at ' : 'Meilleur prix chez ') +
+                        esc(s.pharmacie_nom) + (s.quartier_nom ? ' &bull; ' + esc(s.quartier_nom) : '') +
+                    '</div>' +
+                '</div>';
+            });
+            inner.innerHTML = html;
         }
 
         // ── Pharmacy Detail Modal ───────────────────────────
         function showPharmacyDetail(id) {
             openModal('<div style="text-align:center;padding:30px"><div class="spinner"></div></div>');
 
-            api('/pharmacies/' + id)
-                .then(function(res) {
-                    var p = res.data;
+            Promise.all([
+                _sb.from('v_pharmacies').select('*').eq('id', id).single(),
+                _sb.from('stocks').select('*, medicaments(*)').eq('pharmacie_id', id).eq('en_stock', true).order('prix_fcfa', { ascending: true })
+            ]).then(function(results) {
+                    var p = results[0].data;
                     if (!p) { closeModal(); return; }
+                    p.stocks = results[1].data || [];
 
                     var html = '<div class="modal-title">' + esc(p.nom) + '</div>';
                     html += '<div class="modal-subtitle">' + esc(p.adresse || '') +
@@ -2304,10 +2337,13 @@
         function showMedDetail(id) {
             openModal('<div style="text-align:center;padding:30px"><div class="spinner"></div></div>');
 
-            api('/medicaments/' + id)
-                .then(function(res) {
-                    var m = res.data;
+            Promise.all([
+                _sb.from('medicaments').select('*').eq('id', id).single(),
+                _sb.from('stocks').select('*, pharmacies(*)').eq('medicament_id', id).eq('en_stock', true).order('prix_fcfa', { ascending: true })
+            ]).then(function(results) {
+                    var m = results[0].data;
                     if (!m) { closeModal(); return; }
+                    m.disponibilite = results[1].data || [];
 
                     var html = '<div class="modal-title">' + nomAvecDosage(m.nom, m.dosage) + '</div>';
                     html += '<div class="modal-subtitle">' + esc(m.forme || '') +
@@ -2321,14 +2357,14 @@
                     if (m.description) html += '<div style="margin-top:10px;font-size:14px;color:#555;line-height:1.5">' + esc(m.description) + '</div>';
                     html += '</div>';
 
-                    // Availability by pharmacy (API returns "disponibilite" array)
-                    var avail = m.disponibilite || m.stocks || [];
+                    // Availability by pharmacy
+                    var avail = m.disponibilite || [];
                     if (avail.length > 0) {
                         html += '<div class="modal-section"><h4>' +
                             (currentLang === 'en' ? 'Available at' : 'Disponible chez') +
                             ' (' + avail.length + ' pharmacies)</h4>';
                         avail.forEach(function(s) {
-                            var ph = s.pharmacie || s.pharmacies || {};
+                            var ph = s.pharmacies || {};
                             var phName = ph.nom || s.pharmacie_nom || '—';
                             var hasCoords = ph.latitude && ph.longitude;
                             var mapsLink = hasCoords ? 'https://www.google.com/maps?q=' + ph.latitude + ',' + ph.longitude : '';
@@ -2386,25 +2422,26 @@
 
         // ── Dynamic data on load ────────────────────────────
         function loadDynamicData() {
-            // Update pharmacies de garde count
-            api('/pharmacies?garde=true&limit=1')
+            // Compter les pharmacies de garde
+            _sb.from('pharmacies').select('id', { count: 'exact', head: true }).eq('est_de_garde', true)
                 .then(function(res) {
-                    var count = res.total || (res.data ? res.data.length : 0);
+                    var count = res.count || 0;
                     var el = document.querySelector('[data-i18n="card2_open"]');
                     if (el) el.textContent = count + (currentLang === 'en' ? ' pharmacies open' : ' pharmacies ouvertes');
                 })
                 .catch(function() {});
 
-            // Update quartier counts dynamically
-            api('/quartiers')
+            // Compter les pharmacies par quartier
+            _sb.from('quartiers').select('slug, pharmacies(count)')
                 .then(function(res) {
                     var quartiers = res.data || [];
                     quartiers.forEach(function(q) {
                         var card = document.querySelector('[data-quartier="' + q.slug + '"]');
                         if (card) {
                             var countEl = card.querySelector('.quartier-count');
-                            if (countEl && q.pharmacies_count !== undefined) {
-                                countEl.textContent = q.pharmacies_count + ' pharmacie' + (q.pharmacies_count > 1 ? 's' : '');
+                            var pCount = q.pharmacies && q.pharmacies[0] ? q.pharmacies[0].count : 0;
+                            if (countEl) {
+                                countEl.textContent = pCount + ' pharmacie' + (pCount > 1 ? 's' : '');
                             }
                         }
                     });
@@ -2439,7 +2476,7 @@
 
         // ── Geolocation: Nearby Garde Pharmacies ────────────
         function haversineDistance(lat1, lon1, lat2, lon2) {
-            var R = 6371000; // metres
+            var R = 6371000;
             var dLat = (lat2 - lat1) * Math.PI / 180;
             var dLon = (lon2 - lon1) * Math.PI / 180;
             var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
@@ -2491,14 +2528,12 @@
             showResultsPanel(t('geo_nearby_title'));
             var list = document.getElementById('resultsList');
 
-            // Show loading with geolocation message
             list.innerHTML = '<div style="text-align:center;padding:40px">' +
                 '<div class="spinner"></div>' +
                 '<div style="margin-top:16px;font-size:14px;color:#555">' + t('geo_requesting') + '</div>' +
             '</div>';
 
             if (!navigator.geolocation) {
-                // No geolocation support — fall back to showing all garde pharmacies
                 showGardeWithoutGeo(list, t('geo_error_unavailable'));
                 return;
             }
@@ -2511,7 +2546,6 @@
                 },
                 function(err) {
                     if (err.code === 1) {
-                        // Permission denied
                         list.innerHTML = '<div style="text-align:center;padding:30px">' +
                             '<div style="font-size:48px;margin-bottom:16px">📍</div>' +
                             '<div style="font-size:15px;color:#dc3545;font-weight:600;margin-bottom:12px">' + t('geo_error_denied') + '</div>' +
@@ -2528,7 +2562,7 @@
         }
 
         function showGardeWithoutGeo(list, message) {
-            api('/pharmacies?garde=true&limit=50')
+            _sb.from('v_pharmacies').select('*').eq('est_de_garde', true).limit(50)
                 .then(function(res) {
                     var data = res.data || [];
                     document.getElementById('resultsCount').textContent =
@@ -2546,11 +2580,10 @@
         }
 
         function loadGardePharmacies(list, userLat, userLng) {
-            api('/pharmacies?garde=true&limit=50')
+            _sb.from('v_pharmacies').select('*').eq('est_de_garde', true).limit(50)
                 .then(function(res) {
                     var data = res.data || [];
 
-                    // Calculate distance and sort
                     data.forEach(function(p) {
                         if (p.latitude && p.longitude) {
                             p._distance = haversineDistance(userLat, userLng, p.latitude, p.longitude);
@@ -2571,7 +2604,6 @@
                         return;
                     }
 
-                    // User location indicator
                     var html = '<div style="padding:10px 14px;background:#e8f5e9;border-radius:8px;margin-bottom:16px;font-size:13px;color:#2e7d32;display:flex;align-items:center;gap:8px">' +
                         '<span style="font-size:18px">📍</span>' +
                         (currentLang === 'en'
