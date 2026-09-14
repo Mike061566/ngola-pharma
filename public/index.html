@@ -1389,7 +1389,7 @@
                         <p data-i18n="card2_open">8 pharmacies ouvertes</p>
                         <p data-i18n="card2_near">Près de vous en ce moment</p>
                     </div>
-                    <button class="featured-card-btn" data-i18n="view_now" onclick="NGolaApp.showGarde()">Voir maintenant</button>
+                    <button class="featured-card-btn" data-i18n="view_now" onclick="NGolaApp.showNearbyGarde()">Voir maintenant</button>
                 </div>
             </div>
 
@@ -2081,26 +2081,8 @@
 
         // ── Show Pharmacies de Garde ────────────────────────
         function showGarde() {
-            showResultsPanel(currentLang === 'en' ? 'On-duty pharmacies' : 'Pharmacies de garde');
-            var list = document.getElementById('resultsList');
-            list.innerHTML = '<div style="text-align:center;padding:40px"><div class="spinner"></div></div>';
-
-            _sb.from('v_pharmacies').select('*').eq('est_de_garde', true).limit(50)
-                .then(function(res) {
-                    var data = res.data || [];
-                    document.getElementById('resultsCount').textContent =
-                        data.length + (currentLang === 'en' ? ' pharmacy(ies) on duty' : ' pharmacie(s) de garde');
-                    if (data.length === 0) {
-                        list.innerHTML = '<div style="text-align:center;padding:40px;color:#999">' +
-                            (currentLang === 'en' ? 'No on-duty pharmacies right now' : 'Aucune pharmacie de garde actuellement') + '</div>';
-                        return;
-                    }
-                    list.innerHTML = data.map(renderPharmacyCardWithDistance).join('');
-                })
-                .catch(function() {
-                    list.innerHTML = '<div style="text-align:center;padding:40px;color:#dc3545">' +
-                        (currentLang === 'en' ? 'Connection error' : 'Erreur de connexion') + '</div>';
-                });
+            // Redirige vers showNearbyGarde (géolocalisation d'abord)
+            showNearbyGarde();
         }
 
         // ── Show Best Prices (avec filtres DCI + garde) ────
@@ -2546,13 +2528,14 @@
                 },
                 function(err) {
                     if (err.code === 1) {
+                        // Refus de géolocalisation → afficher toutes les pharmacies de garde
                         list.innerHTML = '<div style="text-align:center;padding:30px">' +
                             '<div style="font-size:48px;margin-bottom:16px">📍</div>' +
                             '<div style="font-size:15px;color:#dc3545;font-weight:600;margin-bottom:12px">' + t('geo_error_denied') + '</div>' +
-                            '<button onclick="NGolaApp.showGarde()" style="padding:10px 20px;background:#003B73;color:white;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600">' +
-                                (currentLang === 'en' ? 'Show all on-duty pharmacies' : 'Voir toutes les pharmacies de garde') +
-                            '</button>' +
                         '</div>';
+                        showGardeWithoutGeo(list, currentLang === 'en'
+                            ? 'Location denied. Showing all on-duty pharmacies.'
+                            : 'Localisation refusée. Affichage de toutes les pharmacies de garde.');
                     } else {
                         showGardeWithoutGeo(list, t('geo_error_unavailable'));
                     }
@@ -2580,10 +2563,80 @@
         }
 
         function loadGardePharmacies(list, userLat, userLng) {
+            // Rayons progressifs : 3km → 5km → 10km → 20km → toute la ville
+            var RAYONS = [3000, 5000, 10000, 20000, null];
+
             _sb.from('v_pharmacies').select('*').eq('est_de_garde', true).limit(50)
                 .then(function(res) {
-                    var data = res.data || [];
+                    var allGarde = res.data || [];
 
+                    // Calculer la distance pour chaque pharmacie
+                    allGarde.forEach(function(p) {
+                        if (p.latitude && p.longitude) {
+                            p._distance = haversineDistance(userLat, userLng, p.latitude, p.longitude);
+                        } else {
+                            p._distance = 999999;
+                        }
+                    });
+                    allGarde.sort(function(a, b) { return a._distance - b._distance; });
+
+                    // Chercher dans des rayons progressifs
+                    var found = [];
+                    var rayonUtilise = null;
+                    for (var i = 0; i < RAYONS.length; i++) {
+                        if (RAYONS[i] === null) {
+                            found = allGarde; // toutes
+                            rayonUtilise = null;
+                            break;
+                        }
+                        found = allGarde.filter(function(p) { return p._distance <= RAYONS[i]; });
+                        if (found.length > 0) {
+                            rayonUtilise = RAYONS[i];
+                            break;
+                        }
+                    }
+
+                    // Si aucune pharmacie de garde trouvée nulle part
+                    if (found.length === 0) {
+                        showNearestPharmaciesFallback(list, userLat, userLng);
+                        return;
+                    }
+
+                    document.getElementById('resultsCount').textContent =
+                        found.length + (currentLang === 'en' ? ' on-duty pharmacy(ies) near you' : ' pharmacie(s) de garde près de vous');
+
+                    var html = '<div style="padding:10px 14px;background:#e8f5e9;border-radius:8px;margin-bottom:16px;font-size:13px;color:#2e7d32;display:flex;align-items:center;gap:8px">' +
+                        '<span style="font-size:18px">📍</span>';
+
+                    if (rayonUtilise && rayonUtilise > 3000) {
+                        html += (currentLang === 'en'
+                            ? 'No on-duty pharmacy within ' + formatDistance(RAYONS[0]) + '. Showing results within ' + formatDistance(rayonUtilise) + '.'
+                            : 'Aucune pharmacie de garde à moins de ' + formatDistance(RAYONS[0]) + '. Résultats dans un rayon de ' + formatDistance(rayonUtilise) + '.');
+                    } else if (rayonUtilise === null) {
+                        html += (currentLang === 'en'
+                            ? 'No nearby on-duty pharmacy found. Showing all on-duty pharmacies sorted by distance.'
+                            : 'Aucune pharmacie de garde à proximité. Affichage de toutes les pharmacies de garde par distance.');
+                    } else {
+                        html += (currentLang === 'en'
+                            ? 'Sorted by distance from your location'
+                            : 'Triées par distance depuis votre position');
+                    }
+                    html += '</div>';
+
+                    html += found.map(renderPharmacyCardWithDistance).join('');
+                    list.innerHTML = html;
+                })
+                .catch(function() {
+                    list.innerHTML = '<div style="text-align:center;padding:40px;color:#dc3545">' +
+                        (currentLang === 'en' ? 'Connection error' : 'Erreur de connexion') + '</div>';
+                });
+        }
+
+        // Fallback : si aucune pharmacie de garde, proposer les pharmacies les plus proches
+        function showNearestPharmaciesFallback(list, userLat, userLng) {
+            _sb.from('v_pharmacies').select('*').limit(50)
+                .then(function(res) {
+                    var data = res.data || [];
                     data.forEach(function(p) {
                         if (p.latitude && p.longitude) {
                             p._distance = haversineDistance(userLat, userLng, p.latitude, p.longitude);
@@ -2592,23 +2645,22 @@
                         }
                     });
                     data.sort(function(a, b) { return a._distance - b._distance; });
+                    // Garder les 10 plus proches
+                    data = data.slice(0, 10);
 
                     document.getElementById('resultsCount').textContent =
-                        data.length + (currentLang === 'en' ? ' on-duty pharmacy(ies) near you' : ' pharmacie(s) de garde près de vous');
+                        data.length + (currentLang === 'en' ? ' nearest pharmacy(ies)' : ' pharmacie(s) les plus proches');
 
-                    if (data.length === 0) {
-                        list.innerHTML = '<div style="text-align:center;padding:40px">' +
-                            '<div style="font-size:48px;margin-bottom:16px">🔍</div>' +
-                            '<div style="color:#999">' + (currentLang === 'en' ? 'No on-duty pharmacies right now' : 'Aucune pharmacie de garde actuellement') + '</div>' +
-                        '</div>';
-                        return;
-                    }
-
-                    var html = '<div style="padding:10px 14px;background:#e8f5e9;border-radius:8px;margin-bottom:16px;font-size:13px;color:#2e7d32;display:flex;align-items:center;gap:8px">' +
-                        '<span style="font-size:18px">📍</span>' +
-                        (currentLang === 'en'
-                            ? 'Sorted by distance from your location'
-                            : 'Triées par distance depuis votre position') +
+                    var html = '<div style="padding:12px 14px;background:#fff3cd;border-radius:8px;margin-bottom:16px;font-size:13px;color:#856404;display:flex;align-items:flex-start;gap:8px">' +
+                        '<span style="font-size:18px;line-height:1">⚠️</span>' +
+                        '<div>' +
+                            '<strong>' + (currentLang === 'en'
+                                ? 'No on-duty pharmacy found right now'
+                                : 'Aucune pharmacie de garde actuellement') + '</strong><br>' +
+                            (currentLang === 'en'
+                                ? 'Here are the nearest pharmacies to your location. Call ahead to check availability.'
+                                : 'Voici les pharmacies les plus proches de votre position. Appelez avant pour vérifier la disponibilité.') +
+                        '</div>' +
                     '</div>';
 
                     html += data.map(renderPharmacyCardWithDistance).join('');
