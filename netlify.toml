@@ -1,0 +1,14 @@
+# ============================================================
+# N'Gola Pharma — Netlify Configuration
+# Déploiement du frontend uniquement (landing page)
+# ============================================================
+
+[build]
+  publish = "public"
+  # Pas de commande de build nécessaire — site statique
+
+# SPA : redirige toutes les routes vers index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

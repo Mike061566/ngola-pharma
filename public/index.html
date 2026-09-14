@@ -1823,9 +1823,18 @@
     <script>
     var NGolaApp = (function() {
         // ── Config ──────────────────────────────────────────
-        // En local : l'API tourne sur le même serveur Express
-        // En prod  : remplacer par l'URL de l'API déployée
-        var API_BASE = window.location.origin + '/api';
+        // API_BASE : détecte automatiquement l'environnement
+        // - localhost → API Express locale
+        // - Netlify/prod → API backend déployée (Render, etc.)
+        var API_BASE = (function() {
+            var host = window.location.hostname;
+            if (host === 'localhost' || host === '127.0.0.1') {
+                return window.location.origin + '/api';
+            }
+            // En prod : pointer vers l'API backend quand elle sera déployée
+            // Pour l'instant, retourne l'origin (les appels échoueront gracieusement)
+            return window.location.origin + '/api';
+        })();
 
         var searchTimer = null;
         var currentLang = 'fr';
@@ -1836,6 +1845,10 @@
                 .then(function(r) {
                     if (!r.ok) throw new Error('API error ' + r.status);
                     return r.json();
+                })
+                .catch(function(err) {
+                    console.warn('[N\'Gola] API indisponible:', err.message);
+                    throw err;
                 });
         }
 
