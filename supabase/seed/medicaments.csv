@@ -1,0 +1,21 @@
+nom,nom_commercial,dci,forme,dosage,categorie,ordonnance,description
+Paracétamol,Doliprane,Paracétamol,Comprimé,500mg,Antalgique,false,Antalgique et antipyrétique courant
+Paracétamol,Efferalgan,Paracétamol,Comprimé effervescent,1000mg,Antalgique,false,Antalgique effervescent
+Ibuprofène,Advil,Ibuprofène,Comprimé,400mg,Anti-inflammatoire,false,Anti-inflammatoire non stéroïdien
+Aspirine,Aspro,Acide acétylsalicylique,Comprimé,500mg,Antalgique,false,Antalgique anti-inflammatoire et antiagrégant
+Amoxicilline,Clamoxyl,Amoxicilline,Gélule,500mg,Antibiotique,true,Antibiotique bêta-lactamine
+Métronidazole,Flagyl,Métronidazole,Comprimé,500mg,Antibiotique,true,Antiparasitaire et antibactérien
+Artemether-Lumefantrine,Coartem,Artemether-Lumefantrine,Comprimé,20/120mg,Antipaludéen,true,Traitement du paludisme à P. falciparum
+Quinine,Quinimax,Quinine,Comprimé,500mg,Antipaludéen,true,Antipaludéen classique
+Oméprazole,Mopral,Oméprazole,Gélule,20mg,Gastro-entérologie,false,Inhibiteur de la pompe à protons
+Métformine,Glucophage,Métformine,Comprimé,500mg,Diabétologie,true,Antidiabétique oral de première intention
+Vitamine C,Vitascorbol,Acide ascorbique,Comprimé,500mg,Vitamines,false,Complément en vitamine C
+Multivitamines,Supradyn,Multivitamines,Comprimé effervescent,,Vitamines,false,Complexe multivitaminé
+Chloroquine,Nivaquine,Chloroquine,Comprimé,100mg,Antipaludéen,true,Prophylaxie et traitement du paludisme
+Diclofénac,Voltarène,Diclofénac,Comprimé,50mg,Anti-inflammatoire,false,AINS puissant
+Cotrimoxazole,Bactrim,Sulfaméthoxazole-Triméthoprime,Comprimé,800/160mg,Antibiotique,true,Antibiotique à large spectre
+Cétirizine,Zyrtec,Cétirizine,Comprimé,10mg,Antihistaminique,false,Antiallergique non sédatif
+Lopéramide,Imodium,Lopéramide,Gélule,2mg,Gastro-entérologie,false,Antidiarrhéique
+Salbutamol,Ventoline,Salbutamol,Aérosol,100µg/dose,Pneumologie,true,Bronchodilatateur d'urgence
+Fer + Acide folique,Tardyféron,Fer-Acide folique,Comprimé,80mg+0.35mg,Hématologie,false,Traitement de l'anémie ferriprive
+Ciprofloxacine,Ciflox,Ciprofloxacine,Comprimé,500mg,Antibiotique,true,Fluoroquinolone à large spectre
