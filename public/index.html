@@ -491,6 +491,19 @@
         .reliability-fill.high { background: #28a745; }
         .reliability-fill.medium { background: #fd7e14; }
         .reliability-fill.low { background: #dc3545; }
+        /* Phase 3 — Alert form */
+        .ngola-alert-box { background: #f0f7ff; border: 1px solid #b3d4fc; border-radius: 12px; padding: 20px; margin-top: 16px; text-align: center; }
+        .ngola-alert-box h4 { margin: 0 0 8px; color: #003366; font-size: 15px; }
+        .ngola-alert-box p { margin: 0 0 12px; color: #666; font-size: 13px; }
+        .ngola-alert-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+        .ngola-alert-form input[type="email"] { flex: 1; min-width: 180px; max-width: 280px; padding: 10px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; }
+        .ngola-alert-form button { padding: 10px 18px; background: #003366; color: #fff; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; white-space: nowrap; }
+        .ngola-alert-form button:hover { background: #004488; }
+        .ngola-alert-form button:disabled { background: #999; cursor: not-allowed; }
+        .ngola-alert-success { color: #155724; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 8px; padding: 12px; margin-top: 10px; font-size: 13px; }
+        .ngola-alert-error { color: #721c24; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px; padding: 12px; margin-top: 10px; font-size: 13px; }
+        .med-alert-btn { display: inline-block; margin-top: 8px; padding: 6px 14px; background: #f0f7ff; color: #003366; border: 1px solid #b3d4fc; border-radius: 8px; font-size: 12px; cursor: pointer; transition: background 0.2s; }
+        .med-alert-btn:hover { background: #dceafb; }
         .pharmacy-result-price { text-align: right; flex-shrink: 0; }
         .pharmacy-result-price .price { font-size: 18px; font-weight: 700; color: #003366; }
         .pharmacy-result-price .price-label { font-size: 11px; color: #888; }
@@ -1937,6 +1950,61 @@
             return '<span class="badge badge-stock-old">📊 ' + (currentLang === 'en' ? 'Outdated' : 'Données anciennes') + '</span>';
         }
 
+        // ── Phase 3 : Alerte stock ──────────────────────────
+        function buildAlertFormHtml(medName, medId) {
+            var uid = 'alert_' + (medId || '').replace(/-/g, '').substring(0, 8) + '_' + Date.now();
+            return '<div class="ngola-alert-box" id="' + uid + '">' +
+                '<h4>🔔 ' + (currentLang === 'en' ? 'Get notified' : 'Me prévenir') + '</h4>' +
+                '<p>' + (currentLang === 'en'
+                    ? 'Receive an alert when <strong>' + esc(medName) + '</strong> becomes available near you.'
+                    : 'Recevez une alerte quand <strong>' + esc(medName) + '</strong> sera disponible près de chez vous.') + '</p>' +
+                '<div class="ngola-alert-form">' +
+                    '<input type="email" id="email_' + uid + '" placeholder="' + (currentLang === 'en' ? 'Your email' : 'Votre email') + '" />' +
+                    '<button onclick="NGolaApp.submitAlert(\'' + uid + '\', \'' + esc(medName) + '\', ' + (medId ? '\'' + medId + '\'' : 'null') + ')">' +
+                        '🔔 ' + (currentLang === 'en' ? 'Notify me' : 'Me prévenir') +
+                    '</button>' +
+                '</div>' +
+                '<div id="msg_' + uid + '"></div>' +
+            '</div>';
+        }
+
+        function submitStockAlert(boxId, medName, medId) {
+            var emailInput = document.getElementById('email_' + boxId);
+            var msgDiv = document.getElementById('msg_' + boxId);
+            if (!emailInput || !msgDiv) return;
+            var email = emailInput.value.trim();
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                msgDiv.innerHTML = '<div class="ngola-alert-error">' +
+                    (currentLang === 'en' ? 'Please enter a valid email address.' : 'Veuillez entrer une adresse email valide.') + '</div>';
+                return;
+            }
+            var btn = emailInput.parentElement.querySelector('button');
+            if (btn) { btn.disabled = true; btn.textContent = '⏳'; }
+            _sb.from('alertes_stock').insert({
+                user_email: email,
+                medicament_nom: medName,
+                medicament_id: medId || null
+            }).then(function(res) {
+                if (res.error) {
+                    msgDiv.innerHTML = '<div class="ngola-alert-error">' +
+                        (currentLang === 'en' ? 'Error: ' + res.error.message : 'Erreur : ' + res.error.message) + '</div>';
+                    if (btn) { btn.disabled = false; btn.textContent = '🔔 ' + (currentLang === 'en' ? 'Notify me' : 'Me prévenir'); }
+                } else {
+                    document.getElementById(boxId).innerHTML =
+                        '<div class="ngola-alert-success">✅ ' +
+                        (currentLang === 'en'
+                            ? 'You will be notified at <strong>' + esc(email) + '</strong> when <strong>' + esc(medName) + '</strong> is available.'
+                            : 'Vous serez prévenu(e) à <strong>' + esc(email) + '</strong> quand <strong>' + esc(medName) + '</strong> sera disponible.') +
+                        '</div>';
+                }
+            });
+        }
+
+        function showInlineAlertForm(btnEl, medName, medId) {
+            var container = btnEl.parentElement;
+            container.innerHTML = buildAlertFormHtml(medName, medId);
+        }
+
         function scrollTo(el) {
             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
@@ -2078,7 +2146,8 @@
                         (currentLang === 'en' ? 'No results found for' : 'Aucun résultat trouvé pour') +
                         ' "' + esc(q) + '"<br><small style="color:#aaa;margin-top:8px;display:block">' +
                         (currentLang === 'en' ? 'Try a different spelling or a broader term' : 'Essayez une autre orthographe ou un terme plus large') +
-                        '</small></div>';
+                        '</small></div>' +
+                        buildAlertFormHtml(q, null);
                     return;
                 }
 
@@ -2195,6 +2264,11 @@
                     stockHtml = '<div class="med-result-stock">' +
                         '<span class="med-stock-dot red"></span>' +
                         (currentLang === 'en' ? 'Out of stock' : 'Rupture de stock') +
+                        '</div>' +
+                        '<div class="med-alert-inline" onclick="event.stopPropagation()">' +
+                            '<button class="med-alert-btn" onclick="NGolaApp.showInlineAlert(this, \'' + esc(m.nom || '') + '\', \'' + m.id + '\')">' +
+                                '🔔 ' + (currentLang === 'en' ? 'Notify me when available' : 'Me prévenir quand disponible') +
+                            '</button>' +
                         '</div>';
                 }
             }
@@ -2916,7 +2990,9 @@
             showBestPrices: showBestPrices,
             showPharmacyDetail: showPharmacyDetail,
             showMedDetail: showMedDetail,
-            fullSearch: fullSearch
+            fullSearch: fullSearch,
+            submitAlert: submitStockAlert,
+            showInlineAlert: showInlineAlertForm
         };
     })();
     </script>
