@@ -323,25 +323,13 @@
             transition: all 0.3s;
         }
 
+        .btn-login {
+            text-decoration: none;
+            display: inline-block;
+        }
         .btn-login:hover {
             border-color: #FFD700;
             color: #003366;
-        }
-
-        .btn-signup {
-            background: #FFD700;
-            border: none;
-            color: #003366;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .btn-signup:hover {
-            background: #FFC700;
             transform: translateY(-2px);
         }
 
@@ -1357,8 +1345,7 @@
                 <a href="#apropos" data-i18n="nav_about">À propos</a>
             </nav>
             <div class="header-buttons">
-                <button class="btn-login" data-i18n="login">Se connecter</button>
-                <button class="btn-signup" data-i18n="signup">S'inscrire</button>
+                <a href="/pro.html" class="btn-login" data-i18n="login">Espace Pro</a>
             </div>
             <div class="lang-toggle" aria-label="Language selector">
                 <button class="active" onclick="setLang('fr')" aria-label="Français">FR</button>
@@ -1656,8 +1643,7 @@
                 nav_pharmacies: "Pharmacies",
                 nav_prices: "Prices",
                 nav_about: "About",
-                login: "Log in",
-                signup: "Sign up",
+                login: "Pro Dashboard",
                 tagline: "Yaoundé",
 
                 // Hero
@@ -1742,8 +1728,7 @@
                 nav_pharmacies: "Pharmacies",
                 nav_prices: "Prix",
                 nav_about: "À propos",
-                login: "Se connecter",
-                signup: "S\'inscrire",
+                login: "Espace Pro",
                 tagline: "Yaoundé",
 
                 hero_title: 'Quel médicament<br/>recherchez-vous ?',

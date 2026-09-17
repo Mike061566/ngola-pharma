@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N'Gola Pharma Pro — Espace Pharmacien</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f4f6f9; color: #333; min-height: 100vh; }
+
+        /* ===== Variables ===== */
+        :root {
+            --primary: #003366;
+            --primary-light: #004488;
+            --accent: #f5c842;
+            --accent-dark: #e6b800;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #fd7e14;
+            --bg: #f4f6f9;
+            --card-bg: #fff;
+            --text: #333;
+            --text-muted: #888;
+            --border: #e0e0e0;
+            --shadow: 0 2px 8px rgba(0,0,0,.08);
+        }
+
+        /* ===== Top Nav ===== */
+        .pro-nav { background: var(--primary); color: #fff; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
+        .pro-nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #fff; font-size: 18px; font-weight: 700; }
+        .pro-nav-brand img { width: 36px; height: 36px; border-radius: 50%; }
+        .pro-nav-right { display: flex; align-items: center; gap: 16px; }
+        .pro-nav-user { font-size: 14px; color: rgba(255,255,255,.85); }
+        .pro-nav-link { color: rgba(255,255,255,.85); text-decoration: none; font-size: 13px; padding: 6px 14px; border: 1px solid rgba(255,255,255,.3); border-radius: 6px; transition: .2s; }
+        .pro-nav-link:hover { background: rgba(255,255,255,.1); }
+        .btn-logout { background: transparent; border: 1px solid rgba(255,255,255,.3); color: #fff; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; }
+        .btn-logout:hover { background: rgba(255,255,255,.15); }
+
+        /* ===== Login Page ===== */
+        .login-wrapper { display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 60px); padding: 20px; }
+        .login-card { background: var(--card-bg); border-radius: 16px; box-shadow: var(--shadow); padding: 40px; max-width: 420px; width: 100%; text-align: center; }
+        .login-card h2 { color: var(--primary); margin-bottom: 8px; font-size: 22px; }
+        .login-card p { color: var(--text-muted); margin-bottom: 24px; font-size: 14px; }
+        .login-card .logo { width: 64px; height: 64px; margin: 0 auto 16px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: #fff; }
+        .form-group { margin-bottom: 16px; text-align: left; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+        .form-group input { width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; transition: border .2s; }
+        .form-group input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,51,102,.1); }
+        .btn-primary { width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background .2s; }
+        .btn-primary:hover { background: var(--primary-light); }
+        .btn-primary:disabled { background: #999; cursor: not-allowed; }
+        .login-error { color: var(--danger); font-size: 13px; margin-top: 12px; display: none; }
+        .login-footer { margin-top: 20px; font-size: 12px; color: var(--text-muted); }
+        .login-footer a { color: var(--primary); text-decoration: none; }
+
+        /* ===== Dashboard Layout ===== */
+        .dashboard { display: none; }
+        .dashboard.active { display: block; }
+        .dash-container { max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
+
+        /* Stats Cards */
+        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .stat-card { background: var(--card-bg); border-radius: 12px; box-shadow: var(--shadow); padding: 20px; display: flex; align-items: center; gap: 16px; }
+        .stat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+        .stat-icon.blue { background: #e3f0ff; color: var(--primary); }
+        .stat-icon.green { background: #d4edda; color: var(--success); }
+        .stat-icon.orange { background: #fff3cd; color: var(--warning); }
+        .stat-icon.gold { background: #fef3cd; color: #6b4701; }
+        .stat-info h3 { font-size: 24px; font-weight: 700; color: var(--text); line-height: 1.2; }
+        .stat-info p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+        /* Tabs */
+        .dash-tabs { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 24px; overflow-x: auto; }
+        .dash-tab { padding: 12px 20px; font-size: 14px; font-weight: 500; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; white-space: nowrap; transition: .2s; background: none; border-top: none; border-left: none; border-right: none; }
+        .dash-tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 600; }
+        .dash-tab:hover { color: var(--primary); }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* Section Card */
+        .section-card { background: var(--card-bg); border-radius: 12px; box-shadow: var(--shadow); padding: 24px; margin-bottom: 24px; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
+        .section-header h3 { font-size: 16px; font-weight: 600; color: var(--text); }
+
+        /* Buttons */
+        .btn { padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; transition: .2s; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-add { background: var(--primary); color: #fff; }
+        .btn-add:hover { background: var(--primary-light); }
+        .btn-edit { background: #e3f0ff; color: var(--primary); }
+        .btn-edit:hover { background: #cce0ff; }
+        .btn-delete { background: #f8d7da; color: var(--danger); }
+        .btn-delete:hover { background: #f1b0b7; }
+        .btn-import { background: #d4edda; color: #155724; }
+        .btn-import:hover { background: #b8dfc4; }
+        .btn-secondary { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+        .btn-secondary:hover { background: #e8e8e8; }
+        .btn-save { background: var(--success); color: #fff; }
+        .btn-save:hover { background: #218838; }
+        .btn-cancel { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+
+        /* Table */
+        .stock-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .stock-table th { text-align: left; padding: 10px 12px; background: #f8f9fa; color: var(--text-muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; border-bottom: 2px solid var(--border); }
+        .stock-table td { padding: 12px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+        .stock-table tr:hover { background: #fafbfd; }
+        .stock-badge { padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+        .stock-badge.in-stock { background: #d4edda; color: #155724; }
+        .stock-badge.out-stock { background: #f8d7da; color: #721c24; }
+        .stock-actions { display: flex; gap: 6px; }
+
+        /* Search bar */
+        .stock-search { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+        .stock-search input { flex: 1; min-width: 200px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; }
+        .stock-search input:focus { outline: none; border-color: var(--primary); }
+
+        /* Modal */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.5); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.active { display: flex; }
+        .modal { background: var(--card-bg); border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,.2); padding: 32px; max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto; }
+        .modal h3 { font-size: 18px; color: var(--primary); margin-bottom: 20px; }
+        .modal .form-group { margin-bottom: 14px; }
+        .modal .form-group select { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+
+        /* Toggle switch */
+        .toggle-wrap { display: flex; align-items: center; gap: 10px; }
+        .toggle { position: relative; width: 44px; height: 24px; }
+        .toggle input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; inset: 0; background: #ccc; border-radius: 24px; cursor: pointer; transition: .2s; }
+        .toggle-slider::before { content: ''; position: absolute; width: 18px; height: 18px; border-radius: 50%; background: #fff; left: 3px; top: 3px; transition: .2s; }
+        .toggle input:checked + .toggle-slider { background: var(--success); }
+        .toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+        /* CSV Import */
+        .import-zone { border: 2px dashed var(--border); border-radius: 12px; padding: 40px 20px; text-align: center; cursor: pointer; transition: .2s; margin-bottom: 16px; }
+        .import-zone:hover, .import-zone.dragover { border-color: var(--primary); background: #f0f7ff; }
+        .import-zone p { color: var(--text-muted); font-size: 14px; margin-top: 8px; }
+        .import-zone .icon { font-size: 36px; }
+        .import-preview { max-height: 300px; overflow: auto; margin: 16px 0; }
+        .import-preview table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .import-preview th, .import-preview td { padding: 6px 8px; border: 1px solid var(--border); text-align: left; }
+        .import-preview th { background: #f8f9fa; font-weight: 600; }
+        .import-stats { display: flex; gap: 16px; margin: 12px 0; font-size: 13px; }
+        .import-stats span { padding: 4px 12px; border-radius: 8px; background: #f8f9fa; }
+
+        /* Pharmacy info */
+        .pharmacy-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .info-item { }
+        .info-item label { font-size: 11px; text-transform: uppercase; color: var(--text-muted); letter-spacing: .5px; display: block; margin-bottom: 4px; }
+        .info-item span { font-size: 14px; font-weight: 500; color: var(--text); }
+        .badge-verified { display: inline-block; padding: 3px 10px; background: linear-gradient(135deg, #f6d365, #f5c842); color: #6b4701; border-radius: 12px; font-size: 11px; font-weight: 700; }
+        .badge-partner { display: inline-block; padding: 3px 10px; background: var(--primary); color: #fff; border-radius: 12px; font-size: 11px; font-weight: 600; }
+
+        /* Alerts section */
+        .alert-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
+        .alert-item:last-child { border-bottom: none; }
+        .alert-contact { font-weight: 500; }
+        .alert-channel { padding: 2px 8px; border-radius: 8px; font-size: 11px; background: #e3f0ff; color: var(--primary); }
+        .alert-date { color: var(--text-muted); font-size: 12px; }
+
+        /* Spinner */
+        .spinner { width: 24px; height: 24px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 20px auto; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Toast */
+        .toast { position: fixed; bottom: 20px; right: 20px; padding: 14px 24px; border-radius: 10px; color: #fff; font-size: 14px; z-index: 300; transform: translateY(100px); opacity: 0; transition: .3s; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--danger); }
+
+        /* Empty state */
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
+        .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+        .empty-state p { font-size: 14px; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .pro-nav { padding: 0 12px; }
+            .pro-nav-user { display: none; }
+            .stats-row { grid-template-columns: 1fr 1fr; }
+            .pharmacy-info-grid { grid-template-columns: 1fr; }
+            .stock-table { font-size: 12px; }
+            .stock-table th, .stock-table td { padding: 8px 6px; }
+            .modal { padding: 20px; }
+        }
+        @media (max-width: 480px) {
+            .stats-row { grid-template-columns: 1fr; }
+            .dash-tab { padding: 10px 14px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<nav class="pro-nav">
+    <a href="/" class="pro-nav-brand">
+        <span style="width:36px;height:36px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;">💊</span>
+        N'Gola Pharma <span style="font-weight:400;opacity:.7;font-size:13px;margin-left:4px;">Pro</span>
+    </a>
+    <div class="pro-nav-right" id="navRight" style="display:none">
+        <span class="pro-nav-user" id="navUserName"></span>
+        <a href="/" class="pro-nav-link">← Site public</a>
+        <button class="btn-logout" onclick="ProApp.logout()">Déconnexion</button>
+    </div>
+</nav>
+
+<!-- ===== LOGIN ===== -->
+<div id="loginSection" class="login-wrapper">
+    <div class="login-card">
+        <div class="logo">💊</div>
+        <h2>Espace Pharmacien</h2>
+        <p>Gérez vos stocks, prix et disponibilités en temps réel</p>
+        <form onsubmit="ProApp.login(event)">
+            <div class="form-group">
+                <label for="loginEmail">Email</label>
+                <input type="email" id="loginEmail" placeholder="pharmacien@example.com" required>
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Mot de passe</label>
+                <input type="password" id="loginPassword" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn-primary" id="loginBtn">Se connecter</button>
+        </form>
+        <div class="login-error" id="loginError"></div>
+        <div class="login-footer">
+            <a href="/">← Retour au site public</a>
+        </div>
+    </div>
+</div>
+
+<!-- ===== DASHBOARD ===== -->
+<div id="dashboardSection" class="dashboard">
+    <div class="dash-container">
+        <!-- Stats Row -->
+        <div class="stats-row" id="statsRow">
+            <div class="stat-card">
+                <div class="stat-icon blue">📦</div>
+                <div class="stat-info">
+                    <h3 id="statTotalStock">—</h3>
+                    <p>Médicaments en stock</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">✅</div>
+                <div class="stat-info">
+                    <h3 id="statInStock">—</h3>
+                    <p>Disponibles</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange">⚠️</div>
+                <div class="stat-info">
+                    <h3 id="statOutStock">—</h3>
+                    <p>En rupture</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon gold">🔔</div>
+                <div class="stat-info">
+                    <h3 id="statAlerts">—</h3>
+                    <p>Alertes reçues</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="dash-tabs">
+            <button class="dash-tab active" onclick="ProApp.switchTab('stocks')">📦 Mes Stocks</button>
+            <button class="dash-tab" onclick="ProApp.switchTab('import')">📥 Import CSV</button>
+            <button class="dash-tab" onclick="ProApp.switchTab('pharmacy')">🏥 Ma Pharmacie</button>
+            <button class="dash-tab" onclick="ProApp.switchTab('alerts')">🔔 Alertes</button>
+        </div>
+
+        <!-- TAB: Stocks -->
+        <div class="tab-panel active" id="tab-stocks">
+            <div class="section-card">
+                <div class="section-header">
+                    <h3>📦 Gestion des Stocks</h3>
+                    <button class="btn btn-add" onclick="ProApp.openAddStock()">+ Ajouter un médicament</button>
+                </div>
+                <div class="stock-search">
+                    <input type="text" id="stockSearchInput" placeholder="Rechercher dans mes stocks..." oninput="ProApp.filterStocks()">
+                </div>
+                <div style="overflow-x:auto">
+                    <table class="stock-table">
+                        <thead>
+                            <tr>
+                                <th>Médicament</th>
+                                <th>Dosage</th>
+                                <th>Prix (FCFA)</th>
+                                <th>Statut</th>
+                                <th>Dernière MAJ</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stockTableBody">
+                            <tr><td colspan="6"><div class="spinner"></div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Import CSV -->
+        <div class="tab-panel" id="tab-import">
+            <div class="section-card">
+                <div class="section-header">
+                    <h3>📥 Import CSV / Excel</h3>
+                </div>
+                <p style="color:var(--text-muted);font-size:13px;margin-bottom:16px">
+                    Importez vos stocks depuis un fichier CSV ou Excel. Le fichier doit contenir au minimum les colonnes : <strong>nom</strong> (nom du médicament) et <strong>prix</strong> (prix en FCFA). Colonnes optionnelles : <strong>dosage</strong>, <strong>en_stock</strong> (oui/non).
+                </p>
+                <div class="import-zone" id="importZone" onclick="document.getElementById('csvFileInput').click()">
+                    <div class="icon">📄</div>
+                    <p><strong>Glissez un fichier ici</strong> ou cliquez pour sélectionner</p>
+                    <p style="font-size:12px;margin-top:4px">Formats acceptés : .csv, .xlsx, .xls</p>
+                </div>
+                <input type="file" id="csvFileInput" accept=".csv,.xlsx,.xls" style="display:none" onchange="ProApp.handleFileSelect(event)">
+                <div id="importPreview"></div>
+                <div id="importActions" style="display:none">
+                    <div class="import-stats" id="importStats"></div>
+                    <div style="display:flex;gap:10px">
+                        <button class="btn btn-save" onclick="ProApp.confirmImport()">✅ Importer ces stocks</button>
+                        <button class="btn btn-cancel" onclick="ProApp.cancelImport()">Annuler</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Pharmacy Info -->
+        <div class="tab-panel" id="tab-pharmacy">
+            <div class="section-card">
+                <div class="section-header">
+                    <h3>🏥 Ma Pharmacie</h3>
+                </div>
+                <div class="pharmacy-info-grid" id="pharmacyInfoGrid">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Alerts -->
+        <div class="tab-panel" id="tab-alerts">
+            <div class="section-card">
+                <div class="section-header">
+                    <h3>🔔 Alertes de disponibilité</h3>
+                    <span style="font-size:12px;color:var(--text-muted)">Demandes des patients pour vos médicaments</span>
+                </div>
+                <div id="alertsList">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL: Add/Edit Stock ===== -->
+<div class="modal-overlay" id="stockModal">
+    <div class="modal">
+        <h3 id="stockModalTitle">Ajouter un médicament</h3>
+        <div class="form-group">
+            <label>Médicament</label>
+            <input type="text" id="modalMedSearch" placeholder="Rechercher un médicament..." oninput="ProApp.searchMedsForModal()">
+            <select id="modalMedSelect" size="4" style="display:none;margin-top:8px;width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;" onchange="ProApp.selectMedFromList()"></select>
+            <input type="hidden" id="modalMedId">
+            <div id="modalMedSelected" style="margin-top:6px;font-size:13px;color:var(--primary);font-weight:500;display:none"></div>
+        </div>
+        <div class="form-group">
+            <label>Prix (FCFA)</label>
+            <input type="number" id="modalPrix" placeholder="Ex: 1500" min="0">
+        </div>
+        <div class="form-group">
+            <label style="margin-bottom:8px">Disponibilité</label>
+            <div class="toggle-wrap">
+                <label class="toggle">
+                    <input type="checkbox" id="modalEnStock" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+                <span id="modalStockLabel" style="font-size:13px">En stock</span>
+            </div>
+        </div>
+        <input type="hidden" id="modalStockId">
+        <div class="modal-actions">
+            <button class="btn btn-cancel" onclick="ProApp.closeModal()">Annuler</button>
+            <button class="btn btn-save" onclick="ProApp.saveStock()">💾 Enregistrer</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== Supabase SDK ===== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+<!-- ===== Papa Parse for CSV ===== -->
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
+
+<!-- ===== SheetJS for Excel ===== -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<script>
+var ProApp = (function() {
+    var SUPABASE_URL = 'https://ueycknsdwthmtmpzptqp.supabase.co';
+    var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVleWNrbnNkd3RobXRtcHpwdHFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkxNjM4MzEsImV4cCI6MjEwNDczOTgzMX0.MHLnZVRgT7PbVtDfam4TThIuYwr6wCZCghhfFddgyig';
+    var _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    var currentUser = null;
+    var currentProfil = null;
+    var currentPharmacy = null;
+    var allStocks = [];
+    var allMeds = [];
+    var importData = [];
+
+    // ── Helpers ──
+    function esc(s) { var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+    function showToast(msg, type) {
+        var t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast ' + (type || 'success');
+        t.classList.add('show');
+        setTimeout(function() { t.classList.remove('show'); }, 3000);
+    }
+
+    function timeAgo(dateStr) {
+        if (!dateStr) return '—';
+        var diff = (Date.now() - new Date(dateStr).getTime()) / 1000;
+        if (diff < 60) return 'à l\'instant';
+        if (diff < 3600) return Math.floor(diff / 60) + ' min';
+        if (diff < 86400) return Math.floor(diff / 3600) + 'h';
+        return Math.floor(diff / 86400) + 'j';
+    }
+
+    function fmtPrice(n) {
+        if (!n && n !== 0) return '—';
+        return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' FCFA';
+    }
+
+    // ── Auth ──
+    function login(e) {
+        e.preventDefault();
+        var email = document.getElementById('loginEmail').value.trim();
+        var pass = document.getElementById('loginPassword').value;
+        var btn = document.getElementById('loginBtn');
+        var errDiv = document.getElementById('loginError');
+        btn.disabled = true;
+        btn.textContent = 'Connexion...';
+        errDiv.style.display = 'none';
+
+        _sb.auth.signInWithPassword({ email: email, password: pass })
+            .then(function(res) {
+                if (res.error) {
+                    errDiv.textContent = res.error.message === 'Invalid login credentials'
+                        ? 'Email ou mot de passe incorrect'
+                        : res.error.message;
+                    errDiv.style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = 'Se connecter';
+                    return;
+                }
+                currentUser = res.data.user;
+                // Check role
+                return _sb.from('profils').select('*, pharmacies(*)').eq('id', currentUser.id).single();
+            })
+            .then(function(profilRes) {
+                if (!profilRes) return;
+                if (profilRes.error || !profilRes.data) {
+                    errDiv.textContent = 'Profil introuvable. Contactez l\'administrateur.';
+                    errDiv.style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = 'Se connecter';
+                    _sb.auth.signOut();
+                    return;
+                }
+                var profil = profilRes.data;
+                if (profil.role !== 'pharmacien' && profil.role !== 'admin') {
+                    errDiv.textContent = 'Accès réservé aux pharmaciens. Votre rôle : ' + profil.role;
+                    errDiv.style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = 'Se connecter';
+                    _sb.auth.signOut();
+                    return;
+                }
+                currentProfil = profil;
+                currentPharmacy = profil.pharmacies;
+                showDashboard();
+            });
+    }
+
+    function logout() {
+        _sb.auth.signOut().then(function() {
+            currentUser = null;
+            currentProfil = null;
+            currentPharmacy = null;
+            document.getElementById('loginSection').style.display = 'flex';
+            document.getElementById('dashboardSection').classList.remove('active');
+            document.getElementById('navRight').style.display = 'none';
+            document.getElementById('loginBtn').disabled = false;
+            document.getElementById('loginBtn').textContent = 'Se connecter';
+            document.getElementById('loginPassword').value = '';
+        });
+    }
+
+    // ── Check session on load ──
+    function checkSession() {
+        _sb.auth.getSession().then(function(res) {
+            if (res.data && res.data.session) {
+                currentUser = res.data.session.user;
+                _sb.from('profils').select('*, pharmacies(*)').eq('id', currentUser.id).single()
+                    .then(function(profilRes) {
+                        if (profilRes.data && (profilRes.data.role === 'pharmacien' || profilRes.data.role === 'admin')) {
+                            currentProfil = profilRes.data;
+                            currentPharmacy = profilRes.data.pharmacies;
+                            showDashboard();
+                        }
+                    });
+            }
+        });
+    }
+
+    // ── Dashboard ──
+    function showDashboard() {
+        document.getElementById('loginSection').style.display = 'none';
+        document.getElementById('dashboardSection').classList.add('active');
+        document.getElementById('navRight').style.display = 'flex';
+        document.getElementById('navUserName').textContent = currentProfil.nom_complet || currentUser.email;
+        loadStocks();
+        loadStats();
+    }
+
+    function switchTab(tabName) {
+        document.querySelectorAll('.dash-tab').forEach(function(t, i) {
+            var tabs = ['stocks', 'import', 'pharmacy', 'alerts'];
+            t.classList.toggle('active', tabs[i] === tabName);
+        });
+        document.querySelectorAll('.tab-panel').forEach(function(p) {
+            p.classList.toggle('active', p.id === 'tab-' + tabName);
+        });
+        if (tabName === 'pharmacy') loadPharmacyInfo();
+        if (tabName === 'alerts') loadAlerts();
+    }
+
+    // ── Stats ──
+    function loadStats() {
+        if (!currentPharmacy) return;
+        _sb.from('stocks').select('id, en_stock', { count: 'exact' }).eq('pharmacie_id', currentPharmacy.id)
+            .then(function(res) {
+                var data = res.data || [];
+                var total = data.length;
+                var inStock = data.filter(function(s) { return s.en_stock; }).length;
+                var outStock = total - inStock;
+                document.getElementById('statTotalStock').textContent = total;
+                document.getElementById('statInStock').textContent = inStock;
+                document.getElementById('statOutStock').textContent = outStock;
+            });
+        // Count alerts for our meds
+        _sb.from('alertes_stock').select('id', { count: 'exact', head: true })
+            .then(function(res) {
+                // For anon users this will fail due to RLS, show "—"
+                document.getElementById('statAlerts').textContent = res.count !== null ? res.count : '—';
+            });
+    }
+
+    // ── Stocks CRUD ──
+    function loadStocks() {
+        if (!currentPharmacy) {
+            document.getElementById('stockTableBody').innerHTML = '<tr><td colspan="6"><div class="empty-state"><div class="icon">🏥</div><p>Aucune pharmacie associée à votre compte</p></div></td></tr>';
+            return;
+        }
+        _sb.from('stocks')
+            .select('*, medicaments(nom, dosage, dci, forme)')
+            .eq('pharmacie_id', currentPharmacy.id)
+            .order('date_maj', { ascending: false })
+            .then(function(res) {
+                allStocks = res.data || [];
+                renderStocks(allStocks);
+            });
+    }
+
+    function renderStocks(stocks) {
+        var tbody = document.getElementById('stockTableBody');
+        if (stocks.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><div class="icon">📦</div><p>Aucun stock enregistré.<br>Ajoutez votre premier médicament !</p></div></td></tr>';
+            return;
+        }
+        tbody.innerHTML = stocks.map(function(s) {
+            var med = s.medicaments || {};
+            return '<tr>' +
+                '<td><strong>' + esc(med.nom || '—') + '</strong>' +
+                    (med.dci ? '<br><span style="font-size:11px;color:var(--text-muted)">DCI: ' + esc(med.dci) + '</span>' : '') +
+                '</td>' +
+                '<td>' + esc(med.dosage || '—') + '</td>' +
+                '<td style="font-weight:600">' + fmtPrice(s.prix_fcfa) + '</td>' +
+                '<td><span class="stock-badge ' + (s.en_stock ? 'in-stock' : 'out-stock') + '">' +
+                    (s.en_stock ? '✅ En stock' : '❌ Rupture') + '</span></td>' +
+                '<td style="font-size:12px;color:var(--text-muted)">' + timeAgo(s.date_maj) + '</td>' +
+                '<td><div class="stock-actions">' +
+                    '<button class="btn btn-edit" onclick="ProApp.editStock(\'' + s.id + '\')">✏️</button>' +
+                    '<button class="btn btn-delete" onclick="ProApp.deleteStock(\'' + s.id + '\', \'' + esc(med.nom || '') + '\')">🗑️</button>' +
+                '</div></td>' +
+            '</tr>';
+        }).join('');
+    }
+
+    function filterStocks() {
+        var q = document.getElementById('stockSearchInput').value.trim().toLowerCase();
+        if (!q) { renderStocks(allStocks); return; }
+        var filtered = allStocks.filter(function(s) {
+            var med = s.medicaments || {};
+            return (med.nom || '').toLowerCase().indexOf(q) >= 0 ||
+                   (med.dci || '').toLowerCase().indexOf(q) >= 0 ||
+                   (med.dosage || '').toLowerCase().indexOf(q) >= 0;
+        });
+        renderStocks(filtered);
+    }
+
+    function openAddStock() {
+        document.getElementById('stockModalTitle').textContent = 'Ajouter un médicament';
+        document.getElementById('modalMedSearch').value = '';
+        document.getElementById('modalMedSelect').style.display = 'none';
+        document.getElementById('modalMedId').value = '';
+        document.getElementById('modalMedSelected').style.display = 'none';
+        document.getElementById('modalMedSearch').disabled = false;
+        document.getElementById('modalPrix').value = '';
+        document.getElementById('modalEnStock').checked = true;
+        document.getElementById('modalStockLabel').textContent = 'En stock';
+        document.getElementById('modalStockId').value = '';
+        document.getElementById('stockModal').classList.add('active');
+    }
+
+    function editStock(stockId) {
+        var stock = allStocks.find(function(s) { return s.id === stockId; });
+        if (!stock) return;
+        var med = stock.medicaments || {};
+        document.getElementById('stockModalTitle').textContent = 'Modifier — ' + (med.nom || '');
+        document.getElementById('modalMedSearch').value = med.nom || '';
+        document.getElementById('modalMedSearch').disabled = true;
+        document.getElementById('modalMedSelect').style.display = 'none';
+        document.getElementById('modalMedId').value = stock.medicament_id;
+        document.getElementById('modalMedSelected').textContent = '✓ ' + (med.nom || '') + (med.dosage ? ' ' + med.dosage : '');
+        document.getElementById('modalMedSelected').style.display = 'block';
+        document.getElementById('modalPrix').value = stock.prix_fcfa;
+        document.getElementById('modalEnStock').checked = stock.en_stock;
+        document.getElementById('modalStockLabel').textContent = stock.en_stock ? 'En stock' : 'Rupture';
+        document.getElementById('modalStockId').value = stockId;
+        document.getElementById('stockModal').classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('stockModal').classList.remove('active');
+    }
+
+    function searchMedsForModal() {
+        var q = document.getElementById('modalMedSearch').value.trim();
+        var sel = document.getElementById('modalMedSelect');
+        if (q.length < 2) { sel.style.display = 'none'; return; }
+        _sb.from('medicaments').select('id, nom, dosage, dci').ilike('nom', '%' + q + '%').limit(10)
+            .then(function(res) {
+                var meds = res.data || [];
+                if (meds.length === 0) {
+                    sel.style.display = 'none';
+                    return;
+                }
+                sel.innerHTML = meds.map(function(m) {
+                    return '<option value="' + m.id + '">' + esc(m.nom) + (m.dosage ? ' — ' + esc(m.dosage) : '') + (m.dci ? ' (DCI: ' + esc(m.dci) + ')' : '') + '</option>';
+                }).join('');
+                sel.style.display = 'block';
+            });
+    }
+
+    function selectMedFromList() {
+        var sel = document.getElementById('modalMedSelect');
+        var opt = sel.options[sel.selectedIndex];
+        if (!opt) return;
+        document.getElementById('modalMedId').value = opt.value;
+        document.getElementById('modalMedSelected').textContent = '✓ ' + opt.textContent;
+        document.getElementById('modalMedSelected').style.display = 'block';
+        document.getElementById('modalMedSearch').value = opt.textContent.split(' — ')[0];
+        sel.style.display = 'none';
+    }
+
+    function saveStock() {
+        var medId = document.getElementById('modalMedId').value;
+        var prix = parseInt(document.getElementById('modalPrix').value) || 0;
+        var enStock = document.getElementById('modalEnStock').checked;
+        var stockId = document.getElementById('modalStockId').value;
+
+        if (!medId) { showToast('Sélectionnez un médicament', 'error'); return; }
+        if (prix <= 0) { showToast('Entrez un prix valide', 'error'); return; }
+
+        var data = {
+            medicament_id: medId,
+            pharmacie_id: currentPharmacy.id,
+            prix_fcfa: prix,
+            en_stock: enStock,
+            date_maj: new Date().toISOString(),
+            source: 'pharmacien'
+        };
+
+        var promise;
+        if (stockId) {
+            promise = _sb.from('stocks').update(data).eq('id', stockId);
+        } else {
+            promise = _sb.from('stocks').upsert(data, { onConflict: 'pharmacie_id,medicament_id' });
+        }
+
+        promise.then(function(res) {
+            if (res.error) {
+                showToast('Erreur : ' + res.error.message, 'error');
+                return;
+            }
+            showToast(stockId ? 'Stock mis à jour ✅' : 'Médicament ajouté ✅');
+            closeModal();
+            loadStocks();
+            loadStats();
+        });
+    }
+
+    function deleteStock(stockId, medName) {
+        if (!confirm('Supprimer ' + medName + ' de vos stocks ?')) return;
+        _sb.from('stocks').delete().eq('id', stockId).eq('pharmacie_id', currentPharmacy.id)
+            .then(function(res) {
+                if (res.error) {
+                    showToast('Erreur : ' + res.error.message, 'error');
+                    return;
+                }
+                showToast(medName + ' supprimé');
+                loadStocks();
+                loadStats();
+            });
+    }
+
+    // ── Pharmacy Info ──
+    function loadPharmacyInfo() {
+        var grid = document.getElementById('pharmacyInfoGrid');
+        if (!currentPharmacy) {
+            grid.innerHTML = '<div class="empty-state"><p>Aucune pharmacie associée</p></div>';
+            return;
+        }
+        var p = currentPharmacy;
+        var statusBadge = '';
+        if (p.statut === 'verifie') statusBadge = '<span class="badge-verified">✓ Vérifié N\'Gola</span>';
+        else if (p.statut === 'partenaire') statusBadge = '<span class="badge-partner">Partenaire</span>';
+
+        grid.innerHTML =
+            '<div class="info-item"><label>Nom</label><span>' + esc(p.nom) + '</span></div>' +
+            '<div class="info-item"><label>Statut</label><span>' + (statusBadge || esc(p.statut)) + '</span></div>' +
+            '<div class="info-item"><label>Adresse</label><span>' + esc(p.adresse || '—') + '</span></div>' +
+            '<div class="info-item"><label>Téléphone</label><span>' + esc(p.telephone || '—') + '</span></div>' +
+            '<div class="info-item"><label>Horaires</label><span>' + esc(p.horaires || '—') + '</span></div>' +
+            '<div class="info-item"><label>Garde</label><span>' + (p.est_de_garde ? '🟢 En garde' : '⚪ Pas en garde') + '</span></div>' +
+            '<div class="info-item"><label>Latitude</label><span>' + (p.latitude || '—') + '</span></div>' +
+            '<div class="info-item"><label>Longitude</label><span>' + (p.longitude || '—') + '</span></div>';
+    }
+
+    // ── Alerts ──
+    function loadAlerts() {
+        var div = document.getElementById('alertsList');
+        // Only admins can see alerts via RLS. For pharmaciens, we show a message.
+        if (currentProfil.role === 'admin') {
+            _sb.from('alertes_stock').select('*').eq('active', true).order('created_at', { ascending: false }).limit(50)
+                .then(function(res) {
+                    var alerts = res.data || [];
+                    if (alerts.length === 0) {
+                        div.innerHTML = '<div class="empty-state"><div class="icon">🔔</div><p>Aucune alerte pour le moment</p></div>';
+                        return;
+                    }
+                    div.innerHTML = alerts.map(function(a) {
+                        var contact = a.user_email || a.user_phone || '—';
+                        var channelLabel = a.canal === 'whatsapp' ? '💬 WhatsApp' : (a.canal === 'ussd' ? '📱 SMS' : '📧 Email');
+                        return '<div class="alert-item">' +
+                            '<div><strong>' + esc(a.medicament_nom) + '</strong><br><span class="alert-contact">' + esc(contact) + '</span></div>' +
+                            '<div style="text-align:right"><span class="alert-channel">' + channelLabel + '</span><br><span class="alert-date">' + timeAgo(a.created_at) + '</span></div>' +
+                        '</div>';
+                    }).join('');
+                });
+        } else {
+            div.innerHTML = '<div class="empty-state"><div class="icon">🔒</div><p>Les alertes sont visibles par les administrateurs.<br>Contactez l\'admin pour voir les demandes de vos patients.</p></div>';
+        }
+    }
+
+    // ── CSV Import ──
+    function handleFileSelect(e) {
+        var file = e.target.files[0];
+        if (!file) return;
+        var ext = file.name.split('.').pop().toLowerCase();
+
+        if (ext === 'csv') {
+            Papa.parse(file, {
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    processImportData(results.data, file.name);
+                }
+            });
+        } else if (ext === 'xlsx' || ext === 'xls') {
+            var reader = new FileReader();
+            reader.onload = function(ev) {
+                var wb = XLSX.read(ev.target.result, { type: 'binary' });
+                var sheet = wb.Sheets[wb.SheetNames[0]];
+                var data = XLSX.utils.sheet_to_json(sheet);
+                processImportData(data, file.name);
+            };
+            reader.readAsBinaryString(file);
+        } else {
+            showToast('Format non supporté. Utilisez .csv, .xlsx ou .xls', 'error');
+        }
+    }
+
+    function processImportData(data, fileName) {
+        if (!data || data.length === 0) {
+            showToast('Fichier vide ou illisible', 'error');
+            return;
+        }
+        // Normalize column names
+        importData = data.map(function(row) {
+            var nomKey = findKey(row, ['nom', 'name', 'medicament', 'médicament', 'produit', 'designation', 'désignation']);
+            var prixKey = findKey(row, ['prix', 'price', 'prix_fcfa', 'prix fcfa', 'tarif', 'cout', 'coût', 'montant']);
+            var dosageKey = findKey(row, ['dosage', 'dose', 'concentration']);
+            var stockKey = findKey(row, ['en_stock', 'stock', 'disponible', 'dispo', 'available']);
+
+            var enStockVal = stockKey ? row[stockKey] : true;
+            if (typeof enStockVal === 'string') {
+                enStockVal = ['oui', 'yes', 'true', '1', 'o', 'y', 'disponible', 'en stock'].indexOf(enStockVal.toLowerCase().trim()) >= 0;
+            }
+
+            return {
+                nom: nomKey ? (row[nomKey] || '').toString().trim() : '',
+                prix: prixKey ? parseInt((row[prixKey] || '').toString().replace(/[^\d]/g, '')) || 0 : 0,
+                dosage: dosageKey ? (row[dosageKey] || '').toString().trim() : '',
+                en_stock: !!enStockVal,
+                _raw: row
+            };
+        }).filter(function(r) { return r.nom; });
+
+        if (importData.length === 0) {
+            showToast('Aucune ligne valide trouvée. Vérifiez que la colonne "nom" existe.', 'error');
+            return;
+        }
+
+        // Show preview
+        var preview = '<table><thead><tr><th>Médicament</th><th>Dosage</th><th>Prix (FCFA)</th><th>Stock</th></tr></thead><tbody>';
+        importData.slice(0, 10).forEach(function(r) {
+            preview += '<tr><td>' + esc(r.nom) + '</td><td>' + esc(r.dosage) + '</td><td>' + (r.prix || '—') + '</td><td>' + (r.en_stock ? '✅' : '❌') + '</td></tr>';
+        });
+        if (importData.length > 10) preview += '<tr><td colspan="4" style="text-align:center;color:var(--text-muted)">... et ' + (importData.length - 10) + ' autres lignes</td></tr>';
+        preview += '</tbody></table>';
+
+        document.getElementById('importPreview').innerHTML = '<div class="import-preview">' + preview + '</div>';
+        document.getElementById('importStats').innerHTML =
+            '<span>📄 ' + fileName + '</span>' +
+            '<span>📊 ' + importData.length + ' médicaments</span>' +
+            '<span>💰 ' + importData.filter(function(r) { return r.prix > 0; }).length + ' avec prix</span>';
+        document.getElementById('importActions').style.display = 'block';
+    }
+
+    function findKey(obj, candidates) {
+        var keys = Object.keys(obj);
+        for (var i = 0; i < candidates.length; i++) {
+            for (var j = 0; j < keys.length; j++) {
+                if (keys[j].toLowerCase().trim() === candidates[i]) return keys[j];
+            }
+        }
+        return null;
+    }
+
+    function confirmImport() {
+        if (!currentPharmacy || importData.length === 0) return;
+        showToast('Import en cours...', 'success');
+
+        // First, load all meds to match
+        _sb.from('medicaments').select('id, nom, dosage').then(function(res) {
+            var medDb = res.data || [];
+            var medMap = {};
+            medDb.forEach(function(m) {
+                medMap[m.nom.toLowerCase().trim()] = m;
+                if (m.dosage) medMap[(m.nom + ' ' + m.dosage).toLowerCase().trim()] = m;
+            });
+
+            var upserts = [];
+            var notFound = [];
+            importData.forEach(function(row) {
+                var key = row.nom.toLowerCase().trim();
+                var keyWithDosage = row.dosage ? (row.nom + ' ' + row.dosage).toLowerCase().trim() : '';
+                var match = medMap[keyWithDosage] || medMap[key];
+
+                if (match) {
+                    upserts.push({
+                        pharmacie_id: currentPharmacy.id,
+                        medicament_id: match.id,
+                        prix_fcfa: row.prix || 0,
+                        en_stock: row.en_stock,
+                        date_maj: new Date().toISOString(),
+                        source: 'pharmacien'
+                    });
+                } else {
+                    notFound.push(row.nom);
+                }
+            });
+
+            if (upserts.length === 0) {
+                showToast('Aucun médicament correspondant trouvé dans la base', 'error');
+                return;
+            }
+
+            _sb.from('stocks').upsert(upserts, { onConflict: 'pharmacie_id,medicament_id' })
+                .then(function(upsertRes) {
+                    if (upsertRes.error) {
+                        showToast('Erreur : ' + upsertRes.error.message, 'error');
+                        return;
+                    }
+                    var msg = upserts.length + ' stock(s) importé(s) ✅';
+                    if (notFound.length > 0) msg += ' | ' + notFound.length + ' non trouvé(s)';
+                    showToast(msg);
+                    cancelImport();
+                    loadStocks();
+                    loadStats();
+                });
+        });
+    }
+
+    function cancelImport() {
+        importData = [];
+        document.getElementById('importPreview').innerHTML = '';
+        document.getElementById('importActions').style.display = 'none';
+        document.getElementById('csvFileInput').value = '';
+    }
+
+    // ── Drag & Drop ──
+    function initDragDrop() {
+        var zone = document.getElementById('importZone');
+        if (!zone) return;
+        ['dragover', 'dragenter'].forEach(function(ev) {
+            zone.addEventListener(ev, function(e) { e.preventDefault(); zone.classList.add('dragover'); });
+        });
+        ['dragleave', 'drop'].forEach(function(ev) {
+            zone.addEventListener(ev, function() { zone.classList.remove('dragover'); });
+        });
+        zone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            var files = e.dataTransfer.files;
+            if (files.length > 0) {
+                document.getElementById('csvFileInput').files = files;
+                handleFileSelect({ target: { files: files } });
+            }
+        });
+    }
+
+    // ── Toggle label ──
+    document.getElementById('modalEnStock').addEventListener('change', function() {
+        document.getElementById('modalStockLabel').textContent = this.checked ? 'En stock' : 'Rupture';
+    });
+
+    // ── Init ──
+    initDragDrop();
+    checkSession();
+
+    return {
+        login: login,
+        logout: logout,
+        switchTab: switchTab,
+        loadStocks: loadStocks,
+        filterStocks: filterStocks,
+        openAddStock: openAddStock,
+        editStock: editStock,
+        closeModal: closeModal,
+        searchMedsForModal: searchMedsForModal,
+        selectMedFromList: selectMedFromList,
+        saveStock: saveStock,
+        deleteStock: deleteStock,
+        handleFileSelect: handleFileSelect,
+        confirmImport: confirmImport,
+        cancelImport: cancelImport
+    };
+})();
+</script>
+</body>
+</html>
