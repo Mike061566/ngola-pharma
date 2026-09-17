@@ -479,6 +479,18 @@
         .badge-garde { background: #d4edda; color: #155724; }
         .badge-verifie { background: #d1ecf1; color: #0c5460; }
         .badge-partenaire { background: #fff3cd; color: #856404; }
+        .badge-ngola-verified { background: linear-gradient(135deg, #f6d365, #f5c842); color: #6b4701; border: 1px solid #e6b800; font-weight: 700; letter-spacing: 0.3px; }
+        .badge-stock-fresh { background: #d4edda; color: #155724; }
+        .badge-stock-stale { background: #fff3cd; color: #856404; }
+        .badge-stock-old { background: #f8d7da; color: #721c24; }
+        .badge-prix-verifie { background: #e8f4fd; color: #0c5460; }
+        .badge-garde-confirmee { background: #c3e6cb; color: #155724; font-weight: 700; }
+        .med-reliability { display: flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 13px; }
+        .reliability-bar { width: 60px; height: 6px; border-radius: 3px; background: #e9ecef; overflow: hidden; flex-shrink: 0; }
+        .reliability-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+        .reliability-fill.high { background: #28a745; }
+        .reliability-fill.medium { background: #fd7e14; }
+        .reliability-fill.low { background: #dc3545; }
         .pharmacy-result-price { text-align: right; flex-shrink: 0; }
         .pharmacy-result-price .price { font-size: 18px; font-weight: 700; color: #003366; }
         .pharmacy-result-price .price-label { font-size: 11px; color: #888; }
@@ -1895,6 +1907,36 @@
             return '🔴';
         }
 
+        function reliabilityScore(stockEntries) {
+            if (!stockEntries || stockEntries.length === 0) return 0;
+            var now = Date.now();
+            var scores = stockEntries.map(function(s) {
+                var dateField = s.date_maj || s.updated_at;
+                if (!dateField) return 30;
+                var ageH = (now - new Date(dateField).getTime()) / 3600000;
+                if (ageH < 1) return 100;
+                if (ageH < 6) return 90;
+                if (ageH < 24) return 70;
+                if (ageH < 72) return 50;
+                return 30;
+            });
+            return Math.round(scores.reduce(function(a, b) { return a + b; }, 0) / scores.length);
+        }
+
+        function reliabilityLabel(score) {
+            if (score >= 80) return { text: currentLang === 'en' ? 'Reliable' : 'Fiable', css: 'high', icon: '🟢' };
+            if (score >= 50) return { text: currentLang === 'en' ? 'Moderate' : 'Modéré', css: 'medium', icon: '🟠' };
+            return { text: currentLang === 'en' ? 'Low reliability' : 'Fiabilité faible', css: 'low', icon: '🔴' };
+        }
+
+        function freshnessBadge(dateStr) {
+            if (!dateStr) return '';
+            var hours = (Date.now() - new Date(dateStr).getTime()) / 3600000;
+            if (hours < 6) return '<span class="badge badge-stock-fresh">📊 ' + (currentLang === 'en' ? 'Fresh stock' : 'Stock frais') + '</span>';
+            if (hours < 24) return '<span class="badge badge-stock-stale">📊 ' + (currentLang === 'en' ? 'Updated ' + timeAgo(dateStr) + ' ago' : 'MAJ il y a ' + timeAgo(dateStr)) + '</span>';
+            return '<span class="badge badge-stock-old">📊 ' + (currentLang === 'en' ? 'Outdated' : 'Données anciennes') + '</span>';
+        }
+
         function scrollTo(el) {
             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
@@ -2060,6 +2102,11 @@
                                 var inStock = mStocks.filter(function(s) { return s.en_stock === true; });
                                 m._stockCount = inStock.length;
                                 m._totalStockEntries = mStocks.length;
+                                m._allStocks = mStocks;
+                                // Check if any stocking pharmacy is verified
+                                m._hasVerifiedPharmacy = inStock.some(function(s) {
+                                    return s.pharmacies && (s.pharmacies.statut === 'verifie' || s.pharmacies.statut === 'partenaire');
+                                });
                                 if (inStock.length > 0) {
                                     // Find best price
                                     var prices = inStock.filter(function(s) { return s.prix_fcfa > 0; }).map(function(s) { return s.prix_fcfa; });
@@ -2099,9 +2146,15 @@
         // ── Render Cards ────────────────────────────────────
         function renderPharmacyCard(p) {
             var badges = '';
-            if (p.est_de_garde) badges += '<span class="badge badge-garde">Garde</span>';
-            if (p.statut === 'verifie') badges += '<span class="badge badge-verifie">' + (currentLang === 'en' ? 'Verified' : 'Vérifié') + '</span>';
+            if (p.est_de_garde) badges += '<span class="badge badge-garde-confirmee">🟢 ' + (currentLang === 'en' ? 'On-duty confirmed' : 'Garde confirmée') + '</span>';
+            if (p.statut === 'verifie' || p.statut === 'partenaire') {
+                badges += '<span class="badge badge-ngola-verified">✓ ' + (currentLang === 'en' ? "N'Gola Verified" : "Vérifié N'Gola") + '</span>';
+            }
             if (p.statut === 'partenaire') badges += '<span class="badge badge-partenaire">Partenaire</span>';
+            // Stock freshness badge if pharmacy has _freshestDate from enrichment
+            if (p._freshestDate) {
+                badges += freshnessBadge(p._freshestDate);
+            }
 
             var mapsLink = '';
             if (p.latitude && p.longitude) {
@@ -2170,6 +2223,27 @@
                     '</div>';
             }
 
+            // Reliability score
+            var reliabilityHtml = '';
+            if (m._allStocks && m._allStocks.length > 0) {
+                var score = reliabilityScore(m._allStocks);
+                var label = reliabilityLabel(score);
+                reliabilityHtml = '<div class="med-reliability">' +
+                    '<span>' + (currentLang === 'en' ? 'Reliability' : 'Fiabilité') + ' :</span>' +
+                    '<div class="reliability-bar"><div class="reliability-fill ' + label.css + '" style="width:' + score + '%"></div></div>' +
+                    '<span>' + label.icon + ' ' + score + '%</span>' +
+                    '</div>';
+            }
+
+            // Verified pharmacy badges on med card
+            var verifiedBadgesHtml = '';
+            if (m._hasVerifiedPharmacy) {
+                verifiedBadgesHtml = '<div style="margin-top:6px"><span class="badge badge-ngola-verified">✓ ' +
+                    (currentLang === 'en' ? 'Available at verified pharmacy' : 'Dispo en pharmacie vérifiée') + '</span>' +
+                    (m._lastUpdate ? ' ' + freshnessBadge(m._lastUpdate) : '') +
+                    '</div>';
+            }
+
             // Action buttons
             var actionsHtml = '';
             if (m._nearestStock && m._nearestStock.pharmacies) {
@@ -2203,6 +2277,8 @@
                     (m.ordonnance ? ' &bull; &#128221; ' + (currentLang === 'en' ? 'Prescription required' : 'Ordonnance requise') : '') +
                 '</div>' +
                 stockHtml +
+                verifiedBadgesHtml +
+                reliabilityHtml +
                 nearestHtml +
                 freshHtml +
                 (actionsHtml ? '<div class="med-result-actions">' + actionsHtml + '</div>' : '') +
@@ -2632,8 +2708,10 @@
 
         function renderPharmacyCardWithDistance(p) {
             var badges = '';
-            if (p.est_de_garde) badges += '<span class="badge badge-garde">Garde</span>';
-            if (p.statut === 'verifie') badges += '<span class="badge badge-verifie">' + (currentLang === 'en' ? 'Verified' : 'Vérifié') + '</span>';
+            if (p.est_de_garde) badges += '<span class="badge badge-garde-confirmee">🟢 ' + (currentLang === 'en' ? 'On-duty confirmed' : 'Garde confirmée') + '</span>';
+            if (p.statut === 'verifie' || p.statut === 'partenaire') {
+                badges += '<span class="badge badge-ngola-verified">✓ ' + (currentLang === 'en' ? "N'Gola Verified" : "Vérifié N'Gola") + '</span>';
+            }
             if (p.statut === 'partenaire') badges += '<span class="badge badge-partenaire">Partenaire</span>';
             var distHtml = '';
             if (p._distance !== undefined) {
