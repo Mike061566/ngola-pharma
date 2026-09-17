@@ -490,6 +490,19 @@
         .med-result-dci { font-size: 12px; color: #003366; font-weight: 500; margin-top: 4px; }
         .med-result-price { font-size: 18px; font-weight: 700; color: #003366; }
         .med-result-avail { margin-top: 10px; font-size: 13px; color: #555; }
+        .med-result-stock { margin-top: 10px; display: flex; align-items: center; gap: 8px; font-size: 13px; }
+        .med-stock-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+        .med-stock-dot.green { background: #28a745; }
+        .med-stock-dot.orange { background: #fd7e14; }
+        .med-stock-dot.red { background: #dc3545; }
+        .med-result-nearest { margin-top: 8px; font-size: 13px; color: #555; display: flex; align-items: center; gap: 6px; }
+        .med-result-freshness { font-size: 11px; color: #999; margin-top: 4px; }
+        .med-result-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+        .med-action-btn { display: inline-flex; align-items: center; gap: 4px; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; border: none; cursor: pointer; }
+        .med-action-btn.route { background: #1a73e8; color: white; }
+        .med-action-btn.call { background: #28a745; color: white; }
+        .med-action-btn.route:hover { background: #1557b0; }
+        .med-action-btn.call:hover { background: #218838; }
 
         /* Filtres meilleurs prix */
         .prix-filters { background: #f8f9fa; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 18px; margin-bottom: 18px; }
@@ -1327,11 +1340,11 @@
     <!-- Hero -->
     <div class="hero">
         <div class="hero-container">
-            <h1 data-i18n-html="hero_title">Trouvez votre pharmacie<br/>de garde instantanément</h1>
-            <p data-i18n="hero_sub">52 pharmacies à Yaoundé • Horaires en direct • Prix transparents</p>
+            <h1 data-i18n-html="hero_title">Quel médicament<br/>recherchez-vous ?</h1>
+            <p data-i18n="hero_sub">Disponibilité en temps réel · Prix comparés · 52 pharmacies à Yaoundé</p>
 
             <div class="search-bar" id="searchBar">
-                <input type="text" id="searchInput" placeholder="Rechercher un médicament ou un symptôme..." data-i18n-placeholder="search_placeholder" autocomplete="off">
+                <input type="text" id="searchInput" placeholder="Nom, marque ou principe actif…" data-i18n-placeholder="search_placeholder" autocomplete="off">
                 <button id="searchBtn"><svg viewBox="0 0 14 14" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="4"/><path d="m9 9 3.5 3.5"/></svg></button>
                 <div class="search-dropdown" id="searchDropdown"></div>
             </div>
@@ -1618,9 +1631,9 @@
                 tagline: "Yaoundé",
 
                 // Hero
-                hero_title: 'Find your on-duty pharmacy<br/>instantly',
-                hero_sub: "52 pharmacies in Yaoundé • Live hours • Transparent prices",
-                search_placeholder: "Search for a medication or symptom...",
+                hero_title: 'What medication are you<br/>looking for?',
+                hero_sub: "Real-time availability · Compared prices · 52 pharmacies in Yaoundé",
+                search_placeholder: "Name, brand, or active ingredient…",
                 popular_searches: "Popular searches:",
                 qa_nearby_garde: "On-duty pharmacies near me",
                 geo_requesting: "Locating you...",
@@ -1703,9 +1716,9 @@
                 signup: "S\'inscrire",
                 tagline: "Yaoundé",
 
-                hero_title: 'Trouvez votre pharmacie<br/>de garde instantanément',
-                hero_sub: "52 pharmacies à Yaoundé • Horaires en direct • Prix transparents",
-                search_placeholder: "Rechercher un médicament ou un symptôme...",
+                hero_title: 'Quel médicament<br/>recherchez-vous ?',
+                hero_sub: "Disponibilité en temps réel · Prix comparés · 52 pharmacies à Yaoundé",
+                search_placeholder: "Nom, marque ou principe actif…",
                 popular_searches: "Recherches populaires :",
                 qa_nearby_garde: "Pharmacies de garde près de moi",
                 geo_requesting: "Localisation en cours...",
@@ -1832,6 +1845,16 @@
 
         var searchTimer = null;
         var currentLang = 'fr';
+        var _geoLat = null;
+        var _geoLng = null;
+
+        // Try to get user position early for distance calculations
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(pos) {
+                _geoLat = pos.coords.latitude;
+                _geoLng = pos.coords.longitude;
+            }, function() {}, { timeout: 5000, maximumAge: 300000 });
+        }
 
         // ── Helpers ─────────────────────────────────────────
         function fmt(prix) {
@@ -1852,6 +1875,24 @@
                 return esc(nom);
             }
             return esc(nom || '') + ' ' + esc(dosage);
+        }
+
+        function timeAgo(dateStr) {
+            if (!dateStr) return '';
+            var diff = (Date.now() - new Date(dateStr).getTime()) / 1000;
+            if (diff < 0) diff = 0;
+            if (diff < 60) return currentLang === 'en' ? 'just now' : 'à l\'instant';
+            if (diff < 3600) return Math.floor(diff/60) + ' min';
+            if (diff < 86400) return Math.floor(diff/3600) + 'h';
+            return Math.floor(diff/86400) + (currentLang === 'en' ? 'd' : 'j');
+        }
+
+        function freshnessIcon(dateStr) {
+            if (!dateStr) return '🔴';
+            var hours = (Date.now() - new Date(dateStr).getTime()) / 3600000;
+            if (hours < 6) return '🟢';
+            if (hours < 24) return '🟠';
+            return '🔴';
         }
 
         function scrollTo(el) {
@@ -1990,19 +2031,68 @@
                 document.getElementById('resultsCount').textContent =
                     total + (currentLang === 'en' ? ' result(s)' : ' résultat(s)');
 
-                var html = '';
-                meds.forEach(function(m) {
-                    html += renderMedCard(m);
-                });
-                pharmas.forEach(function(p) {
-                    html += renderPharmacyCard(p);
-                });
-
                 if (total === 0) {
-                    html = '<div style="text-align:center;padding:40px;color:#999">' +
-                        (currentLang === 'en' ? 'No results found' : 'Aucun résultat trouvé') + '</div>';
+                    list.innerHTML = '<div style="text-align:center;padding:40px;color:#999">' +
+                        (currentLang === 'en' ? 'No results found for' : 'Aucun résultat trouvé pour') +
+                        ' "' + esc(q) + '"<br><small style="color:#aaa;margin-top:8px;display:block">' +
+                        (currentLang === 'en' ? 'Try a different spelling or a broader term' : 'Essayez une autre orthographe ou un terme plus large') +
+                        '</small></div>';
+                    return;
                 }
-                list.innerHTML = html;
+
+                // If we have med results, enrich with stock data
+                if (meds.length > 0) {
+                    var medIds = meds.map(function(m) { return m.id; });
+                    _sb.from('stocks')
+                        .select('medicament_id, pharmacie_id, quantite, prix_unitaire, updated_at, pharmacies(nom, latitude, longitude, telephone, statut, est_de_garde)')
+                        .in('medicament_id', medIds)
+                        .then(function(stockRes) {
+                            var stocks = stockRes.data || [];
+                            // Group stocks by medicament_id
+                            var stockMap = {};
+                            stocks.forEach(function(s) {
+                                if (!stockMap[s.medicament_id]) stockMap[s.medicament_id] = [];
+                                stockMap[s.medicament_id].push(s);
+                            });
+                            // Enrich each med
+                            meds.forEach(function(m) {
+                                var mStocks = stockMap[m.id] || [];
+                                var inStock = mStocks.filter(function(s) { return s.quantite > 0; });
+                                m._stockCount = inStock.length;
+                                m._totalStockEntries = mStocks.length;
+                                if (inStock.length > 0) {
+                                    // Find best price
+                                    var prices = inStock.filter(function(s) { return s.prix_unitaire > 0; }).map(function(s) { return s.prix_unitaire; });
+                                    m._minPrice = prices.length > 0 ? Math.min.apply(null, prices) : null;
+                                    // Find nearest pharmacy with stock
+                                    if (_geoLat && _geoLng) {
+                                        var withDist = inStock.filter(function(s) { return s.pharmacies && s.pharmacies.latitude; }).map(function(s) {
+                                            s._dist = haversineDistance(_geoLat, _geoLng, s.pharmacies.latitude, s.pharmacies.longitude);
+                                            return s;
+                                        });
+                                        withDist.sort(function(a, b) { return a._dist - b._dist; });
+                                        if (withDist.length > 0) {
+                                            m._nearestStock = withDist[0];
+                                        }
+                                    } else {
+                                        // No geoloc, pick first with pharmacy info
+                                        m._nearestStock = inStock.find(function(s) { return s.pharmacies; }) || null;
+                                    }
+                                    // Most recent update
+                                    var dates = inStock.filter(function(s) { return s.updated_at; }).map(function(s) { return new Date(s.updated_at).getTime(); });
+                                    m._lastUpdate = dates.length > 0 ? new Date(Math.max.apply(null, dates)).toISOString() : null;
+                                }
+                            });
+                            var html = '';
+                            meds.forEach(function(m) { html += renderMedCard(m); });
+                            pharmas.forEach(function(p) { html += renderPharmacyCard(p); });
+                            list.innerHTML = html;
+                        });
+                } else {
+                    var html = '';
+                    pharmas.forEach(function(p) { html += renderPharmacyCard(p); });
+                    list.innerHTML = html;
+                }
             });
         }
 
@@ -2037,6 +2127,69 @@
         }
 
         function renderMedCard(m) {
+            // Stock availability line
+            var stockHtml = '';
+            if (m._stockCount !== undefined) {
+                if (m._stockCount > 0) {
+                    var dotClass = m._stockCount >= 3 ? 'green' : 'orange';
+                    stockHtml = '<div class="med-result-stock">' +
+                        '<span class="med-stock-dot ' + dotClass + '"></span>' +
+                        (currentLang === 'en'
+                            ? 'In stock at ' + m._stockCount + ' pharmac' + (m._stockCount > 1 ? 'ies' : 'y')
+                            : 'En stock dans ' + m._stockCount + ' pharmacie' + (m._stockCount > 1 ? 's' : '')) +
+                        '</div>';
+                } else {
+                    stockHtml = '<div class="med-result-stock">' +
+                        '<span class="med-stock-dot red"></span>' +
+                        (currentLang === 'en' ? 'Out of stock' : 'Rupture de stock') +
+                        '</div>';
+                }
+            }
+
+            // Nearest pharmacy line
+            var nearestHtml = '';
+            if (m._nearestStock && m._nearestStock.pharmacies) {
+                var ph = m._nearestStock.pharmacies;
+                var distText = '';
+                if (m._nearestStock._dist !== undefined) {
+                    distText = formatDistance(m._nearestStock._dist) + ' · ';
+                }
+                nearestHtml = '<div class="med-result-nearest">' +
+                    '📍 ' + (currentLang === 'en' ? 'Nearest: ' : 'Plus proche : ') +
+                    '<strong>' + esc(ph.nom) + '</strong>' +
+                    (distText ? ' — ' + distText : '') +
+                    '</div>';
+            }
+
+            // Freshness line
+            var freshHtml = '';
+            if (m._lastUpdate) {
+                freshHtml = '<div class="med-result-freshness">' +
+                    freshnessIcon(m._lastUpdate) + ' ' +
+                    (currentLang === 'en' ? 'Updated ' + timeAgo(m._lastUpdate) + ' ago' : 'Mis à jour il y a ' + timeAgo(m._lastUpdate)) +
+                    '</div>';
+            }
+
+            // Action buttons
+            var actionsHtml = '';
+            if (m._nearestStock && m._nearestStock.pharmacies) {
+                var nph = m._nearestStock.pharmacies;
+                if (nph.latitude && nph.longitude) {
+                    actionsHtml += '<a href="https://www.google.com/maps/search/?api=1&query=' + nph.latitude + ',' + nph.longitude +
+                        '" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="med-action-btn route">' +
+                        '📍 ' + (currentLang === 'en' ? 'Directions' : 'Itinéraire') + '</a>';
+                }
+                if (nph.telephone) {
+                    actionsHtml += '<a href="tel:' + esc(nph.telephone) + '" onclick="event.stopPropagation()" class="med-action-btn call">' +
+                        '📞 ' + (currentLang === 'en' ? 'Call' : 'Appeler') + '</a>';
+                }
+            }
+
+            // Price display
+            var priceHtml = m._minPrice
+                ? '<div class="med-result-price">' + (currentLang === 'en' ? 'From ' : 'Dès ') + fmt(m._minPrice) + '</div>'
+                : '';
+
             return '<div class="med-result" onclick="NGolaApp.showMedDetail(\'' + m.id + '\')">' +
                 '<div class="med-result-header">' +
                     '<div>' +
@@ -2044,10 +2197,15 @@
                         '<div class="med-result-form">' + esc(m.forme || '') + '</div>' +
                         (m.dci ? '<div class="med-result-dci">DCI: ' + esc(m.dci) + '</div>' : '') +
                     '</div>' +
+                    priceHtml +
                 '</div>' +
                 '<div class="med-result-avail">' + esc(m.categorie || '') +
                     (m.ordonnance ? ' &bull; &#128221; ' + (currentLang === 'en' ? 'Prescription required' : 'Ordonnance requise') : '') +
                 '</div>' +
+                stockHtml +
+                nearestHtml +
+                freshHtml +
+                (actionsHtml ? '<div class="med-result-actions">' + actionsHtml + '</div>' : '') +
             '</div>';
         }
 
