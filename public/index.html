@@ -495,13 +495,18 @@
         .ngola-alert-box { background: #f0f7ff; border: 1px solid #b3d4fc; border-radius: 12px; padding: 20px; margin-top: 16px; text-align: center; }
         .ngola-alert-box h4 { margin: 0 0 8px; color: #003366; font-size: 15px; }
         .ngola-alert-box p { margin: 0 0 12px; color: #666; font-size: 13px; }
+        .ngola-alert-channel-tabs { display: flex; justify-content: center; gap: 0; margin-bottom: 14px; border-radius: 8px; overflow: hidden; border: 1px solid #b3d4fc; display: inline-flex; }
+        .ngola-alert-channel-tab { padding: 8px 16px; background: #fff; color: #003366; border: none; font-size: 13px; cursor: pointer; transition: background 0.2s; font-weight: 500; }
+        .ngola-alert-channel-tab.active { background: #003366; color: #fff; }
+        .ngola-alert-channel-tab:not(:last-child) { border-right: 1px solid #b3d4fc; }
         .ngola-alert-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
-        .ngola-alert-form input[type="email"] { flex: 1; min-width: 180px; max-width: 280px; padding: 10px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; }
+        .ngola-alert-form input { flex: 1; min-width: 180px; max-width: 280px; padding: 10px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; }
         .ngola-alert-form button { padding: 10px 18px; background: #003366; color: #fff; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; white-space: nowrap; }
         .ngola-alert-form button:hover { background: #004488; }
         .ngola-alert-form button:disabled { background: #999; cursor: not-allowed; }
         .ngola-alert-success { color: #155724; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 8px; padding: 12px; margin-top: 10px; font-size: 13px; }
         .ngola-alert-error { color: #721c24; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px; padding: 12px; margin-top: 10px; font-size: 13px; }
+        .ngola-alert-hint { font-size: 11px; color: #888; margin-top: 6px; }
         .med-alert-btn { display: inline-block; margin-top: 8px; padding: 6px 14px; background: #f0f7ff; color: #003366; border: 1px solid #b3d4fc; border-radius: 8px; font-size: 12px; cursor: pointer; transition: background 0.2s; }
         .med-alert-btn:hover { background: #dceafb; }
         .pharmacy-result-price { text-align: right; flex-shrink: 0; }
@@ -1950,51 +1955,125 @@
             return '<span class="badge badge-stock-old">📊 ' + (currentLang === 'en' ? 'Outdated' : 'Données anciennes') + '</span>';
         }
 
-        // ── Phase 3 : Alerte stock ──────────────────────────
+        // ── Phase 3 : Alerte stock (Email / WhatsApp / USSD) ─
         function buildAlertFormHtml(medName, medId) {
             var uid = 'alert_' + (medId || '').replace(/-/g, '').substring(0, 8) + '_' + Date.now();
+            var escName = esc(medName).replace(/'/g, '&#39;');
+            var midParam = medId ? '\'' + medId + '\'' : 'null';
             return '<div class="ngola-alert-box" id="' + uid + '">' +
                 '<h4>🔔 ' + (currentLang === 'en' ? 'Get notified' : 'Me prévenir') + '</h4>' +
                 '<p>' + (currentLang === 'en'
                     ? 'Receive an alert when <strong>' + esc(medName) + '</strong> becomes available near you.'
                     : 'Recevez une alerte quand <strong>' + esc(medName) + '</strong> sera disponible près de chez vous.') + '</p>' +
-                '<div class="ngola-alert-form">' +
-                    '<input type="email" id="email_' + uid + '" placeholder="' + (currentLang === 'en' ? 'Your email' : 'Votre email') + '" />' +
-                    '<button onclick="NGolaApp.submitAlert(\'' + uid + '\', \'' + esc(medName) + '\', ' + (medId ? '\'' + medId + '\'' : 'null') + ')">' +
+                '<div class="ngola-alert-channel-tabs">' +
+                    '<button class="ngola-alert-channel-tab active" data-canal="email" onclick="NGolaApp.switchAlertChannel(\'' + uid + '\', \'email\')">📧 Email</button>' +
+                    '<button class="ngola-alert-channel-tab" data-canal="whatsapp" onclick="NGolaApp.switchAlertChannel(\'' + uid + '\', \'whatsapp\')">💬 WhatsApp</button>' +
+                    '<button class="ngola-alert-channel-tab" data-canal="ussd" onclick="NGolaApp.switchAlertChannel(\'' + uid + '\', \'ussd\')">📱 USSD/SMS</button>' +
+                '</div>' +
+                '<div class="ngola-alert-form" id="form_' + uid + '">' +
+                    '<input type="email" id="contact_' + uid + '" placeholder="' + (currentLang === 'en' ? 'Your email' : 'Votre email') + '" />' +
+                    '<button onclick="NGolaApp.submitAlert(\'' + uid + '\', \'' + escName + '\', ' + midParam + ')">' +
                         '🔔 ' + (currentLang === 'en' ? 'Notify me' : 'Me prévenir') +
                     '</button>' +
                 '</div>' +
+                '<input type="hidden" id="canal_' + uid + '" value="email" />' +
+                '<div id="hint_' + uid + '"></div>' +
                 '<div id="msg_' + uid + '"></div>' +
             '</div>';
         }
 
-        function submitStockAlert(boxId, medName, medId) {
-            var emailInput = document.getElementById('email_' + boxId);
-            var msgDiv = document.getElementById('msg_' + boxId);
-            if (!emailInput || !msgDiv) return;
-            var email = emailInput.value.trim();
-            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                msgDiv.innerHTML = '<div class="ngola-alert-error">' +
-                    (currentLang === 'en' ? 'Please enter a valid email address.' : 'Veuillez entrer une adresse email valide.') + '</div>';
-                return;
+        function switchAlertChannel(boxId, canal) {
+            var box = document.getElementById(boxId);
+            if (!box) return;
+            // Update active tab
+            var tabs = box.querySelectorAll('.ngola-alert-channel-tab');
+            tabs.forEach(function(t) { t.classList.toggle('active', t.getAttribute('data-canal') === canal); });
+            // Update hidden canal field
+            var canalInput = document.getElementById('canal_' + boxId);
+            if (canalInput) canalInput.value = canal;
+            // Update input field
+            var contactInput = document.getElementById('contact_' + boxId);
+            var hintDiv = document.getElementById('hint_' + boxId);
+            if (contactInput) {
+                if (canal === 'email') {
+                    contactInput.type = 'email';
+                    contactInput.placeholder = currentLang === 'en' ? 'Your email' : 'Votre email';
+                    contactInput.value = '';
+                    if (hintDiv) hintDiv.innerHTML = '';
+                } else if (canal === 'whatsapp') {
+                    contactInput.type = 'tel';
+                    contactInput.placeholder = currentLang === 'en' ? 'WhatsApp number (e.g. 6XXXXXXXX)' : 'Numéro WhatsApp (ex: 6XXXXXXXX)';
+                    contactInput.value = '';
+                    if (hintDiv) hintDiv.innerHTML = '<div class="ngola-alert-hint">' +
+                        (currentLang === 'en' ? 'Cameroon number without country code (+237)' : 'Numéro camerounais sans indicatif (+237)') + '</div>';
+                } else {
+                    contactInput.type = 'tel';
+                    contactInput.placeholder = currentLang === 'en' ? 'Phone number (e.g. 6XXXXXXXX)' : 'Numéro de téléphone (ex: 6XXXXXXXX)';
+                    contactInput.value = '';
+                    if (hintDiv) hintDiv.innerHTML = '<div class="ngola-alert-hint">' +
+                        (currentLang === 'en' ? 'You will receive an SMS/USSD notification' : 'Vous recevrez une notification SMS/USSD') + '</div>';
+                }
             }
-            var btn = emailInput.parentElement.querySelector('button');
+            // Clear any error message
+            var msgDiv = document.getElementById('msg_' + boxId);
+            if (msgDiv) msgDiv.innerHTML = '';
+        }
+
+        function submitStockAlert(boxId, medName, medId) {
+            var contactInput = document.getElementById('contact_' + boxId);
+            var canalInput = document.getElementById('canal_' + boxId);
+            var msgDiv = document.getElementById('msg_' + boxId);
+            if (!contactInput || !msgDiv) return;
+            var canal = canalInput ? canalInput.value : 'email';
+            var contact = contactInput.value.trim();
+
+            // Validation
+            if (canal === 'email') {
+                if (!contact || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact)) {
+                    msgDiv.innerHTML = '<div class="ngola-alert-error">' +
+                        (currentLang === 'en' ? 'Please enter a valid email address.' : 'Veuillez entrer une adresse email valide.') + '</div>';
+                    return;
+                }
+            } else {
+                // Phone validation: Cameroon numbers, strip spaces/dashes, accept with or without +237
+                var phone = contact.replace(/[\s\-\.]/g, '');
+                if (phone.startsWith('+237')) phone = phone.substring(4);
+                if (phone.startsWith('237') && phone.length > 9) phone = phone.substring(3);
+                if (!/^[62]\d{7,8}$/.test(phone)) {
+                    msgDiv.innerHTML = '<div class="ngola-alert-error">' +
+                        (currentLang === 'en' ? 'Please enter a valid Cameroon phone number.' : 'Veuillez entrer un numéro de téléphone camerounais valide.') + '</div>';
+                    return;
+                }
+                contact = '+237' + phone;
+            }
+
+            var btn = contactInput.parentElement.querySelector('button');
             if (btn) { btn.disabled = true; btn.textContent = '⏳'; }
-            _sb.from('alertes_stock').insert({
-                user_email: email,
+
+            var insertData = {
                 medicament_nom: medName,
-                medicament_id: medId || null
-            }).then(function(res) {
+                medicament_id: medId || null,
+                canal: canal
+            };
+            if (canal === 'email') {
+                insertData.user_email = contact;
+            } else {
+                insertData.user_phone = contact;
+            }
+
+            _sb.from('alertes_stock').insert(insertData).then(function(res) {
                 if (res.error) {
                     msgDiv.innerHTML = '<div class="ngola-alert-error">' +
                         (currentLang === 'en' ? 'Error: ' + res.error.message : 'Erreur : ' + res.error.message) + '</div>';
                     if (btn) { btn.disabled = false; btn.textContent = '🔔 ' + (currentLang === 'en' ? 'Notify me' : 'Me prévenir'); }
                 } else {
+                    var channelIcon = canal === 'email' ? '📧' : (canal === 'whatsapp' ? '💬' : '📱');
+                    var channelName = canal === 'email' ? 'email' : (canal === 'whatsapp' ? 'WhatsApp' : 'SMS');
                     document.getElementById(boxId).innerHTML =
                         '<div class="ngola-alert-success">✅ ' +
                         (currentLang === 'en'
-                            ? 'You will be notified at <strong>' + esc(email) + '</strong> when <strong>' + esc(medName) + '</strong> is available.'
-                            : 'Vous serez prévenu(e) à <strong>' + esc(email) + '</strong> quand <strong>' + esc(medName) + '</strong> sera disponible.') +
+                            ? 'You will be notified via ' + channelName + ' ' + channelIcon + ' at <strong>' + esc(contact) + '</strong> when <strong>' + esc(medName) + '</strong> is available.'
+                            : 'Vous serez prévenu(e) par ' + channelName + ' ' + channelIcon + ' à <strong>' + esc(contact) + '</strong> quand <strong>' + esc(medName) + '</strong> sera disponible.') +
                         '</div>';
                 }
             });
@@ -2992,7 +3071,8 @@
             showMedDetail: showMedDetail,
             fullSearch: fullSearch,
             submitAlert: submitStockAlert,
-            showInlineAlert: showInlineAlertForm
+            showInlineAlert: showInlineAlertForm,
+            switchAlertChannel: switchAlertChannel
         };
     })();
     </script>
