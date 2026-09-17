@@ -2044,7 +2044,7 @@
                 if (meds.length > 0) {
                     var medIds = meds.map(function(m) { return m.id; });
                     _sb.from('stocks')
-                        .select('medicament_id, pharmacie_id, quantite, prix_unitaire, updated_at, pharmacies(nom, latitude, longitude, telephone, statut, est_de_garde)')
+                        .select('medicament_id, pharmacie_id, prix_fcfa, en_stock, date_maj, pharmacies(nom, latitude, longitude, telephone, statut, est_de_garde)')
                         .in('medicament_id', medIds)
                         .then(function(stockRes) {
                             var stocks = stockRes.data || [];
@@ -2057,12 +2057,12 @@
                             // Enrich each med
                             meds.forEach(function(m) {
                                 var mStocks = stockMap[m.id] || [];
-                                var inStock = mStocks.filter(function(s) { return s.quantite > 0; });
+                                var inStock = mStocks.filter(function(s) { return s.en_stock === true; });
                                 m._stockCount = inStock.length;
                                 m._totalStockEntries = mStocks.length;
                                 if (inStock.length > 0) {
                                     // Find best price
-                                    var prices = inStock.filter(function(s) { return s.prix_unitaire > 0; }).map(function(s) { return s.prix_unitaire; });
+                                    var prices = inStock.filter(function(s) { return s.prix_fcfa > 0; }).map(function(s) { return s.prix_fcfa; });
                                     m._minPrice = prices.length > 0 ? Math.min.apply(null, prices) : null;
                                     // Find nearest pharmacy with stock
                                     if (_geoLat && _geoLng) {
@@ -2079,7 +2079,7 @@
                                         m._nearestStock = inStock.find(function(s) { return s.pharmacies; }) || null;
                                     }
                                     // Most recent update
-                                    var dates = inStock.filter(function(s) { return s.updated_at; }).map(function(s) { return new Date(s.updated_at).getTime(); });
+                                    var dates = inStock.filter(function(s) { return s.date_maj; }).map(function(s) { return new Date(s.date_maj).getTime(); });
                                     m._lastUpdate = dates.length > 0 ? new Date(Math.max.apply(null, dates)).toISOString() : null;
                                 }
                             });
