@@ -21,9 +21,12 @@ app.use(helmet({
 }));
 
 // ── CORS ──────────────────────────────────────────────
+// Pas de fallback '*' : sans CORS_ORIGIN explicite, les requêtes cross-origin sont refusées.
+// Toutes les routes de cette API sont en lecture seule (GET) — aucune méthode d'écriture
+// n'est implémentée, donc aucune n'est autorisée ici.
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || '*',
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  origin: process.env.CORS_ORIGIN || false,
+  methods: ['GET'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
@@ -60,45 +63,49 @@ app.get('/api/health', (req, res) => {
 });
 
 // ── Diagnostic (dev only) ────────────────────────────
-app.get('/api/diagnostic', async (req, res) => {
-  const { supabaseAdmin, supabase: supabaseAnon } = require('./config/supabase');
-  const sb = supabaseAdmin || supabaseAnon;
-  const results = {
-    client: supabaseAdmin ? 'admin (service key)' : 'anon (PAS de service key !)',
-    tests: {},
-  };
+// Non monté du tout en production : évite d'exposer les comptages de tables, les noms de
+// colonnes et si la clé de service admin est active.
+if (process.env.NODE_ENV !== 'production') {
+  app.get('/api/diagnostic', async (req, res) => {
+    const { supabaseAdmin, supabase: supabaseAnon } = require('./config/supabase');
+    const sb = supabaseAdmin || supabaseAnon;
+    const results = {
+      client: supabaseAdmin ? 'admin (service key)' : 'anon (PAS de service key !)',
+      tests: {},
+    };
 
-  // Test chaque table
-  const tables = ['quartiers', 'pharmacies', 'medicaments', 'stocks'];
-  for (const table of tables) {
+    // Test chaque table
+    const tables = ['quartiers', 'pharmacies', 'medicaments', 'stocks'];
+    for (const table of tables) {
+      try {
+        const { data, error, count } = await sb.from(table).select('*', { count: 'exact' }).limit(1);
+        results.tests[table] = error
+          ? { ok: false, error: error.message }
+          : { ok: true, count, sample: data && data[0] ? Object.keys(data[0]) : [] };
+      } catch (e) {
+        results.tests[table] = { ok: false, error: e.message };
+      }
+    }
+
+    // Test quartier → pharmacies flow
     try {
-      const { data, error, count } = await sb.from(table).select('*', { count: 'exact' }).limit(1);
-      results.tests[table] = error
-        ? { ok: false, error: error.message }
-        : { ok: true, count, sample: data && data[0] ? Object.keys(data[0]) : [] };
+      const { data: q } = await sb.from('quartiers').select('id, slug').limit(1).single();
+      if (q) {
+        const { data: p, error: pe, count } = await sb
+          .from('pharmacies')
+          .select('id, nom', { count: 'exact' })
+          .eq('quartier_id', q.id);
+        results.tests['quartier→pharmacies'] = pe
+          ? { ok: false, quartier: q.slug, error: pe.message }
+          : { ok: true, quartier: q.slug, pharmacies_count: count };
+      }
     } catch (e) {
-      results.tests[table] = { ok: false, error: e.message };
+      results.tests['quartier→pharmacies'] = { ok: false, error: e.message };
     }
-  }
 
-  // Test quartier → pharmacies flow
-  try {
-    const { data: q } = await sb.from('quartiers').select('id, slug').limit(1).single();
-    if (q) {
-      const { data: p, error: pe, count } = await sb
-        .from('pharmacies')
-        .select('id, nom', { count: 'exact' })
-        .eq('quartier_id', q.id);
-      results.tests['quartier→pharmacies'] = pe
-        ? { ok: false, quartier: q.slug, error: pe.message }
-        : { ok: true, quartier: q.slug, pharmacies_count: count };
-    }
-  } catch (e) {
-    results.tests['quartier→pharmacies'] = { ok: false, error: e.message };
-  }
-
-  res.json(results);
-});
+    res.json(results);
+  });
+}
 
 // ── 404 ───────────────────────────────────────────────
 app.use('/api/*', (req, res) => {
