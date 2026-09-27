@@ -3050,16 +3050,19 @@
         }
 
         function showNearbyGarde() {
-            showResultsPanel(t('geo_nearby_title'));
+            showResultsPanel(currentLang === 'en' ? 'On-duty pharmacies near you' : 'Pharmacies de garde près de vous');
             var list = document.getElementById('resultsList');
 
             list.innerHTML = '<div style="text-align:center;padding:40px">' +
                 '<div class="spinner"></div>' +
-                '<div style="margin-top:16px;font-size:14px;color:#555">' + t('geo_requesting') + '</div>' +
+                '<div style="margin-top:16px;font-size:14px;color:#555">' +
+                    (currentLang === 'en' ? 'Locating you...' : 'Localisation en cours...') + '</div>' +
             '</div>';
 
             if (!navigator.geolocation) {
-                showGardeWithoutGeo(list, t('geo_error_unavailable'));
+                showGardeWithoutGeo(list, currentLang === 'en'
+                    ? 'Location unavailable. Showing all on-duty pharmacies.'
+                    : 'Localisation indisponible. Affichage de toutes les pharmacies de garde.');
                 return;
             }
 
@@ -3074,13 +3077,18 @@
                         // Refus de géolocalisation → afficher toutes les pharmacies de garde
                         list.innerHTML = '<div style="text-align:center;padding:30px">' +
                             '<div style="font-size:48px;margin-bottom:16px">📍</div>' +
-                            '<div style="font-size:15px;color:#dc3545;font-weight:600;margin-bottom:12px">' + t('geo_error_denied') + '</div>' +
+                            '<div style="font-size:15px;color:#dc3545;font-weight:600;margin-bottom:12px">' +
+                                (currentLang === 'en'
+                                    ? 'Location access denied. Please enable it in your browser settings.'
+                                    : 'Accès à la localisation refusé. Activez-la dans les paramètres de votre navigateur.') + '</div>' +
                         '</div>';
                         showGardeWithoutGeo(list, currentLang === 'en'
                             ? 'Location denied. Showing all on-duty pharmacies.'
                             : 'Localisation refusée. Affichage de toutes les pharmacies de garde.');
                     } else {
-                        showGardeWithoutGeo(list, t('geo_error_unavailable'));
+                        showGardeWithoutGeo(list, currentLang === 'en'
+                            ? 'Location unavailable. Showing all on-duty pharmacies.'
+                            : 'Localisation indisponible. Affichage de toutes les pharmacies de garde.');
                     }
                 },
                 { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
