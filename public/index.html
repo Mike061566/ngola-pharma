@@ -1189,12 +1189,17 @@
             }
 
             .header-buttons {
-                display: none;
+                margin-left: auto;
             }
 
+            .btn-login {
+                padding: 6px 10px;
+                font-size: 12px;
+                white-space: nowrap;
+            }
 
             .lang-toggle {
-                margin-left: auto;
+                margin-left: 8px;
             }
 
 
@@ -1597,25 +1602,26 @@
                 <div class="footer-section">
                     <h4>N'Gola Pharma</h4>
                     <ul>
-                        <li><a href="#" data-i18n="ft_about">À propos</a></li>
-                        <li><a href="#">Blog</a></li>
-                        <li><a href="#" data-i18n="ft_careers">Carrières</a></li>
+                        <li><a href="#" data-i18n="ft_about" onclick="event.preventDefault();NGolaApp.showFooterInfo('about')">À propos</a></li>
+                        <li><a href="#" data-i18n="ft_blog" onclick="event.preventDefault();NGolaApp.showFooterInfo('blog')">Blog</a></li>
+                        <li><a href="#" data-i18n="ft_careers" onclick="event.preventDefault();NGolaApp.showFooterInfo('careers')">Carrières</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
                     <h4 data-i18n="ft_support">Support</h4>
                     <ul>
-                        <li><a href="#" data-i18n="ft_help">Aide</a></li>
-                        <li><a href="#">Contact</a></li>
-                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#" data-i18n="ft_help" onclick="event.preventDefault();NGolaApp.showFooterInfo('help')">Aide</a></li>
+                        <!-- Adresse de support à confirmer par N'Gola Pharma -->
+                        <li><a href="mailto:support@ngola-pharma.com" data-i18n="ft_contact">Contact</a></li>
+                        <li><a href="#" data-i18n="ft_faq" onclick="event.preventDefault();NGolaApp.showFooterInfo('faq')">FAQ</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
                     <h4 data-i18n="ft_legal">Légal</h4>
                     <ul>
-                        <li><a href="#" data-i18n="ft_terms">Conditions</a></li>
-                        <li><a href="#" data-i18n="ft_privacy">Confidentialité</a></li>
-                        <li><a href="#">Cookies</a></li>
+                        <li><a href="#" data-i18n="ft_terms" onclick="event.preventDefault();NGolaApp.showFooterInfo('terms')">Conditions</a></li>
+                        <li><a href="#" data-i18n="ft_privacy" onclick="event.preventDefault();NGolaApp.showFooterInfo('privacy')">Confidentialité</a></li>
+                        <li><a href="#" data-i18n="ft_cookies" onclick="event.preventDefault();NGolaApp.showFooterInfo('cookies')">Cookies</a></li>
                     </ul>
                 </div>
             </div>
@@ -1713,6 +1719,10 @@
                 ft_help: "Help",
                 ft_terms: "Terms",
                 ft_privacy: "Privacy",
+                ft_blog: "Blog",
+                ft_contact: "Contact",
+                ft_faq: "FAQ",
+                ft_cookies: "Cookies",
                 ft_copy: "N\'Gola Pharma © 2026 • Yaoundé, Cameroon",
                 ft_slogan: "Accessible health • Transparent prices • Quality service"
             },
@@ -1792,6 +1802,10 @@
                 ft_help: "Aide",
                 ft_terms: "Conditions",
                 ft_privacy: "Confidentialité",
+                ft_blog: "Blog",
+                ft_contact: "Contact",
+                ft_faq: "FAQ",
+                ft_cookies: "Cookies",
                 ft_copy: "N\'Gola Pharma © 2026 • Yaoundé, Cameroun",
                 ft_slogan: "Santé accessible • Prix transparents • Service de qualité"
             }
@@ -1890,6 +1904,21 @@
                 return esc(nom);
             }
             return esc(nom || '') + ' ' + esc(dosage);
+        }
+
+        // Insensible aux accents et à la casse : "Metronidazole" doit
+        // retrouver "Métronidazole", "antibiotique" doit retrouver la
+        // catégorie "Antibiotique".
+        function normalizeText(str) {
+            return (str || '').toString()
+                .normalize('NFD').replace(/[̀-ͯ]/g, '')
+                .toLowerCase();
+        }
+
+        function medMatchesQuery(m, normalizedQuery) {
+            return [m.nom, m.nom_commercial, m.dci, m.categorie].some(function(field) {
+                return normalizeText(field).indexOf(normalizedQuery) !== -1;
+            });
         }
 
         function timeAgo(dateStr) {
@@ -2111,25 +2140,29 @@
         function liveSearch(q) {
             var dropdown = document.getElementById('searchDropdown');
             var pattern = '%' + q + '%';
+            var nq = normalizeText(q);
 
             Promise.all([
-                _sb.from('medicaments').select('*').or('nom.ilike.' + pattern + ',dci.ilike.' + pattern).limit(4),
-                _sb.from('v_pharmacies').select('*').ilike('nom', pattern).limit(3),
-                _sb.from('v_meilleurs_prix').select('*').ilike('medicament_nom', pattern)
+                _sb.from('medicaments').select('*'),
+                _sb.from('v_pharmacies').select('*').ilike('nom', pattern).limit(3)
             ]).then(function(results) {
-                var meds = results[0].data || [];
+                var meds = (results[0].data || []).filter(function(m) { return medMatchesQuery(m, nq); }).slice(0, 4);
                 var pharmas = results[1].data || [];
-                var prices = results[2].data || [];
 
-                var priceMap = {};
-                prices.forEach(function(p) { priceMap[p.medicament_id] = p; });
-                meds.forEach(function(m) {
-                    if (priceMap[m.id]) {
-                        m._bestPrice = priceMap[m.id].prix_fcfa;
-                        m._bestPharm = priceMap[m.id].pharmacie_nom;
-                    }
+                if (meds.length === 0) { renderDropdown(meds, pharmas, q); return; }
+
+                var medIds = meds.map(function(m) { return m.id; });
+                _sb.from('v_meilleurs_prix').select('*').in('medicament_id', medIds).then(function(priceRes) {
+                    var priceMap = {};
+                    (priceRes.data || []).forEach(function(p) { priceMap[p.medicament_id] = p; });
+                    meds.forEach(function(m) {
+                        if (priceMap[m.id]) {
+                            m._bestPrice = priceMap[m.id].prix_fcfa;
+                            m._bestPharm = priceMap[m.id].pharmacie_nom;
+                        }
+                    });
+                    renderDropdown(meds, pharmas, q);
                 });
-                renderDropdown(meds, pharmas, q);
             });
         }
 
@@ -2194,11 +2227,12 @@
             list.innerHTML = '<div style="text-align:center;padding:40px"><div class="spinner"></div></div>';
 
             var pattern = '%' + q + '%';
+            var nq = normalizeText(q);
             Promise.all([
-                _sb.from('medicaments').select('*').or('nom.ilike.' + pattern + ',dci.ilike.' + pattern).limit(20),
+                _sb.from('medicaments').select('*'),
                 _sb.from('v_pharmacies').select('*').or('nom.ilike.' + pattern + ',adresse.ilike.' + pattern).limit(20)
             ]).then(function(results) {
-                var meds = results[0].data || [];
+                var meds = (results[0].data || []).filter(function(m) { return medMatchesQuery(m, nq); }).slice(0, 20);
                 var pharmas = results[1].data || [];
                 var total = meds.length + pharmas.length;
 
@@ -2774,6 +2808,141 @@
             document.body.style.overflow = '';
         }
 
+        // ── Footer info (À propos / Support / Légal) ─────────
+        var SUPPORT_EMAIL = "support@ngola-pharma.com";
+
+        var FOOTER_INFO = {
+            about: {
+                fr: {
+                    title: "À propos de N'Gola Pharma",
+                    body: "<p>N'Gola Pharma recense les pharmacies et officines dûment enregistrées auprès de l'Ordre des Pharmaciens du Cameroun à Yaoundé. La plateforme permet de vérifier en temps réel la disponibilité des médicaments et de comparer les prix pratiqués, pour faciliter l'accès aux soins.</p>" +
+                        "<p>N'Gola Pharma n'est pas elle-même une pharmacie et ne vend aucun médicament : les informations de stock et de prix sont communiquées par les pharmacies référencées et peuvent varier.</p>"
+                },
+                en: {
+                    title: "About N'Gola Pharma",
+                    body: "<p>N'Gola Pharma lists pharmacies duly registered with the Cameroon Order of Pharmacists in Yaoundé. The platform lets you check real-time medication availability and compare prices, making healthcare easier to access.</p>" +
+                        "<p>N'Gola Pharma is not itself a pharmacy and does not sell medication: stock and price information is provided by the listed pharmacies and may vary.</p>"
+                }
+            },
+            blog: {
+                fr: {
+                    title: "Blog — Bientôt disponible",
+                    body: "<p>Le blog N'Gola Pharma est en préparation. Vous y retrouverez prochainement des conseils santé, l'actualité des pharmacies de garde et les bonnes pratiques d'usage des médicaments à Yaoundé.</p>"
+                },
+                en: {
+                    title: "Blog — Coming soon",
+                    body: "<p>The N'Gola Pharma blog is in preparation. It will soon feature health tips, on-duty pharmacy news, and best practices for medication use in Yaoundé.</p>"
+                }
+            },
+            careers: {
+                fr: {
+                    title: "Carrières",
+                    body: "<p>Aucun poste n'est ouvert pour le moment. Pharmacien(ne), développeur(se) ou passionné(e) de santé numérique ? Envoyez une candidature spontanée à <a href=\"mailto:" + SUPPORT_EMAIL + "\">" + SUPPORT_EMAIL + "</a> (objet : Candidature) — nous revenons vers vous dès qu'une opportunité correspond à votre profil.</p>"
+                },
+                en: {
+                    title: "Careers",
+                    body: "<p>No positions are currently open. Pharmacist, developer, or passionate about digital health? Send an unsolicited application to <a href=\"mailto:" + SUPPORT_EMAIL + "\">" + SUPPORT_EMAIL + "</a> (subject: Application) — we'll reach out as soon as an opportunity matches your profile.</p>"
+                }
+            },
+            help: {
+                fr: {
+                    title: "Aide",
+                    body: "<ul style=\"margin:0;padding-left:18px;font-size:14px;color:#555;line-height:1.7\">" +
+                        "<li>Recherchez un médicament par son nom, sa marque ou sa molécule (DCI) dans la barre de recherche.</li>" +
+                        "<li>Utilisez « Pharmacies de garde près de moi » pour trouver rapidement une pharmacie ouverte autour de vous.</li>" +
+                        "<li>Comparez les prix affichés par pharmacie et vérifiez la fraîcheur des données.</li>" +
+                        "<li>Si un médicament est en rupture, activez une alerte pour être prévenu(e) dès qu'il redevient disponible.</li>" +
+                        "</ul><p style=\"margin-top:12px;font-size:14px;color:#555\">Besoin d'aide supplémentaire ? Écrivez-nous à <a href=\"mailto:" + SUPPORT_EMAIL + "\">" + SUPPORT_EMAIL + "</a>.</p>"
+                },
+                en: {
+                    title: "Help",
+                    body: "<ul style=\"margin:0;padding-left:18px;font-size:14px;color:#555;line-height:1.7\">" +
+                        "<li>Search for a medication by name, brand, or active ingredient (DCI) in the search bar.</li>" +
+                        "<li>Use \"On-duty pharmacies near me\" to quickly find an open pharmacy around you.</li>" +
+                        "<li>Compare prices shown per pharmacy and check how recent the data is.</li>" +
+                        "<li>If a medication is out of stock, set up an alert to be notified when it's available again.</li>" +
+                        "</ul><p style=\"margin-top:12px;font-size:14px;color:#555\">Need more help? Email us at <a href=\"mailto:" + SUPPORT_EMAIL + "\">" + SUPPORT_EMAIL + "</a>.</p>"
+                }
+            },
+            faq: {
+                fr: {
+                    title: "Questions fréquentes",
+                    body: "<p><strong>Les prix affichés sont-ils garantis ?</strong><br>Non. Les prix sont communiqués par les pharmacies et peuvent changer entre deux mises à jour. Confirmez le prix par téléphone avant de vous déplacer.</p>" +
+                        "<p><strong>Comment savoir si une pharmacie est de garde ?</strong><br>Utilisez « Pharmacies de garde près de moi » sur la page d'accueil : la liste s'affiche automatiquement selon votre position.</p>" +
+                        "<p><strong>Comment signaler une erreur (stock, prix, coordonnées) ?</strong><br>Écrivez à <a href=\"mailto:" + SUPPORT_EMAIL + "\">" + SUPPORT_EMAIL + "</a> en précisant la pharmacie et le médicament concernés.</p>" +
+                        "<p><strong>N'Gola Pharma vend-il des médicaments en ligne ?</strong><br>Non. La plateforme oriente uniquement vers des pharmacies physiques enregistrées ; aucune vente ni livraison n'est effectuée par N'Gola Pharma.</p>"
+                },
+                en: {
+                    title: "Frequently asked questions",
+                    body: "<p><strong>Are the displayed prices guaranteed?</strong><br>No. Prices are provided by pharmacies and may change between updates. Confirm the price by phone before traveling.</p>" +
+                        "<p><strong>How do I know if a pharmacy is on duty?</strong><br>Use \"On-duty pharmacies near me\" on the homepage: the list is shown automatically based on your location.</p>" +
+                        "<p><strong>How do I report an error (stock, price, details)?</strong><br>Email <a href=\"mailto:" + SUPPORT_EMAIL + "\">" + SUPPORT_EMAIL + "</a> naming the pharmacy and medication involved.</p>" +
+                        "<p><strong>Does N'Gola Pharma sell medication online?</strong><br>No. The platform only directs you to registered physical pharmacies; N'Gola Pharma does not sell or deliver medication.</p>"
+                }
+            },
+            terms: {
+                fr: {
+                    title: "Conditions d'utilisation",
+                    body: "<p>En utilisant N'Gola Pharma, vous reconnaissez que la plateforme est un service d'information et de mise en relation : elle recense des pharmacies dûment enregistrées auprès de l'Ordre des Pharmaciens du Cameroun et affiche des informations de disponibilité et de prix communiquées par ces pharmacies.</p>" +
+                        "<p>Ces informations sont fournies à titre indicatif et peuvent évoluer sans préavis. N'Gola Pharma ne vend, ne stocke ni ne livre aucun médicament et n'intervient pas dans la transaction entre l'utilisateur et la pharmacie.</p>" +
+                        "<p>Le contenu du site ne constitue pas un avis médical : pour toute question de santé, consultez un professionnel de santé qualifié.</p>" +
+                        "<p>L'utilisation du site implique l'acceptation des présentes conditions, qui peuvent être mises à jour ; la version en vigueur est celle publiée sur cette page.</p>"
+                },
+                en: {
+                    title: "Terms of Use",
+                    body: "<p>By using N'Gola Pharma, you acknowledge that the platform is an information and referral service: it lists pharmacies duly registered with the Cameroon Order of Pharmacists and displays availability and price information provided by those pharmacies.</p>" +
+                        "<p>This information is provided for guidance only and may change without notice. N'Gola Pharma does not sell, store, or deliver any medication and is not party to the transaction between the user and the pharmacy.</p>" +
+                        "<p>The site's content is not medical advice: for any health question, consult a qualified healthcare professional.</p>" +
+                        "<p>Using the site implies acceptance of these terms, which may be updated; the version in force is the one published on this page.</p>"
+                }
+            },
+            privacy: {
+                fr: {
+                    title: "Politique de confidentialité",
+                    body: "<p>N'Gola Pharma collecte uniquement les données nécessaires au fonctionnement du service :</p>" +
+                        "<ul style=\"margin:0;padding-left:18px;font-size:14px;color:#555;line-height:1.7\">" +
+                        "<li>les termes de recherche saisis (médicament, quartier, pharmacie) ;</li>" +
+                        "<li>votre position géographique, uniquement si vous l'autorisez, pour afficher les pharmacies les plus proches ;</li>" +
+                        "<li>un email, un numéro de téléphone ou WhatsApp, uniquement si vous créez une alerte de disponibilité, afin de vous notifier.</li>" +
+                        "</ul>" +
+                        "<p style=\"margin-top:12px\">Ces données ne sont ni vendues ni partagées avec des tiers à des fins publicitaires ; elles servent uniquement à fournir et améliorer le service.</p>" +
+                        "<p>Vous pouvez demander l'accès, la correction ou la suppression de vos données en écrivant à <a href=\"mailto:" + SUPPORT_EMAIL + "\">" + SUPPORT_EMAIL + "</a>.</p>"
+                },
+                en: {
+                    title: "Privacy Policy",
+                    body: "<p>N'Gola Pharma only collects data necessary to operate the service:</p>" +
+                        "<ul style=\"margin:0;padding-left:18px;font-size:14px;color:#555;line-height:1.7\">" +
+                        "<li>search terms you enter (medication, neighborhood, pharmacy);</li>" +
+                        "<li>your location, only if you allow it, to show the nearest pharmacies;</li>" +
+                        "<li>an email, phone number, or WhatsApp number, only if you set up an availability alert, so we can notify you.</li>" +
+                        "</ul>" +
+                        "<p style=\"margin-top:12px\">This data is never sold or shared with third parties for advertising purposes; it is used only to provide and improve the service.</p>" +
+                        "<p>You may request access to, correction of, or deletion of your data by writing to <a href=\"mailto:" + SUPPORT_EMAIL + "\">" + SUPPORT_EMAIL + "</a>.</p>"
+                }
+            },
+            cookies: {
+                fr: {
+                    title: "Cookies",
+                    body: "<p>N'Gola Pharma n'utilise actuellement aucun cookie publicitaire ni traceur tiers.</p>" +
+                        "<p>Le site s'appuie uniquement sur des fonctionnalités techniques du navigateur (par exemple la géolocalisation, si vous l'autorisez) nécessaires à certaines fonctionnalités, comme la recherche de pharmacies de garde à proximité.</p>" +
+                        "<p>Cette page sera mise à jour si la politique en matière de cookies venait à évoluer.</p>"
+                },
+                en: {
+                    title: "Cookies",
+                    body: "<p>N'Gola Pharma currently does not use any advertising cookies or third-party trackers.</p>" +
+                        "<p>The site only relies on technical browser features (such as geolocation, if you allow it) needed for certain features, like finding nearby on-duty pharmacies.</p>" +
+                        "<p>This page will be updated if the cookie policy changes.</p>"
+                }
+            }
+        };
+
+        function showFooterInfo(key) {
+            var info = FOOTER_INFO[key];
+            if (!info) return;
+            var lang = currentLang === 'en' ? info.en : info.fr;
+            openModal('<div class="modal-title">' + lang.title + '</div><div class="modal-section">' + lang.body + '</div>');
+        }
+
         // ── Dynamic data on load ────────────────────────────
         function loadDynamicData() {
             // Compter les pharmacies de garde
@@ -3057,7 +3226,8 @@
             fullSearch: fullSearch,
             submitAlert: submitStockAlert,
             showInlineAlert: showInlineAlertForm,
-            switchAlertChannel: switchAlertChannel
+            switchAlertChannel: switchAlertChannel,
+            showFooterInfo: showFooterInfo
         };
     })();
     </script>
