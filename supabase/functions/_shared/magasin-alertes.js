@@ -84,6 +84,68 @@ export function creerMagasinAlertes(sb) {
     async marquerRelance(envoiId) {
       ok(await sb.from('envois_alerte').update({ relance_sms_le: new Date().toISOString() }).eq('id', envoiId), 'marquerRelance');
     },
+    // ── Réponses des pharmacies (PR 5) ──
+    /** Enregistre une réponse (SQL atomique et idempotent) ; renvoie la ligne { resultat, repondu_le, reponse, prix_fcfa, ... }. */
+    async enregistrerReponse(envoiId, reponse, prix, canal, utilisateur) {
+      const d = ok(await sb.rpc('enregistrer_reponse_alerte', { p_envoi_id: envoiId, p_reponse: reponse, p_prix: prix, p_canal: canal, p_utilisateur: utilisateur }), 'enregistrerReponse');
+      return Array.isArray(d) ? d[0] : d;
+    },
+    async trouverEnvoiCourt(pharmacieId, court) {
+      return ok(await sb.rpc('trouver_envoi_court', { p_pharmacie_id: pharmacieId, p_court: court }), 'trouverEnvoiCourt') || null;
+    },
+    async consommerJeton(hash) {
+      const d = ok(await sb.rpc('consommer_jeton_telegram', { p_hash: hash }), 'consommerJeton');
+      return (Array.isArray(d) ? d[0] : d) || null;
+    },
+    async lierContactTelegram(contactId, chatId) {
+      const d = ok(await sb.rpc('lier_contact_telegram', { p_contact_id: contactId, p_chat_id: chatId }), 'lierContactTelegram');
+      return Array.isArray(d) ? d[0] : d;
+    },
+    async desabonnerTelegram(chatId) {
+      return ok(await sb.rpc('desabonner_telegram', { p_chat_id: chatId }), 'desabonnerTelegram') || 0;
+    },
+    async contactsParChat(chatId) {
+      return ok(await sb.from('contacts_pharmacie').select('id, pharmacie_id, verifie_le, desabonne_le, bloque_le, est_contact_demo')
+        .eq('canal', 'telegram').eq('adresse', chatId), 'contactsParChat') || [];
+    },
+    /** Patient : enregistre le chat (chiffré) et le consentement ; l'empreinte HMAC sert au /stop. */
+    async lierPatientTelegram(alerteId, chatChiffre, empreinte) {
+      ok(await sb.from('alertes_routage').update({ canal_patient: 'telegram', contact_patient_chiffre: chatChiffre, empreinte_telegram: empreinte }).eq('id', alerteId), 'lierPatientTelegram');
+      ok(await sb.from('alertes_routage').update({ consentement_le: new Date().toISOString() }).eq('id', alerteId).is('consentement_le', null), 'consentementPatient');
+    },
+    async retirerPatientTelegram(empreinte) {
+      ok(await sb.from('alertes_routage').update({ contact_patient_chiffre: null, canal_patient: 'none' }).eq('empreinte_telegram', empreinte), 'retirerPatientTelegram');
+    },
+    /** Messages Telegram déjà envoyés pour un envoi (un par agent de la pharmacie), pour retirer leurs boutons. */
+    async messagesTelegramEnvoi(envoiId) {
+      return ok(await sb.from('notifications_outbox').select('contact_id, id_discussion_fournisseur, id_message_fournisseur')
+        .eq('cle_base', envoiId).eq('canal', 'telegram').eq('modele', 'alerte_demande').in('statut', ['sent', 'delivered', 'read'])
+        .not('id_message_fournisseur', 'is', null), 'messagesTelegramEnvoi') || [];
+    },
+    /** Lien /r/<code> : l'envoi, son alerte (sans donnée patient), la réponse éventuelle et le prix du stock. */
+    async envoiParCode(code) {
+      const e = ok(await sb.from('envois_alerte').select('id, statut, pharmacie_id, pharmacies(nom), alertes_routage(statut, expire_le, urgence, medicament_id, medicaments(nom, dosage, forme, ordonnance), quartiers(nom)), reponses_alerte(reponse, prix_fcfa, repondu_le)')
+        .eq('code_reponse', code).maybeSingle(), 'envoiParCode');
+      if (!e) return null;
+      const a = e.alertes_routage || {}, r = Array.isArray(e.reponses_alerte) ? e.reponses_alerte[0] : e.reponses_alerte;
+      let prix = null;
+      if (a.medicament_id) {
+        const st = ok(await sb.from('stocks').select('prix_fcfa, statut_stock').eq('pharmacie_id', e.pharmacie_id).eq('medicament_id', a.medicament_id).maybeSingle(), 'prixStockLien');
+        if (st && st.statut_stock !== 'rupture' && st.prix_fcfa > 0) prix = st.prix_fcfa;
+      }
+      return { id: e.id, statut: e.statut, pharmacie_nom: e.pharmacies?.nom ?? '', alerte_statut: a.statut, expire_le: a.expire_le, urgence: a.urgence,
+        medicament: a.medicaments ? `${a.medicaments.nom}${a.medicaments.dosage ? ' ' + a.medicaments.dosage : ''}` : null, forme: a.medicaments?.forme ?? null,
+        sur_ordonnance: a.medicaments?.ordonnance === true, quartier: a.quartiers?.nom ?? null, prix_stock: prix,
+        reponse: r?.reponse ?? null, prix_repondu: r?.prix_fcfa ?? null, repondu_le: r?.repondu_le ?? null };
+    },
+    // ── Test d'envoi (Espace Pro) ──
+    async lireContactPharmacie(id) {
+      return ok(await sb.from('contacts_pharmacie').select('id, pharmacie_id, canal, adresse, verifie_le, desabonne_le, bloque_le, est_contact_demo').eq('id', id).maybeSingle(), 'lireContactPharmacie');
+    },
+    async lireProfil(userId) {
+      return ok(await sb.from('profils').select('id, role, pharmacie_id').eq('id', userId).maybeSingle(), 'lireProfil');
+    },
+
     /** Pharmacies ayant répondu « disponible » (affichage public du suivi) : nom, prix, quartier, téléphone. */
     async pharmaciesDisponibles(alerteId) {
       const pos = await this.reponsesPositives(alerteId);

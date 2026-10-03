@@ -198,13 +198,13 @@ test('suivi : format d\'identifiant, 404, état sans donnée patient ni pharmaci
   assert.doesNotMatch(JSON.stringify(r.corps), /dead|empreinte|contact|"h"/);
 });
 
-test('suivi : pharmacies affichées seulement quand répondu ET patient notifié', async () => {
+test('suivi : pharmacies affichées seulement quand une pharmacie a répondu (statut answered)', async () => {
   const h = horloge(); const m = magasinAlertesMemoire({ horloge: h });
   const base = { id: 'a1', id_public: 'NG-ABCDEFGH', statut: 'answered', urgence: 'normal', medicaments: null, quartiers: null };
   m.pharmaciesDisponibles = async () => [{ nom: 'P', prix_fcfa: 1000 }];
-  m.etat.suivis = { 'NG-ABCDEFGH': { ...base, patient_notifie_le: null } };
+  m.etat.suivis = { 'NG-ABCDEFGH': { ...base, statut: 'routing', patient_notifie_le: null } };
   assert.equal((await traiterSuivi('NG-ABCDEFGH', { magasin: m })).corps.pharmacies, undefined);
-  m.etat.suivis = { 'NG-ABCDEFGH': { ...base, patient_notifie_le: 'x' } };
+  m.etat.suivis = { 'NG-ABCDEFGH': { ...base, patient_notifie_le: null } };
   assert.deepEqual((await traiterSuivi('NG-ABCDEFGH', { magasin: m })).corps.pharmacies, [{ nom: 'P', prix_fcfa: 1000 }]);
 });
 

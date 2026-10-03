@@ -1,7 +1,6 @@
 // Suivi public d'une alerte (SPEC 2 §9, §3 : page /alerte/:publicId). Renvoie l'état et le médicament demandé ;
-// n'expose AUCUNE donnée patient (contact, empreintes, position) et AUCUNE donnée de pharmacie tant que le message
-// « disponible » n'a pas été envoyé au patient (`patient_notifie_le`). Les pharmacies qui ont répondu sont lues par
-// `magasin.pharmaciesDisponibles` (PR 5 : réponses) — ici seulement leur affichage, jamais un identifiant interne.
+// n'expose AUCUNE donnée patient (contact, empreintes, position) et AUCUNE donnée de pharmacie tant qu'aucune pharmacie n'a
+// répondu « disponible ». Ensuite : nom, prix, quartier et téléphone des pharmacies (jamais d'identifiant interne).
 const FORMAT_ID = /^NG-[0-9A-HJKMNP-TV-Z]{8}$/;
 const LIBELLES = {
   new: 'Demande enregistrée', routing: 'Recherche en cours auprès des pharmacies', escalated: 'Recherche en cours, notre équipe suit votre demande',
@@ -22,7 +21,7 @@ export async function traiterSuivi(idPublic, { magasin }) {
     garde_url: '/garde',
   };
   if (a.statut === 'answered' || a.statut === 'fulfilled') {
-    if (a.patient_notifie_le && magasin.pharmaciesDisponibles) corps.pharmacies = await magasin.pharmaciesDisponibles(a.id);
+    if (magasin.pharmaciesDisponibles) corps.pharmacies = await magasin.pharmaciesDisponibles(a.id);
   }
   return { status: 200, corps };
 }

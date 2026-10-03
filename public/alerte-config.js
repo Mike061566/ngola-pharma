@@ -5,5 +5,7 @@
 window.NGOLA_ALERTE = {
   apiBase: 'https://ueycknsdwthmtmpzptqp.supabase.co',
   anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVleWNrbnNkd3RobXRtcHpwdHFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkxNjM4MzEsImV4cCI6MjEwNDczOTgzMX0.MHLnZVRgT7PbVtDfam4TThIuYwr6wCZCghhfFddgyig',
-  turnstileSiteKey: ''
+  turnstileSiteKey: '',
+  // Nom d'utilisateur PUBLIC du bot Telegram (sans @), pour le lien d'activation de l'Espace Pro. Vide = activation Telegram indisponible.
+  telegramBot: ''
 };

@@ -8,6 +8,7 @@ column|alertes_routage.cree_le|timestamp with time zone NOT NULL DEFAULT now()
 column|alertes_routage.debut_routage_le|timestamp with time zone
 column|alertes_routage.empreinte_ip|text
 column|alertes_routage.empreinte_patient|text NOT NULL
+column|alertes_routage.empreinte_telegram|text
 column|alertes_routage.escalade_le|timestamp with time zone
 column|alertes_routage.expire_le|timestamp with time zone NOT NULL
 column|alertes_routage.id_public|text NOT NULL
@@ -245,7 +246,11 @@ column|vue_alertes_pharmacie.expire_le|timestamp with time zone
 column|vue_alertes_pharmacie.medicament_dosage|text
 column|vue_alertes_pharmacie.medicament_forme|text
 column|vue_alertes_pharmacie.medicament_nom|text
+column|vue_alertes_pharmacie.prix_repondu|integer
+column|vue_alertes_pharmacie.prix_stock|integer
 column|vue_alertes_pharmacie.quartier|text
+column|vue_alertes_pharmacie.repondu_le|timestamp with time zone
+column|vue_alertes_pharmacie.reponse|text
 column|vue_alertes_pharmacie.statut_envoi|text
 column|vue_alertes_pharmacie.sur_ordonnance|boolean
 column|vue_alertes_pharmacie.urgence|text
@@ -338,15 +343,22 @@ enum|statut_pharmacie|non_verifie,verifie,partenaire,suspendu
 extension|pg_trgm|
 extension|plpgsql|
 extension|postgis|
+function|activer_telegram_pharmacie(p_consentement boolean)|returns=TABLE(contact_id uuid, jeton text, expire_le timestamp with time zone) lang=plpgsql security=definer volatility=v config=search_path=public body=e8ba00358ac334276de9f886018b9e8d
+function|ajouter_contact_sms(p_numero text, p_consentement boolean)|returns=uuid lang=plpgsql security=definer volatility=v config=search_path=public body=9df2474191d8014a8201bb7ac1938160
 function|alertes_stock_avant_insertion()|returns=trigger lang=plpgsql security=definer volatility=v config=search_path=public, pg_temp body=c4916c85ef69ea6f04a84533c0a6e452
 function|auth_pharmacie_id()|returns=uuid lang=sql security=definer volatility=s config=search_path=public body=b66d1a570fd45eb7602cadb4ed4add95
 function|auth_role()|returns=text lang=sql security=definer volatility=s config=search_path=public body=595b2f0025ac8ab39e052499fb9a94bd
+function|changer_abonnement_contact(p_contact_id uuid, p_abonne boolean)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=bdd6dfc891a0274ee913f0385b0d7c28
 function|compter_messages_payants_du_jour()|returns=integer lang=sql security=definer volatility=s config=search_path=public body=db1d1d07479e32991af04a4f73f19a54
 function|conditions_passage_production()|returns=TABLE(cle text, ok boolean, detail text) lang=plpgsql security=definer volatility=s config=search_path=public body=06dc9c1397f0c371f7ee7981cd9b0abb
 function|config_routage_interdit_suppression_mode()|returns=trigger lang=plpgsql security=invoker volatility=v config=- body=b6a198003ad84536c0c6f521eab9646d
 function|config_routage_verrou()|returns=trigger lang=plpgsql security=definer volatility=v config=search_path=public body=88c8c4e14d738e17bd39a820d50686ab
+function|consommer_jeton_telegram(p_hash text)|returns=TABLE(objet text, ref_id uuid) lang=sql security=definer volatility=v config=search_path=public body=3fe77b3f33283e2e9ddd7fedb4a0cea0
 function|creer_alerte_routage(p_id_public text, p_medicament_id uuid, p_requete_brute text, p_quartier_id uuid, p_lat numeric, p_lng numeric, p_urgence text, p_canal_patient text, p_contact_chiffre bytea, p_empreinte_patient text, p_empreinte_ip text, p_consentement boolean, p_expire_le timestamp with time zone)|returns=TABLE(alerte_id uuid, id_public text, statut text, raison_revue text, fusionnee boolean, refus text) lang=plpgsql security=definer volatility=v config=search_path=public body=5652bacce8c8224d01cd73729fc93a43
+function|desabonner_telegram(p_chat_id text)|returns=integer lang=sql security=definer volatility=v config=search_path=public body=c56ea7f564f80a36ace9bb83eb3d184e
 function|donnees_routage_pharmacies(p_medicament_id uuid)|returns=jsonb lang=sql security=definer volatility=s config=search_path=public body=efc05d768c4ce76b92d094d8588ac9bb
+function|enregistrer_reponse_alerte(p_envoi_id uuid, p_reponse text, p_prix integer, p_canal text, p_utilisateur uuid)|returns=TABLE(resultat text, alerte_id uuid, pharmacie_id uuid, medicament_id uuid, reponse text, prix_fcfa integer, repondu_le timestamp with time zone, stock_mis_a_jour boolean) lang=plpgsql security=definer volatility=v config=search_path=public body=62b003da25bb42b6b9bc7e8cc9a10f4a
+function|lier_contact_telegram(p_contact_id uuid, p_chat_id text)|returns=TABLE(resultat text, pharmacie_id uuid, pharmacie_nom text, contact_id uuid, est_contact_demo boolean) lang=plpgsql security=definer volatility=v config=search_path=public body=0379ddc541afea560ade5291762d8b5d
 function|medicament_routable(p_medicament_id uuid)|returns=boolean lang=sql security=definer volatility=s config=search_path=public body=f1c2ddf515b3ea552fc113929f67ab2c
 function|medicaments_reset_validation()|returns=trigger lang=plpgsql security=invoker volatility=v config=search_path=public body=739bdce4d4d1bb13505464b67724cf42
 function|mode_application()|returns=text lang=sql security=definer volatility=s config=search_path=public body=f32182f71ed461de860d17fce85de9b0
@@ -354,8 +366,10 @@ function|pharmacie_eligible_routage(p_pharmacie_id uuid)|returns=boolean lang=sq
 function|pharmacies_proches(lat double precision, lng double precision, rayon_m integer)|returns=TABLE(id uuid, nom text, adresse text, latitude double precision, longitude double precision, distance_m double precision, est_de_garde boolean, statut statut_pharmacie, quartier_nom text) lang=sql security=invoker volatility=s config=- body=2a2c3f57ce6bec7c25f98daa6073e092
 function|protect_pharmacies_columns()|returns=trigger lang=plpgsql security=invoker volatility=v config=search_path=public body=9899877fc7960a268c09502f059f2970
 function|reclamer_notifications(p_limite integer, p_bail_s integer)|returns=SETOF notifications_outbox lang=sql security=definer volatility=v config=search_path=public body=44bebc010e5887dbd0e8078b5bd97cd0
+function|repondre_alerte(p_envoi_id uuid, p_reponse text, p_prix integer)|returns=TABLE(resultat text, reponse text, prix_fcfa integer, repondu_le timestamp with time zone) lang=plpgsql security=definer volatility=v config=search_path=public body=780569b736b12b41937c024b9f3eb34f
 function|stocks_sync_statut()|returns=trigger lang=plpgsql security=invoker volatility=v config=search_path=public body=b839f8ab8607feff3f86a0eda93a5fe1
 function|sync_coordinates()|returns=trigger lang=plpgsql security=invoker volatility=v config=- body=488332f208ac465159f3fc55493e1c67
+function|trouver_envoi_court(p_pharmacie_id uuid, p_court text)|returns=uuid lang=sql security=definer volatility=s config=search_path=public body=551a216936e72d0a0f601a25b3c2ed5a
 function|update_updated_at()|returns=trigger lang=plpgsql security=invoker volatility=v config=- body=a27bb088c067b7b77a9f0707b0048e40
 function|valider_classification(p_nom text, p_numero_ordre text, p_elements jsonb, p_document_ref text)|returns=uuid lang=plpgsql security=invoker volatility=v config=search_path=public body=faad0cc1c28b5f0fe49ff9b1e7a43999
 grant|alertes_stock.anon|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
@@ -399,6 +413,7 @@ index|alertes_routage.alertes_routage_pkey|CREATE UNIQUE INDEX alertes_routage_p
 index|alertes_routage.idx_alertes_routage_empreinte|CREATE INDEX idx_alertes_routage_empreinte ON public.alertes_routage USING btree (empreinte_patient, cree_le)
 index|alertes_routage.idx_alertes_routage_ip|CREATE INDEX idx_alertes_routage_ip ON public.alertes_routage USING btree (empreinte_ip, cree_le) WHERE (empreinte_ip IS NOT NULL)
 index|alertes_routage.idx_alertes_routage_statut|CREATE INDEX idx_alertes_routage_statut ON public.alertes_routage USING btree (statut, expire_le)
+index|alertes_routage.idx_alertes_routage_tg|CREATE INDEX idx_alertes_routage_tg ON public.alertes_routage USING btree (empreinte_telegram) WHERE (empreinte_telegram IS NOT NULL)
 index|alertes_stock.alertes_stock_pkey|CREATE UNIQUE INDEX alertes_stock_pkey ON public.alertes_stock USING btree (id)
 index|alertes_stock.idx_alertes_stock_active|CREATE INDEX idx_alertes_stock_active ON public.alertes_stock USING btree (active, created_at DESC)
 index|alertes_stock.idx_alertes_stock_email_recent|CREATE INDEX idx_alertes_stock_email_recent ON public.alertes_stock USING btree (lower(user_email), created_at DESC)
@@ -526,4 +541,4 @@ view|drug_catalog|a4b5c48998013b2e1ecb2ee6fe03860a
 view|stock_items|d5dc7dc5769f08e90b2d62619dcade2a
 view|v_meilleurs_prix|75a76791399937d609dc34ba20213d8e
 view|v_pharmacies|a5f32633298f0a74be76c9647c60d73c
-view|vue_alertes_pharmacie|5b09184f1e5aee662c5cc5f2b8bbf44a
+view|vue_alertes_pharmacie|c67b75c6160c32d871a2cba3ad9db282

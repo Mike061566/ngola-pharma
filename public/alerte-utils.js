@@ -73,6 +73,21 @@
     return m ? m[1] : null;
   }
 
+  /** /r/ABCDEFGH23 -> « ABCDEFGH23 » (code de réponse d'une pharmacie), ou null. */
+  function codeDepuisChemin(chemin) {
+    var m = /^\/r\/([0-9A-HJKMNP-TV-Z]{10})\/?$/.exec(String(chemin || ''));
+    return m ? m[1] : null;
+  }
+
+  /** Prix saisi (chaîne) -> entier FCFA > 0, ou null (vide) ; NaN si invalide. Espaces autorisés comme séparateurs de milliers. */
+  function analyserPrix(brut) {
+    var t = String(brut === null || brut === undefined ? '' : brut).replace(/[\s\u00a0]/g, '');
+    if (t === '') return null;
+    if (!/^\d{1,8}$/.test(t)) return NaN;
+    var n = parseInt(t, 10);
+    return n > 0 && n <= 10000000 ? n : NaN;
+  }
+
   /** Échappement pour insertion dans du HTML (toute donnée serveur affichée passe par ici). */
   function echapper(s) {
     return String(s === null || s === undefined ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -86,6 +101,6 @@
   }
 
   return { messageErreur: messageErreur, libelleStatut: libelleStatut, suiviTermine: suiviTermine, normaliserTelephone: normaliserTelephone,
-    validerFormulaire: validerFormulaire, construireCorps: construireCorps, idDepuisChemin: idDepuisChemin, echapper: echapper,
+    validerFormulaire: validerFormulaire, construireCorps: construireCorps, idDepuisChemin: idDepuisChemin, codeDepuisChemin: codeDepuisChemin, analyserPrix: analyserPrix, echapper: echapper,
     termeRecherche: termeRecherche };
 }));

@@ -111,3 +111,38 @@ describe('classification du catalogue (admin)', () => {
     expect(validationElements(courant, [])).toEqual([]);
   });
 });
+
+const { tempsMoyenReponse, masquerAdresse, statutContact, lienTelegram } = require('../public/pro-utils');
+
+describe('Alertes de l\'Espace Pro', () => {
+  test('tempsMoyenReponse : moyenne des lignes répondues, dates invalides ou négatives ignorées', () => {
+    const l = (env, rep, reponse = 'available') => ({ envoye_le: env, repondu_le: rep, reponse });
+    expect(tempsMoyenReponse([])).toEqual({ moyenneMin: null, n: 0 });
+    expect(tempsMoyenReponse(null)).toEqual({ moyenneMin: null, n: 0 });
+    expect(tempsMoyenReponse([l('2026-10-05T10:00:00Z', '2026-10-05T10:02:00Z'), l('2026-10-05T11:00:00Z', '2026-10-05T11:05:00Z', 'unavailable')]))
+      .toEqual({ moyenneMin: 3.5, n: 2 });
+    expect(tempsMoyenReponse([l('2026-10-05T10:00:00Z', null, null), l('x', 'y'), l('2026-10-05T10:05:00Z', '2026-10-05T10:00:00Z')])).toEqual({ moyenneMin: null, n: 0 });
+  });
+  test('masquerAdresse : jamais le numéro, l\'email ni le chat en clair', () => {
+    expect(masquerAdresse('sms', '+237699123456')).toBe('+237 ••• •• 56');
+    expect(masquerAdresse('sms', '+237699123456')).not.toMatch(/699123/);
+    expect(masquerAdresse('email', 'pharma@example.test')).toBe('p•••@example.test');
+    expect(masquerAdresse('telegram', '123456789')).toBe('••••789');
+    expect(masquerAdresse('telegram', 'en_attente:abc')).toBe('activation en cours');
+    expect(masquerAdresse('sms', '')).toBe('••••');
+  });
+  test('statutContact : bloqué > désabonné > en attente > actif', () => {
+    expect(statutContact({ canal: 'telegram', verifie_le: 'x', bloque_le: 'x', desabonne_le: 'x' }).cle).toBe('bloque');
+    expect(statutContact({ canal: 'sms', desabonne_le: 'x' }).cle).toBe('desabonne');
+    expect(statutContact({ canal: 'telegram', verifie_le: null }).cle).toBe('attente');
+    expect(statutContact({ canal: 'telegram', verifie_le: 'x' }).cle).toBe('actif');
+    expect(statutContact({ canal: 'sms' }).cle).toBe('actif');
+  });
+  test('lienTelegram : seulement un nom de bot et un jeton bien formés', () => {
+    expect(lienTelegram('NGolaBot', 'a'.repeat(64))).toBe('https://t.me/NGolaBot?start=' + 'a'.repeat(64));
+    expect(lienTelegram('', 'a'.repeat(64))).toBeNull();
+    expect(lienTelegram('bad bot', 'a'.repeat(64))).toBeNull();
+    expect(lienTelegram('NGolaBot', 'court')).toBeNull();
+    expect(lienTelegram('NGolaBot', 'a b'.repeat(10))).toBeNull();
+  });
+});

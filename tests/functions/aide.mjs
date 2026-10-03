@@ -99,3 +99,65 @@ export function magasinAlertesMemoire({ config = {}, alertes = [], pharmacies = 
   });
   return sortie;
 }
+
+// ── Extension : réponses des pharmacies, jetons, contacts Telegram (PR 5) ──
+export function ajouterReponsesMemoire(magasin, h) {
+  const etat = magasin.etat;
+  Object.assign(etat, { jetonsTg: new Map(), reponsesEnvoi: new Map(), appelsReponse: [], liensContact: [], patientsTg: [] });
+  const envoiParId = (id) => etat.envois.find((e) => e.id === id);
+  Object.assign(magasin, {
+    async consommerJeton(hash) {
+      const j = etat.jetonsTg.get(hash);
+      if (!j || j.utilise || new Date(j.expire_le) <= h.maintenant()) return null;
+      j.utilise = true; return { objet: j.objet, ref_id: j.ref_id };
+    },
+    async lierContactTelegram(contactId, chatId) {
+      const c = etat.contacts.find((x) => x.id === contactId);
+      if (!c) return { resultat: 'introuvable' };
+      const verifies = etat.contacts.filter((x) => x.pharmacie_id === c.pharmacie_id && x.canal === 'telegram' && x.verifie_le && !x.desabonne_le && x.id !== c.id);
+      if (verifies.length >= 3) return { resultat: 'limite_contacts', pharmacie_id: c.pharmacie_id };
+      Object.assign(c, { adresse: chatId, verifie_le: h.maintenant().toISOString() });
+      etat.liensContact.push(contactId);
+      return { resultat: 'active', pharmacie_id: c.pharmacie_id, pharmacie_nom: etat.pharmacies.find((p) => p.id === c.pharmacie_id)?.nom ?? 'Pharmacie', contact_id: c.id, est_contact_demo: c.est_contact_demo };
+    },
+    async desabonnerTelegram(chatId) {
+      const l = etat.contacts.filter((c) => c.canal === 'telegram' && c.adresse === chatId && !c.desabonne_le);
+      l.forEach((c) => { c.desabonne_le = h.maintenant().toISOString(); }); return l.length;
+    },
+    async contactsParChat(chatId) { return etat.contacts.filter((c) => c.canal === 'telegram' && c.adresse === chatId); },
+    async lierPatientTelegram(alerteId, chiffre, empreinte) {
+      const a = etat.alertes.find((x) => x.id === alerteId);
+      Object.assign(a, { canal_patient: 'telegram', contact_patient_chiffre: chiffre, empreinte_telegram: empreinte, consentement_le: a.consentement_le ?? h.maintenant().toISOString() });
+      etat.patientsTg.push(alerteId);
+    },
+    async retirerPatientTelegram(empreinte) {
+      etat.alertes.filter((a) => a.empreinte_telegram === empreinte).forEach((a) => { a.contact_patient_chiffre = null; a.canal_patient = 'none'; });
+    },
+    async trouverEnvoiCourt(pharmacieId, court) {
+      const l = etat.envois.filter((e) => e.pharmacie_id === pharmacieId && e.id.startsWith(`${court}-`));
+      return l.length === 1 ? l[0].id : null;
+    },
+    async enregistrerReponse(envoiId, reponse, prix, canal, utilisateur) {
+      etat.appelsReponse.push({ envoiId, reponse, prix, canal, utilisateur });
+      const e = envoiParId(envoiId);
+      if (!e) return { resultat: 'introuvable' };
+      const deja = etat.reponsesEnvoi.get(envoiId);
+      if (deja) return { resultat: 'deja_traitee', ...deja };
+      const a = etat.alertes.find((x) => x.id === e.alerte_id);
+      if (e.statut !== 'sent' || ['expired', 'cancelled', 'fulfilled'].includes(a?.statut) || new Date(a.expire_le) <= h.maintenant()) return { resultat: 'expiree' };
+      if (reponse === 'unavailable') prix = null;
+      if (prix !== null && prix !== undefined && (prix <= 0 || prix > 10000000)) return { resultat: 'prix_invalide' };
+      const r = { reponse, prix_fcfa: prix ?? null, repondu_le: h.maintenant().toISOString(), canal };
+      etat.reponsesEnvoi.set(envoiId, r); e.statut = 'responded';
+      return { resultat: 'enregistree', ...r };
+    },
+    async messagesTelegramEnvoi(envoiId) {
+      return etat.lignes.filter((l) => l.cle_base === envoiId && l.canal === 'telegram' && l.id_message_fournisseur)
+        .map((l) => ({ contact_id: l.contact_id, id_discussion_fournisseur: l.id_discussion_fournisseur, id_message_fournisseur: l.id_message_fournisseur }));
+    },
+    async envoiParCode(code) { return etat.liens?.[code] ?? null; },
+    async lireContactPharmacie(id) { return etat.contacts.find((c) => c.id === id) ?? null; },
+    async lireProfil(id) { return etat.profils?.[id] ?? null; },
+  });
+  return magasin;
+}

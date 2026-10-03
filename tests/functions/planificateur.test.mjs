@@ -229,11 +229,15 @@ test('mode démo accéléré : fenêtre et délais divisés par le facteur', asy
   assert.equal(t.outbox().filter((l) => l.modele.startsWith('reponse_patient')).length, 1);
 });
 
-test('patient Telegram sans chat_id (pas encore de /start) : aucun message, aucune erreur, suivi par la page', async () => {
+test('patient Telegram sans chat_id (pas encore de /start) : aucun message, pas « notifié » ; le message part dès la liaison', async () => {
   const t = await monter({ alertes: [alerteBase({ vague: 1, statut: 'routing', canal_patient: 'telegram', contact_patient_chiffre: null })] });
   t.etat.reponses.push(rep('p01', 2000, 0));
   minutes(t, 3); const r = await t.lancer();
-  assert.equal(r.erreurs, 0); assert.equal(t.outbox().length, 0); assert.ok(alerte(t).patient_notifie_le);
+  assert.equal(r.erreurs, 0); assert.equal(t.outbox().length, 0); assert.equal(alerte(t).patient_notifie_le, null);
+  alerte(t).contact_patient_chiffre = versBytea(await chiffrer(t.cle, '98765'));        // le patient fait /start
+  await t.lancer();
+  const msg = t.outbox().filter((l) => l.modele === 'reponse_patient');
+  assert.equal(msg.length, 1); assert.equal(msg[0].canal, 'telegram'); assert.ok(alerte(t).patient_notifie_le);
 });
 
 test('mode démo : le patient n\'est joignable en vrai que si son adresse est un contact de la liste blanche', async () => {

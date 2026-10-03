@@ -75,3 +75,19 @@ describe('divers', () => {
     ['new', 'routing', 'escalated', 'answered', 'needs_review'].forEach((s) => expect(U.suiviTermine(s)).toBe(false));
   });
 });
+
+describe('page de réponse /r/<code>', () => {
+  test('codeDepuisChemin : seulement 10 caractères Crockford', () => {
+    expect(U.codeDepuisChemin('/r/ABCDEFGH23')).toBe('ABCDEFGH23');
+    expect(U.codeDepuisChemin('/r/ABCDEFGH23/')).toBe('ABCDEFGH23');
+    for (const mauvais of ['/r/abcdefgh23', '/r/ABCDEFGHI3', '/r/ABC', '/r/ABCDEFGH234', '/r/../x', '/alerte/NG-ABCDEFGH', '/']) expect(U.codeDepuisChemin(mauvais)).toBeNull();
+  });
+  test('analyserPrix : entier FCFA > 0, vide = absent, le reste invalide', () => {
+    expect(U.analyserPrix('1 500')).toBe(1500);
+    expect(U.analyserPrix('1500')).toBe(1500);
+    expect(U.analyserPrix('')).toBeNull();
+    expect(U.analyserPrix('   ')).toBeNull();
+    for (const mauvais of ['0', '-5', '12,5', '12.5', 'abc', '1e3', '99999999', '100000000']) expect(U.analyserPrix(mauvais)).toBeNaN();
+    expect(U.analyserPrix('10000000')).toBe(10000000);
+  });
+});

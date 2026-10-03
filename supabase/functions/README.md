@@ -105,3 +105,41 @@ au plus), SMS de relance des alertes `urgent` (jamais `normal`). Idempotent : re
 - La file `needs_review` est l'ensemble des alertes de ce statut ; les actions admin (rattacher, transmettre, refuser) sont en PR 6.
 - Le captcha `mock` n'est accepté qu'en mode démo ; en production il faut `CAPTCHA_PROVIDER=turnstile`.
 - Planification : `supabase/ops/planifier_alertes.sql` (à exécuter à la main, après `planifier_outbox.sql`).
+
+## Réponses des pharmacies (PR 5)
+
+| Fichier | Rôle |
+|---|---|
+| `webhook-telegram/index.js` + `_shared/reponses.js` | Webhook du bot : boutons ✅/❌, `/start <jeton>`, `/stop`, `/aide`, fichiers refusés |
+| `repondre-lien/index.js` + `public/reponse.html` | Lien `/r/<code>` (SMS, email, « Préciser le prix ») : GET informations, POST réponse |
+| `tester-contact/index.js` + `_shared/test-contact.js` | Test d'envoi vers un contact de SA pharmacie (jeton de session du pharmacien) |
+| migration `20261008000000` | `enregistrer_reponse_alerte` (atomique, idempotent), `repondre_alerte`, activation Telegram, réglage des canaux |
+| `public/pro.html` (onglet Alertes) | Demandes en attente (prix pré-rempli), historique, temps moyen, canaux : Telegram (lien + QR), SMS, désabonnement, test |
+
+**Une seule porte pour répondre** : `enregistrer_reponse_alerte`. Une réponse = une ligne `reponses_alerte` (contrainte d'unicité par envoi),
+l'envoi passe en `responded`, le stock est mis à jour dans la même transaction (Disponible : `en_stock`, prix si saisi, date de confirmation ;
+Indisponible : `rupture`), la 1re réponse positive passe l'alerte en `answered`. Rejouer, ou répondre depuis un autre canal, renvoie la
+réponse déjà comptée (`deja_traitee`) sans rien modifier. Après expiration : refus. Prix : entier de 1 à `prix_max_fcfa`.
+- Disponible **sans prix** et sans ligne de stock : la réponse est comptée, mais aucune ligne n'est créée (le prix est obligatoire).
+- Indisponible sans ligne de stock : une ligne `rupture` est créée avec `prix_fcfa = 0` (= inconnu) pour exclure la pharmacie 3 jours (§4.1).
+
+**Webhook Telegram** — variables : `TELEGRAM_WEBHOOK_SECRET` (comparé à `X-Telegram-Bot-Api-Secret-Token`, sinon 401), `ENCRYPTION_KEY`, `SIGNING_SECRET`.
+Un clic n'est accepté que si le chat est un contact **vérifié, actif** d'une pharmacie et si le bouton désigne un envoi de CETTE pharmacie.
+Sinon : ignoré et journalisé (sans identifiant). Le message cliqué perd ses boutons (« Réponse enregistrée à HH:MM : … ») ; les messages des
+collègues passent à « Déjà traitée par un collègue à HH:MM » (jusqu'à 3 agents par pharmacie, la première réponse l'emporte).
+`/start <jeton>` : jeton à usage unique et haché (SQL atomique), 72 h pour une pharmacie ; le `chat_id` est lié au contact (plafond de 3 comptes)
+ou, pour un patient, enregistré **chiffré** avec son consentement. `/stop` : contacts de pharmacie désabonnés, alertes du patient détachées.
+Photo ou document : jamais conservés ni journalisés ; réponse « aucune ordonnance n'est à envoyer ». Groupes : ignorés. Rejeu d'une même mise à jour
+(`update_id`) : aucune réponse dupliquée. Les réponses du bot passent par l'outbox (liste blanche de la démo respectée).
+`setWebhook` (avec `secret_token`) est un acte d'exploitation de la **PR 7** : rien n'est enregistré auprès de Telegram par cette PR.
+
+**Lien de réponse** : le code (10 caractères aléatoires, ~50 bits) est le secret ; il n'est valable que jusqu'à l'expiration de l'alerte ;
+un code inconnu et un code mal formé donnent la même réponse 404. Aucune donnée patient n'est renvoyée. Après une réponse par le lien, les
+boutons des messages Telegram de la pharmacie sont retirés.
+
+**Limites connues**
+- Une réponse donnée dans l'Espace Pro (appel direct à la base) ne retire pas immédiatement les boutons Telegram des autres agents : un clic
+  ultérieur affichera « déjà traitée ». Le SMS de relance, lui, s'arrête dès la réponse.
+- Les réponses du bot (activation, `/stop`...) partent au prochain passage du worker (≤ 1 min).
+- Un jeton d'activation consommé alors que le plafond de comptes est atteint doit être régénéré.
+- `/c/:token` (« Confirmer mes stocks ») n'est pas dans cette PR.

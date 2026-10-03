@@ -53,3 +53,20 @@ entrypoint = "./functions/suivi-alerte/index.js"
 enabled = true
 verify_jwt = false
 entrypoint = "./functions/planifier-alertes/index.js"
+
+# PR 5 : réponses des pharmacies. webhook-telegram (secret_token Telegram) et repondre-lien (code secret) sont publics ;
+# tester-contact vérifie lui-même le jeton de session du pharmacien.
+[functions.webhook-telegram]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/webhook-telegram/index.js"
+
+[functions.repondre-lien]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/repondre-lien/index.js"
+
+[functions.tester-contact]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/tester-contact/index.js"

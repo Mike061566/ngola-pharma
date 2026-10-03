@@ -13,6 +13,12 @@
   to = "/alerte.html"
   status = 200
 
+# Lien de réponse d'une pharmacie : /r/<code> -> reponse.html (le code est lu dans l'URL)
+[[redirects]]
+  from = "/r/*"
+  to = "/reponse.html"
+  status = 200
+
 # SPA : redirige toutes les routes vers index.html
 [[redirects]]
   from = "/*"

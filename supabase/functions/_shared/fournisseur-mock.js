@@ -5,7 +5,8 @@
 //   async envoyer({ adresse, texte, format, sujet, boutons, cleIdempotence, idOutbox })
 //        -> { idMessage, idDiscussion }          (lève ErreurFournisseur en cas d'échec)
 // Le fournisseur Telegram ajoute :
-//   async modifierMessage({ idDiscussion, idMessage, texte, boutons })   (editMessageText, PR 5)
+//   async modifierMessage({ idDiscussion, idMessage, texte, boutons })   (editMessageText : retire les boutons)
+//   async repondreCallback({ idCallback, texte })                          (answerCallbackQuery)
 //
 // Journal : seulement l'identifiant d'outbox, le canal et le modèle. Jamais l'adresse ni le contenu.
 //
@@ -17,11 +18,13 @@ export function creerFournisseurMock(canal, { journal = null, comportement = nul
   let n = 0;
   const envoyes = [];      // en mémoire uniquement (tests) : jamais journalisé
   const modifies = [];
+  const callbacks = [];
   return {
     canal,
     mock: true,
     envoyes,
     modifies,
+    callbacks,
     async envoyer(msg) {
       if (typeof comportement === 'function') await comportement(msg);
       const a = String(msg.adresse || '');
@@ -33,6 +36,12 @@ export function creerFournisseurMock(canal, { journal = null, comportement = nul
       envoyes.push(msg);
       if (journal) journal({ fournisseur: 'mock', canal, idOutbox: msg.idOutbox ?? null, modele: msg.modele ?? null });
       return { idMessage: `mock-${canal}-${n}`, idDiscussion: canal === 'telegram' ? a : null };
+    },
+    /** answerCallbackQuery (Telegram) : acquitte un clic de bouton. */
+    async repondreCallback(args) {
+      if (canal !== 'telegram') throw new ErreurFournisseur('repondreCallback : Telegram seulement', { type: 'permanente' });
+      callbacks.push(args);
+      return { ok: true };
     },
     async modifierMessage(args) {
       if (canal !== 'telegram') throw new ErreurFournisseur('modifierMessage : Telegram seulement', { type: 'permanente' });

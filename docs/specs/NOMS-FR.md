@@ -62,3 +62,8 @@ Les **valeurs** de statut (`new`, `routing`, `sent`, `queued`, `telegram`...) re
 | `sms_nudge_after_min` | `config_routage.relance_sms_apres_min` ; `envois_alerte.relance_sms_le` |
 | création d'alerte | fonction SQL `creer_alerte_routage` (service role) |
 | `planDispatch` | `supabase/functions/_shared/routage.js` |
+| `alert_responses.via` | `reponses_alerte.canal` (`telegram`, `link`, `dashboard`, `admin`) |
+| `telegram_link_tokens` consommation | fonction SQL `consommer_jeton_telegram` |
+| enregistrement d'une réponse | fonction SQL `enregistrer_reponse_alerte` ; depuis l'Espace Pro : `repondre_alerte` |
+| activation Telegram / SMS d'une pharmacie | `activer_telegram_pharmacie`, `ajouter_contact_sms`, `changer_abonnement_contact` |
+| `opted_out_at` | `contacts_pharmacie.desabonne_le` |

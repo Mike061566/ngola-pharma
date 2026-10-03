@@ -126,7 +126,46 @@
     });
   }
 
+  /**
+   * Alertes de l'Espace Pro : temps moyen de réponse (en minutes) sur les lignes répondues de `vue_alertes_pharmacie`.
+   * `{ moyenneMin: number|null, n }` ; les dates invalides ou négatives sont ignorées.
+   */
+  function tempsMoyenReponse(lignes) {
+    var ds = [];
+    (lignes || []).forEach(function (l) {
+      if (!l || !l.reponse || !l.repondu_le || !l.envoye_le) return;
+      var d = (new Date(l.repondu_le).getTime() - new Date(l.envoye_le).getTime()) / 60000;
+      if (isFinite(d) && d >= 0) ds.push(d);
+    });
+    if (!ds.length) return { moyenneMin: null, n: 0 };
+    return { moyenneMin: Math.round((ds.reduce(function (a, b) { return a + b; }, 0) / ds.length) * 10) / 10, n: ds.length };
+  }
+
+  /** Adresse d'un contact masquée à l'affichage (numéro : 2 derniers chiffres ; email : 1re lettre et domaine ; Telegram : fin du chat). */
+  function masquerAdresse(canal, adresse) {
+    var a = String(adresse || '');
+    if (a.indexOf('en_attente:') === 0) return 'activation en cours';
+    if (canal === 'sms') return a.length > 5 ? a.slice(0, 4) + ' ••• •• ' + a.slice(-2) : '••••';
+    if (canal === 'email') { var i = a.indexOf('@'); return i > 1 ? a.charAt(0) + '•••' + a.slice(i) : '••••'; }
+    return a.length > 3 ? '••••' + a.slice(-3) : '••••';
+  }
+
+  /** État d'un contact de messagerie, pour l'affichage : { cle, libelle }. */
+  function statutContact(c) {
+    if (c.bloque_le) return { cle: 'bloque', libelle: 'Bloqué par le fournisseur' };
+    if (c.desabonne_le) return { cle: 'desabonne', libelle: 'Désabonné' };
+    if (c.canal === 'telegram' && !c.verifie_le) return { cle: 'attente', libelle: 'En attente d\'activation' };
+    return { cle: 'actif', libelle: 'Actif' };
+  }
+
+  /** Lien profond d'activation Telegram (le jeton n'est affiché qu'une fois). null si le bot ou le jeton manque. */
+  function lienTelegram(bot, jeton) {
+    if (!/^[A-Za-z0-9_]{3,64}$/.test(String(bot || '')) || !/^[A-Za-z0-9_-]{16,128}$/.test(String(jeton || ''))) return null;
+    return 'https://t.me/' + bot + '?start=' + jeton;
+  }
+
   return { formatHoraires: formatHoraires, statutInfo: statutInfo, medIdentityKey: medIdentityKey,
     findOwnedStock: findOwnedStock, mapLinks: mapLinks, classificationChanges: classificationChanges,
-    validationElements: validationElements };
+    validationElements: validationElements, tempsMoyenReponse: tempsMoyenReponse, masquerAdresse: masquerAdresse,
+    statutContact: statutContact, lienTelegram: lienTelegram };
 }));

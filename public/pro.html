@@ -390,13 +390,57 @@
 
         <!-- TAB: Alerts -->
         <div class="tab-panel" id="tab-alerts">
-            <div class="section-card">
+            <!-- Admin : alertes de stock héritées (lecture) -->
+            <div class="section-card" id="blocAlertesAdmin">
                 <div class="section-header">
                     <h3>🔔 Alertes de disponibilité</h3>
                     <span style="font-size:12px;color:var(--text-muted)">Demandes des patients pour vos médicaments</span>
                 </div>
                 <div id="alertsList">
                     <div class="spinner"></div>
+                </div>
+            </div>
+            <!-- Pharmacien : demandes à traiter, historique, canaux de réception -->
+            <div id="blocAlertesPharmacie" style="display:none">
+                <div class="section-card">
+                    <div class="section-header">
+                        <h3>🔔 Demandes de patients</h3>
+                        <button class="btn btn-secondary" onclick="ProApp.chargerAlertesPharmacie()">↻ Actualiser</button>
+                    </div>
+                    <p style="font-size:12px;color:var(--text-muted);margin-bottom:8px">Aucune donnée du patient n'est transmise. Votre réponse met aussi à jour votre stock.</p>
+                    <div id="alertesEnAttente"><div class="spinner"></div></div>
+                </div>
+                <div class="section-card" style="margin-top:16px">
+                    <div class="section-header">
+                        <h3>🕘 Historique</h3>
+                        <span id="tempsMoyenReponse" style="font-size:12px;color:var(--text-muted)"></span>
+                    </div>
+                    <div id="alertesHistorique"></div>
+                </div>
+                <div class="section-card" style="margin-top:16px">
+                    <div class="section-header"><h3>📡 Canaux de réception</h3></div>
+                    <p style="font-size:12px;color:var(--text-muted);margin-bottom:8px">Telegram est le canal principal ; le SMS prend le relais si Telegram est indisponible.</p>
+                    <div id="listeContacts"></div>
+                    <div style="margin-top:14px;padding-top:12px;border-top:1px solid #f0f0f0">
+                        <strong style="font-size:13px">Activer Telegram (jusqu'à 3 comptes)</strong>
+                        <label style="display:flex;gap:8px;align-items:flex-start;font-size:13px;margin:8px 0">
+                            <input type="checkbox" id="consentTelegram" style="margin-top:3px">
+                            <span>Ce compte Telegram recevra les demandes de patients de ma pharmacie.</span>
+                        </label>
+                        <button class="btn btn-add" onclick="ProApp.activerTelegram()">Générer le lien d'activation</button>
+                        <div id="zoneActivationTelegram" style="margin-top:10px"></div>
+                    </div>
+                    <div style="margin-top:14px;padding-top:12px;border-top:1px solid #f0f0f0">
+                        <strong style="font-size:13px">Ajouter un numéro SMS</strong>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
+                            <input type="tel" id="champNumeroSms" placeholder="+237 6XX XX XX XX" style="flex:1 1 200px;padding:9px 12px;border:1px solid var(--border);border-radius:8px">
+                        </div>
+                        <label style="display:flex;gap:8px;align-items:flex-start;font-size:13px;margin:8px 0">
+                            <input type="checkbox" id="consentSms" style="margin-top:3px">
+                            <span>J'accepte que ce numéro reçoive des SMS de demandes (en relais de Telegram).</span>
+                        </label>
+                        <button class="btn btn-add" onclick="ProApp.ajouterSms()">Ajouter</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -448,6 +492,7 @@
 <!-- ===== SheetJS for Excel ===== -->
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
+<script src="/alerte-config.js"></script>
 <script src="/pro-utils.js"></script>
 <script>
 var ProApp = (function() {
@@ -580,6 +625,7 @@ var ProApp = (function() {
         document.getElementById('tabBtnClassification').style.display = currentProfil.role === 'admin' ? '' : 'none';
         loadStocks();
         loadStats();
+        if (currentProfil.role === 'pharmacien') chargerAlertesPharmacie();
     }
 
     function switchTab(tabName) {
@@ -966,8 +1012,179 @@ var ProApp = (function() {
                     }).join('');
                 });
         } else {
-            div.innerHTML = '<div class="empty-state"><div class="icon">🔒</div><p>Les alertes sont visibles par les administrateurs.<br>Contactez l\'admin pour voir les demandes de vos patients.</p></div>';
+            document.getElementById('blocAlertesAdmin').style.display = 'none';
+            document.getElementById('blocAlertesPharmacie').style.display = '';
+            chargerAlertesPharmacie();
         }
+    }
+
+    // ── Espace Pro : demandes de patients (SPEC 2 §10) ──
+    var minuteurAlertes = null;
+
+    function chargerAlertesPharmacie() {
+        if (!currentProfil || currentProfil.role !== 'pharmacien') return;
+        _sb.from('vue_alertes_pharmacie').select('*').order('envoye_le', { ascending: false }).limit(60)
+            .then(function(res) {
+                var lignes = res.data || [];
+                var maintenant = Date.now();
+                var enAttente = lignes.filter(function(l) { return l.statut_envoi === 'sent' && new Date(l.expire_le).getTime() > maintenant; });
+                var historique = lignes.filter(function(l) { return l.reponse; }).slice(0, 30);
+                rendreEnAttente(res.error ? null : enAttente);
+                rendreHistorique(historique);
+                var tm = ProUtils.tempsMoyenReponse(lignes);
+                document.getElementById('tempsMoyenReponse').textContent = tm.n ? 'Temps de réponse moyen : ' + tm.moyenneMin + ' min (' + tm.n + ' réponse' + (tm.n > 1 ? 's' : '') + ')' : '';
+                badgeAlertes(enAttente ? enAttente.length : 0);
+            });
+        chargerContacts();
+        if (!minuteurAlertes) {
+            minuteurAlertes = setInterval(function() {
+                if (document.getElementById('tab-alerts').classList.contains('active')) chargerAlertesPharmacie();
+            }, 30000);
+        }
+    }
+
+    function badgeAlertes(n) {
+        var b = document.querySelector('.dash-tab[onclick*="alerts"]');
+        if (b) b.textContent = '🔔 Alertes' + (n ? ' (' + n + ')' : '');
+    }
+
+    function nomMedicament(l) {
+        return l.medicament_nom + (l.medicament_dosage ? ' ' + l.medicament_dosage : '') + (l.medicament_forme ? ' — ' + l.medicament_forme : '');
+    }
+
+    function rendreEnAttente(lignes) {
+        var zone = document.getElementById('alertesEnAttente');
+        if (lignes === null) { zone.innerHTML = '<div class="empty-state"><p>Impossible de charger les demandes.</p></div>'; return; }
+        if (!lignes.length) { zone.innerHTML = '<div class="empty-state"><div class="icon">✅</div><p>Aucune demande en attente</p></div>'; return; }
+        zone.innerHTML = lignes.map(function(l) {
+            var id = esc(l.envoi_id);
+            return '<div class="alert-item" style="flex-direction:column;align-items:stretch;gap:8px">' +
+                '<div><strong>' + esc(nomMedicament(l)) + '</strong>' + (l.urgence === 'urgent' ? ' <span class="badge-suspended">URGENT</span>' : '') +
+                '<br><span style="color:var(--text-muted)">' + esc(l.quartier) + ' · reçue il y a ' + timeAgo(l.envoye_le) + '</span>' +
+                (l.sur_ordonnance ? '<br><span style="font-size:12px">📋 Sur ordonnance : à présenter au comptoir lors de l\'achat ou du retrait.</span>' : '') + '</div>' +
+                '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">' +
+                    '<input type="text" inputmode="numeric" placeholder="Prix (FCFA)" id="prix-' + id + '" value="' + esc(l.prix_stock || '') + '" style="width:130px;padding:8px 10px;border:1px solid var(--border);border-radius:8px">' +
+                    '<button class="btn btn-import" onclick="ProApp.repondreAlerte(\'' + id + '\', \'available\')">✅ Disponible</button>' +
+                    '<button class="btn btn-delete" onclick="ProApp.repondreAlerte(\'' + id + '\', \'unavailable\')">❌ Indisponible</button>' +
+                '</div></div>';
+        }).join('');
+    }
+
+    function rendreHistorique(lignes) {
+        var zone = document.getElementById('alertesHistorique');
+        if (!lignes.length) { zone.innerHTML = '<div class="empty-state"><p>Aucune réponse pour le moment</p></div>'; return; }
+        zone.innerHTML = lignes.map(function(l) {
+            var dispo = l.reponse === 'available';
+            return '<div class="alert-item"><div><strong>' + esc(nomMedicament(l)) + '</strong><br><span style="color:var(--text-muted)">' + esc(l.quartier) + '</span></div>' +
+                '<div style="text-align:right">' + (dispo ? '✅ Disponible' + (l.prix_repondu ? ' · ' + fmtPrice(l.prix_repondu) : '') : '❌ Indisponible') +
+                '<br><span class="alert-date">il y a ' + timeAgo(l.repondu_le) + '</span></div></div>';
+        }).join('');
+    }
+
+    function repondreAlerte(envoiId, reponse) {
+        var champ = document.getElementById('prix-' + envoiId);
+        var prix = null;
+        if (reponse === 'available' && champ && champ.value.trim() !== '') {
+            var t = champ.value.replace(/[\s\u00a0]/g, '');
+            if (!/^\d{1,8}$/.test(t) || parseInt(t, 10) <= 0) { showToast('Prix invalide', 'error'); return; }
+            prix = parseInt(t, 10);
+        }
+        _sb.rpc('repondre_alerte', { p_envoi_id: envoiId, p_reponse: reponse, p_prix: prix }).then(function(res) {
+            if (res.error) { showToast('Erreur : ' + res.error.message, 'error'); return; }
+            var r = Array.isArray(res.data) ? res.data[0] : res.data;
+            var msgs = { enregistree: 'Réponse enregistrée', deja_traitee: 'Déjà traitée par un collègue', expiree: 'Demande expirée', prix_invalide: 'Prix invalide' };
+            showToast(msgs[r && r.resultat] || 'Réponse envoyée', r && (r.resultat === 'enregistree' || r.resultat === 'deja_traitee') ? 'success' : 'error');
+            chargerAlertesPharmacie();
+            if (r && r.resultat === 'enregistree') { loadStocks(); loadStats(); }
+        });
+    }
+
+    // ── Canaux de réception ──
+    function chargerContacts() {
+        _sb.from('contacts_pharmacie').select('id, canal, adresse, verifie_le, desabonne_le, bloque_le').order('canal').order('id')
+            .then(function(res) {
+                var zone = document.getElementById('listeContacts');
+                var l = res.data || [];
+                if (!l.length) { zone.innerHTML = '<div class="empty-state"><p>Aucun canal configuré. Activez Telegram ci-dessous.</p></div>'; return; }
+                var icones = { telegram: '✈️ Telegram', sms: '📱 SMS', email: '✉️ Email' };
+                zone.innerHTML = l.map(function(c) {
+                    var st = ProUtils.statutContact(c), id = esc(c.id);
+                    var actifs = st.cle === 'actif';
+                    return '<div class="alert-item"><div><strong>' + (icones[c.canal] || esc(c.canal)) + '</strong> <span style="color:var(--text-muted)">' + esc(ProUtils.masquerAdresse(c.canal, c.adresse)) + '</span><br>' +
+                        '<span style="font-size:12px">' + esc(st.libelle) + '</span></div><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">' +
+                        (actifs ? '<button class="btn btn-secondary" onclick="ProApp.testerContact(\'' + id + '\')">Test d\'envoi</button>' : '') +
+                        (st.cle === 'desabonne' ? '<button class="btn btn-secondary" onclick="ProApp.changerAbonnement(\'' + id + '\', true)">Se réabonner</button>' : '') +
+                        (actifs || st.cle === 'attente' ? '<button class="btn btn-delete" onclick="ProApp.changerAbonnement(\'' + id + '\', false)">Se désabonner</button>' : '') +
+                        '</div></div>';
+                }).join('');
+            });
+    }
+
+    function activerTelegram() {
+        if (!document.getElementById('consentTelegram').checked) { showToast('Cochez la case de consentement', 'error'); return; }
+        var bot = (window.NGOLA_ALERTE && window.NGOLA_ALERTE.telegramBot) || '';
+        if (!bot) { showToast('Le bot Telegram n\'est pas encore configuré', 'error'); return; }
+        _sb.rpc('activer_telegram_pharmacie', { p_consentement: true }).then(function(res) {
+            if (res.error) { showToast(res.error.code === '23514' ? 'Nombre maximal de comptes Telegram atteint' : 'Erreur : ' + res.error.message, 'error'); return; }
+            var r = Array.isArray(res.data) ? res.data[0] : res.data;
+            var lien = ProUtils.lienTelegram(bot, r.jeton);
+            var zone = document.getElementById('zoneActivationTelegram');
+            if (!lien) { zone.textContent = 'Lien indisponible.'; return; }
+            zone.textContent = '';
+            var p = document.createElement('p'); p.style.fontSize = '13px';
+            p.textContent = 'Ouvrez ce lien depuis le téléphone de la personne qui recevra les demandes, puis appuyez sur « Démarrer ». Valable jusqu\'au ' + new Date(r.expire_le).toLocaleString('fr-FR') + ', à usage unique.';
+            var a = document.createElement('a'); a.href = lien; a.target = '_blank'; a.rel = 'noopener'; a.className = 'btn btn-add'; a.textContent = 'Ouvrir Telegram';
+            a.style.textDecoration = 'none'; a.style.marginTop = '6px';
+            var qr = document.createElement('div'); qr.id = 'qrTelegram'; qr.style.margin = '10px 0';
+            zone.appendChild(p); zone.appendChild(a); zone.appendChild(qr);
+            afficherQr(qr, lien);
+            document.getElementById('consentTelegram').checked = false;
+            chargerContacts();
+        });
+    }
+
+    // QR code : bibliothèque utilitaire chargée à la demande ; en cas d'échec, le lien cliquable suffit.
+    function afficherQr(zone, texte) {
+        function dessiner() { try { new window.QRCode(zone, { text: texte, width: 160, height: 160 }); } catch (e) { /* lien seul */ } }
+        if (window.QRCode) { dessiner(); return; }
+        var sc = document.createElement('script');
+        sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+        sc.onload = dessiner;
+        document.head.appendChild(sc);
+    }
+
+    function ajouterSms() {
+        var num = document.getElementById('champNumeroSms').value.replace(/[\s.\-()]/g, '');
+        if (/^6\d{8}$/.test(num)) num = '+237' + num;
+        if (!document.getElementById('consentSms').checked) { showToast('Cochez la case de consentement', 'error'); return; }
+        _sb.rpc('ajouter_contact_sms', { p_numero: num, p_consentement: true }).then(function(res) {
+            if (res.error) { showToast(res.error.code === '23514' ? 'Nombre maximal de numéros atteint' : 'Numéro invalide (format +237…)', 'error'); return; }
+            showToast('Numéro ajouté');
+            document.getElementById('champNumeroSms').value = ''; document.getElementById('consentSms').checked = false;
+            chargerContacts();
+        });
+    }
+
+    function changerAbonnement(id, abonne) {
+        if (!abonne && !window.confirm('Ne plus recevoir de demandes sur ce canal ? Elles resteront visibles ici.')) return;
+        _sb.rpc('changer_abonnement_contact', { p_contact_id: id, p_abonne: abonne }).then(function(res) {
+            if (res.error) { showToast('Erreur : ' + res.error.message, 'error'); return; }
+            showToast(abonne ? 'Réabonné' : 'Désabonné');
+            chargerContacts();
+        });
+    }
+
+    function testerContact(id) {
+        _sb.auth.getSession().then(function(r) {
+            var jeton = r.data && r.data.session ? r.data.session.access_token : null;
+            if (!jeton) { showToast('Session expirée', 'error'); return null; }
+            return fetch(window.NGOLA_ALERTE.apiBase + '/functions/v1/tester-contact', { method: 'POST',
+                headers: { 'content-type': 'application/json', authorization: 'Bearer ' + jeton, apikey: window.NGOLA_ALERTE.anonKey }, body: JSON.stringify({ contact_id: id }) });
+        }).then(function(rep) {
+            if (!rep) return;
+            var msgs = { 202: 'Message de test envoyé (délai : environ une minute)', 429: 'Un test a déjà été demandé : réessayez dans une minute', 409: 'Ce canal n\'est pas actif' };
+            showToast(msgs[rep.status] || 'Test impossible', rep.status === 202 ? 'success' : 'error');
+        }).catch(function() { showToast('Test impossible', 'error'); });
     }
 
     // ── CSV Import ──
@@ -1150,6 +1367,12 @@ var ProApp = (function() {
         login: login,
         logout: logout,
         switchTab: switchTab,
+        chargerAlertesPharmacie: chargerAlertesPharmacie,
+        repondreAlerte: repondreAlerte,
+        activerTelegram: activerTelegram,
+        ajouterSms: ajouterSms,
+        changerAbonnement: changerAbonnement,
+        testerContact: testerContact,
         enregistrerClassification: enregistrerClassification,
         validerClassification: validerClassification,
         passerEnProduction: passerEnProduction,

@@ -172,6 +172,33 @@ export const MODELES = {
         `Pharmacies de garde: ${lienSansSchema(v || {}, '/garde')}`) }),
     },
   },
+  // ── Réponses du bot Telegram (webhook, PR 5) ──
+  lien_invalide: {
+    canaux: { telegram: () => ({ format: 'html', texte: 'Ce lien n\'est plus valable. Demandez-en un nouveau depuis votre Espace Pro N\'Gola Pharma.' }) },
+  },
+  limite_contacts: {
+    canaux: { telegram: () => ({ format: 'html', texte: 'Le nombre maximal de comptes Telegram est atteint pour cette pharmacie. Retirez un compte depuis l\'Espace Pro, puis recommencez.' }) },
+  },
+  aide_bot: {
+    canaux: { telegram: () => ({ format: 'html', texte: 'N\'Gola Pharma : vous recevez ici les demandes de patients. Répondez avec les boutons ✅ Disponible / ❌ Indisponible.\nEnvoyez /stop pour ne plus recevoir de demandes.' }) },
+  },
+  desabonnement_ok: {
+    canaux: { telegram: () => ({ format: 'html', texte: 'C\'est noté : vous ne recevrez plus de messages sur ce compte. Les demandes restent visibles dans votre Espace Pro.' }) },
+  },
+  ordonnance_refus: {
+    canaux: { telegram: () => ({ format: 'html', texte: 'Aucune ordonnance n\'est à envoyer à N\'Gola Pharma : elle se présente à la pharmacie, lors de l\'achat ou du retrait. Votre fichier n\'a pas été conservé.' }) },
+  },
+  patient_lie: {
+    canaux: { telegram: () => ({ format: 'html', texte: 'C\'est noté : nous vous écrirons ici dès qu\'une pharmacie confirme la disponibilité. Envoyez /stop pour ne plus recevoir de messages.' }) },
+  },
+  // ── Test d'envoi demandé depuis l'Espace Pro (PR 5) ──
+  test_envoi: {
+    canaux: {
+      telegram: () => ({ format: 'html', texte: 'Test N\'Gola Pharma : ce compte recevra bien les demandes de patients. ✅' }),
+      sms: () => ({ format: 'texte', texte: 'NGola: test reussi, ce numero recevra les demandes de patients.' }),
+      email: () => ({ format: 'texte', sujet: 'Test N\'Gola Pharma', texte: 'Test réussi : cette adresse recevra les demandes de patients.' }),
+    },
+  },
   // ── Vers l'admin ──
   escalade_admin: {
     canaux: {

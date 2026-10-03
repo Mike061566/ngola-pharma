@@ -135,6 +135,9 @@ export async function planifierAlertes({ magasin, cle, env = {}, maintenant = ()
         .sort((x, y) => x.prix - y.prix || (x.distance ?? Infinity) - (y.distance ?? Infinity) || (x.id < y.id ? -1 : 1));
     };
     const base = { drug: nom(a.medicament), heure, sur_ordonnance: a.medicament?.ordonnance === true };
+    // Patient Telegram qui n'a pas encore fait /start : on attend son chat_id (PR 5) sans marquer l'alerte « notifiée »,
+    // pour que le message parte dès la liaison. Il voit déjà les pharmacies sur la page de suivi.
+    if (a.canal_patient === 'telegram' && !a.contact_patient_chiffre) return;
     if (!a.patient_notifie_le) {
       if (now.getTime() < fermeture) return;                               // fenêtre encore ouverte
       const top = (await selection(positives)).slice(0, 3);
