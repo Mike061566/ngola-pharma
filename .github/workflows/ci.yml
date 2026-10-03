@@ -48,6 +48,8 @@ jobs:
       - name: Tests pgTAP (RLS, triggers, alertes_stock)
         run: supabase test db
       - name: Fusion des doublons de medicaments (données synthétiques, tout est annulé)
+        env:
+          DATABASE_URL: ${{ env.DB_URL }}
         run: scripts/test-fusion.sh
       - name: L'inventaire attendu correspond aux migrations
         run: |
