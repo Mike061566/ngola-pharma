@@ -7,7 +7,7 @@
 - **Runtime** : Node.js ≥ 18 + Express
 - **Base de données** : Supabase (PostgreSQL + PostGIS)
 - **Auth** : Supabase Auth (JWT)
-- **CI** : GitHub Actions
+- **CI** : GitHub Actions (lint, tests Node, tests pgTAP sur Supabase local)
 
 ## Démarrage rapide
 
@@ -24,7 +24,7 @@ cp .env.example .env
 # → Renseigner SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_KEY
 
 # 4. Appliquer le schéma Supabase
-# Exécuter supabase/migrations/001_schema.sql dans le SQL Editor de Supabase
+# Exécuter supabase/setup_consolide.sql dans le SQL Editor de Supabase
 
 # 5. Peupler la base
 npm run seed

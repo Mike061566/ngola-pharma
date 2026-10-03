@@ -18,7 +18,7 @@
 -- les rôles serveur (postgres / service_role : SQL Editor, Edge Functions).
 --
 -- Idempotent. Aucune donnée n'est lue ni modifiée.
--- Test : supabase/tests/pharmacies_colonnes_protegees.test.sql (pgTAP).
+-- Test : supabase/tests/database/pharmacies_colonnes_protegees.test.sql (pgTAP).
 -- ============================================================
 BEGIN;
 

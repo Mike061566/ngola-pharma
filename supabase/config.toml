@@ -1,0 +1,31 @@
+# Supabase local (Docker) — utilisé par la CI (pgTAP) et pour le développement.
+# Aucun lien avec un projet hébergé : ne contient ni clé ni URL de production.
+project_id = "ngola-pharma"
+
+[api]
+enabled = true
+
+[db]
+port = 54322
+# À aligner sur la version Postgres du projet de production (Settings > Infrastructure).
+major_version = 17
+
+[db.seed]
+enabled = false
+
+# Services inutiles pour les tests de base de données : désactivés pour accélérer la CI.
+[studio]
+enabled = false
+[inbucket]
+enabled = false
+[realtime]
+enabled = false
+[storage]
+enabled = false
+[edge_runtime]
+enabled = false
+[analytics]
+enabled = false
+
+[auth]
+enabled = true

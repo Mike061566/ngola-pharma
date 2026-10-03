@@ -19,7 +19,7 @@
 --   4. Policy d'insertion : `notified_at` doit être nul à la création.
 --
 -- Idempotent. Seule écriture de données : l'UPDATE qui marque `heritee` (canal whatsapp/ussd).
--- Test : supabase/tests/alertes_stock.test.sql (pgTAP).
+-- Test : supabase/tests/database/alertes_stock.test.sql (pgTAP).
 -- ============================================================
 BEGIN;
 

@@ -4,6 +4,7 @@
 column|alertes_stock.active|boolean DEFAULT true
 column|alertes_stock.canal|text DEFAULT 'email'::text
 column|alertes_stock.created_at|timestamp with time zone DEFAULT now()
+column|alertes_stock.heritee|boolean NOT NULL DEFAULT false
 column|alertes_stock.id|uuid NOT NULL DEFAULT gen_random_uuid()
 column|alertes_stock.medicament_id|uuid
 column|alertes_stock.medicament_nom|text NOT NULL
@@ -107,8 +108,12 @@ column|v_pharmacies.statut|statut_pharmacie
 column|v_pharmacies.telephone|text
 column|v_pharmacies.updated_at|timestamp with time zone
 column|v_pharmacies.verified_at|timestamp with time zone
-constraint|alertes_stock.alertes_stock_canal_check|CHECK ((canal = ANY (ARRAY['email'::text, 'whatsapp'::text, 'ussd'::text])))
+constraint|alertes_stock.alertes_stock_canal_check|CHECK ((canal = ANY (ARRAY['email'::text, 'sms'::text, 'whatsapp'::text, 'ussd'::text])))
+constraint|alertes_stock.alertes_stock_canal_contact|CHECK ((heritee OR (canal IS NULL) OR ((canal = 'email'::text) AND (user_email IS NOT NULL)) OR ((canal <> 'email'::text) AND (user_phone IS NOT NULL))))
+constraint|alertes_stock.alertes_stock_email_format|CHECK ((heritee OR (user_email IS NULL) OR ((char_length(user_email) <= 254) AND (user_email ~ '^[^@[:space:]]+@[^@[:space:]]+\.[^@[:space:]]+$'::text))))
 constraint|alertes_stock.alertes_stock_medicament_id_fkey|FOREIGN KEY (medicament_id) REFERENCES medicaments(id)
+constraint|alertes_stock.alertes_stock_medicament_nom_len|CHECK ((heritee OR ((char_length(btrim(medicament_nom)) >= 1) AND (char_length(btrim(medicament_nom)) <= 120))))
+constraint|alertes_stock.alertes_stock_phone_format|CHECK ((heritee OR (user_phone IS NULL) OR (user_phone ~ '^\+[1-9][0-9]{7,14}$'::text)))
 constraint|alertes_stock.alertes_stock_pkey|PRIMARY KEY (id)
 constraint|alertes_stock.alertes_stock_quartier_id_fkey|FOREIGN KEY (quartier_id) REFERENCES quartiers(id)
 constraint|alertes_stock.contact_required|CHECK (((user_email IS NOT NULL) OR (user_phone IS NOT NULL)))
@@ -138,6 +143,7 @@ enum|statut_pharmacie|non_verifie,verifie,partenaire
 extension|pg_trgm|
 extension|plpgsql|
 extension|postgis|
+function|alertes_stock_avant_insertion()|returns=trigger lang=plpgsql security=definer volatility=v config=search_path=public, pg_temp body=43f54af45308e82900b02a749bcb18a7
 function|auth_pharmacie_id()|returns=uuid lang=sql security=definer volatility=s config=search_path=public body=b66d1a570fd45eb7602cadb4ed4add95
 function|auth_role()|returns=text lang=sql security=definer volatility=s config=search_path=public body=595b2f0025ac8ab39e052499fb9a94bd
 function|pharmacies_proches(lat double precision, lng double precision, rayon_m integer)|returns=TABLE(id uuid, nom text, adresse text, latitude double precision, longitude double precision, distance_m double precision, est_de_garde boolean, statut statut_pharmacie, quartier_nom text) lang=sql security=invoker volatility=s config=- body=2a2c3f57ce6bec7c25f98daa6073e092
@@ -164,7 +170,9 @@ grant|v_pharmacies.anon|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
 grant|v_pharmacies.authenticated|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
 index|alertes_stock.alertes_stock_pkey|CREATE UNIQUE INDEX alertes_stock_pkey ON public.alertes_stock USING btree (id)
 index|alertes_stock.idx_alertes_stock_active|CREATE INDEX idx_alertes_stock_active ON public.alertes_stock USING btree (active, created_at DESC)
+index|alertes_stock.idx_alertes_stock_email_recent|CREATE INDEX idx_alertes_stock_email_recent ON public.alertes_stock USING btree (lower(user_email), created_at DESC)
 index|alertes_stock.idx_alertes_stock_email|CREATE INDEX idx_alertes_stock_email ON public.alertes_stock USING btree (user_email)
+index|alertes_stock.idx_alertes_stock_phone_recent|CREATE INDEX idx_alertes_stock_phone_recent ON public.alertes_stock USING btree (user_phone, created_at DESC)
 index|alertes_stock.idx_alertes_stock_phone|CREATE INDEX idx_alertes_stock_phone ON public.alertes_stock USING btree (user_phone)
 index|medicaments.idx_medicaments_categorie|CREATE INDEX idx_medicaments_categorie ON public.medicaments USING btree (categorie)
 index|medicaments.idx_medicaments_dci|CREATE INDEX idx_medicaments_dci ON public.medicaments USING btree (dci)
@@ -193,7 +201,7 @@ index|stocks.stocks_pharmacie_id_medicament_id_key|CREATE UNIQUE INDEX stocks_ph
 index|stocks.stocks_pkey|CREATE UNIQUE INDEX stocks_pkey ON public.stocks USING btree (id)
 policy|alertes_stock.Admins modifient les alertes|cmd=UPDATE roles=authenticated using=(auth_role() = 'admin'::text) with_check=-
 policy|alertes_stock.Admins voient les alertes|cmd=SELECT roles=authenticated using=(auth_role() = 'admin'::text) with_check=-
-policy|alertes_stock.Tout le monde peut créer une alerte|cmd=INSERT roles=anon,authenticated using=- with_check=true
+policy|alertes_stock.Tout le monde peut créer une alerte|cmd=INSERT roles=anon,authenticated using=- with_check=((notified_at IS NULL) AND (active IS NOT FALSE))
 policy|medicaments.Médicaments lisibles par tous|cmd=SELECT roles=public using=true with_check=-
 policy|medicaments.Médicaments modifiables par admin|cmd=ALL roles=public using=(auth_role() = 'admin'::text) with_check=-
 policy|pharmacies.Pharmacien modifie sa pharmacie|cmd=UPDATE roles=public using=((auth_role() = 'pharmacien'::text) AND (id = auth_pharmacie_id())) with_check=((auth_role() = 'pharmacien'::text) AND (id = auth_pharmacie_id()))
@@ -217,6 +225,7 @@ table|recherches|table rls=true force_rls=false
 table|stocks|table rls=true force_rls=false
 table|v_meilleurs_prix|vue rls=false force_rls=false
 table|v_pharmacies|vue rls=false force_rls=false
+trigger|alertes_stock.trg_alertes_stock_avant_insertion|CREATE TRIGGER trg_alertes_stock_avant_insertion BEFORE INSERT ON public.alertes_stock FOR EACH ROW EXECUTE FUNCTION alertes_stock_avant_insertion()
 trigger|medicaments.trg_medicaments_updated|CREATE TRIGGER trg_medicaments_updated BEFORE UPDATE ON public.medicaments FOR EACH ROW EXECUTE FUNCTION update_updated_at()
 trigger|pharmacies.trg_pharmacies_geo|CREATE TRIGGER trg_pharmacies_geo BEFORE INSERT OR UPDATE OF latitude, longitude ON public.pharmacies FOR EACH ROW EXECUTE FUNCTION sync_coordinates()
 trigger|pharmacies.trg_pharmacies_protect|CREATE TRIGGER trg_pharmacies_protect BEFORE UPDATE ON public.pharmacies FOR EACH ROW EXECUTE FUNCTION protect_pharmacies_columns()

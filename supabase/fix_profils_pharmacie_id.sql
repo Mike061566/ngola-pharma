@@ -12,7 +12,7 @@
 -- pharmacien à son officine depuis la console admin).
 --
 -- Idempotent. Aucune donnée n'est lue ni modifiée : seule la policy est remplacée.
--- Test : supabase/tests/profils_pharmacie_id.test.sql (pgTAP).
+-- Test : supabase/tests/database/profils_pharmacie_id.test.sql (pgTAP).
 -- ============================================================
 
 DROP POLICY IF EXISTS "profils_update" ON profils;
