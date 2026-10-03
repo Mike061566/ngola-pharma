@@ -3,18 +3,18 @@
 -- À exécuter dans le SQL Editor APRÈS la migration 20261003100000. Un seul résultat : une ligne par contrôle,
 -- colonne `ok` = true/false. Tout doit être true.
 --
--- Paramètres à adapter en tête : nombre de fiches attendu, préfixe de l'id de la pharmacie (il doit en
--- identifier UNE seule : donnez-en assez pour cela), prix attendus.
+-- Paramètres en tête : nombre de fiches attendu, identifiant COMPLET de la pharmacie de test
+-- (Pharmacie de la Poste Centrale), prix attendus.
 -- ============================================================
 BEGIN READ ONLY;
 
 WITH params AS (
     SELECT 20 AS fiches_attendues,
-           '76beb7c3-' AS prefixe_pharmacie,
+           '76beb7c3-d554-465d-a8e6-b08c9ee8b178'::uuid AS pharmacie_id,
            5100 AS coartem_prix, true AS coartem_en_stock,
            1500 AS chloroquine_prix, true AS chloroquine_en_stock
 ),
-ma AS (SELECT p.id, p.nom FROM pharmacies p, params WHERE p.id::text LIKE params.prefixe_pharmacie || '%'),
+ma AS (SELECT p.id, p.nom FROM pharmacies p, params WHERE p.id = params.pharmacie_id),
 cle AS (
     SELECT concat_ws('|', lower(btrim(coalesce(m.dci, ''))), lower(btrim(coalesce(m.nom_commercial, ''))),
                      lower(regexp_replace(coalesce(m.dosage, ''), '\s', '', 'g')), lower(btrim(coalesce(m.forme, ''))),
@@ -62,13 +62,13 @@ SELECT verification, attendu, obtenu, ok FROM (
     UNION ALL
     SELECT 6, 'pharmacie ' || coalesce((SELECT nom FROM ma LIMIT 1), '(introuvable)') || ' : Coartem',
            params.coartem_prix || ' FCFA, ' || CASE WHEN params.coartem_en_stock THEN 'en stock' ELSE 'rupture' END || ', 1 ligne',
-           (SELECT count(*) FROM ma) || ' pharmacie(s) pour le préfixe ; ' || (SELECT count(*) FROM coartem) || ' ligne(s) : ' || coalesce((SELECT string_agg(prix_fcfa || ' FCFA, ' || CASE WHEN en_stock THEN 'en stock' ELSE 'rupture' END, ' ; ') FROM coartem), '-'),
+           (SELECT count(*) FROM ma) || ' pharmacie trouvée ; ' || (SELECT count(*) FROM coartem) || ' ligne(s) : ' || coalesce((SELECT string_agg(prix_fcfa || ' FCFA, ' || CASE WHEN en_stock THEN 'en stock' ELSE 'rupture' END, ' ; ') FROM coartem), '-'),
            (SELECT count(*) FROM ma) = 1 AND (SELECT count(*) FROM coartem) = 1 AND EXISTS (SELECT 1 FROM coartem c WHERE c.prix_fcfa = params.coartem_prix AND c.en_stock = params.coartem_en_stock)
     FROM params
     UNION ALL
     SELECT 7, 'pharmacie ' || coalesce((SELECT nom FROM ma LIMIT 1), '(introuvable)') || ' : Chloroquine 100mg',
            params.chloroquine_prix || ' FCFA, ' || CASE WHEN params.chloroquine_en_stock THEN 'en stock' ELSE 'rupture' END || ', 1 ligne',
-           (SELECT count(*) FROM ma) || ' pharmacie(s) pour le préfixe ; ' || (SELECT count(*) FROM chloroquine) || ' ligne(s) : ' || coalesce((SELECT string_agg(prix_fcfa || ' FCFA, ' || CASE WHEN en_stock THEN 'en stock' ELSE 'rupture' END, ' ; ') FROM chloroquine), '-'),
+           (SELECT count(*) FROM ma) || ' pharmacie trouvée ; ' || (SELECT count(*) FROM chloroquine) || ' ligne(s) : ' || coalesce((SELECT string_agg(prix_fcfa || ' FCFA, ' || CASE WHEN en_stock THEN 'en stock' ELSE 'rupture' END, ' ; ') FROM chloroquine), '-'),
            (SELECT count(*) FROM ma) = 1 AND (SELECT count(*) FROM chloroquine) = 1 AND EXISTS (SELECT 1 FROM chloroquine c WHERE c.prix_fcfa = params.chloroquine_prix AND c.en_stock = params.chloroquine_en_stock)
     FROM params
     UNION ALL

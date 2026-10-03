@@ -14,6 +14,17 @@
 --   * Autres clés étrangères vers medicaments : aucune connue (recherches n'en a pas). Si une autre existe,
 --     la migration ÉCHOUE avant toute modification.
 --
+-- Index unique uq_medicaments_nom_dosage (nom normalisé + dosage normalisé) :
+--   COUVRE : deux fiches de même nom (minuscules, espaces de début et de fin ignorés) ET de même dosage (espaces
+--            ignorés, NULL = vide) sont refusées : c'est le cas des 20 paires de la production (rechargement des
+--            scripts d'installation) et de tout futur rechargement d'un seed.
+--   NE COUVRE PAS : les variantes de NOM (accents « Paracétamol » / « Paracetamol », espaces ou ponctuation à
+--            l'intérieur du nom, abréviations, nom de marque contre DCI comme « Coartem » / « Artemether-
+--            Lumefantrine »). Pour celles-ci, la clé produit (DCI + nom commercial + dosage + forme) n'est contrôlée
+--            que par la fusion, le diagnostic et le formulaire de l'Espace Pro, pas par la base.
+--   À SAVOIR : l'index ignore la forme et la marque : deux produits légitimes de même nom et même dosage mais de
+--            forme différente ne peuvent pas coexister (la migration échoue alors, et annule tout).
+--
 -- Sauvegarde : schéma `sauvegarde_fusion` (hors API) = anciennes fiches, anciennes lignes de stock, anciens
 -- medicament_id des alertes. Retour arrière : supabase/rollback/20261003100000_fusion_doublons_medicaments_rollback.sql
 --

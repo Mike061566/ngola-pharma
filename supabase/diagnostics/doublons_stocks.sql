@@ -5,11 +5,13 @@
 -- la transaction est en lecture seule et se termine par ROLLBACK.
 -- Résultat attendu à renvoyer : les 4 tableaux (ou une capture de chacun).
 --
--- Contexte : tous les scripts du dépôt déclarent UNIQUE(pharmacie_id, medicament_id)
--- sur `stocks`. Deux lignes « pour la même pharmacie et le même médicament » viennent
--- donc probablement de DEUX fiches `medicaments` pour le même produit (ex. 'Coartem'
--- et 'Artemether-Lumefantrine', ou 'Chloroquine' et 'Chloroquine 100mg'), ou bien la
--- contrainte n'existe pas en prod. Les requêtes 1 et 2 tranchent.
+-- Contexte : tous les scripts du dépôt déclarent UNIQUE(pharmacie_id, medicament_id) sur `stocks`. Deux
+-- lignes « pour la même pharmacie et le même médicament » viennent donc de DEUX fiches `medicaments` pour le
+-- même produit. Cause constatée en production : les 20 fiches en double portent le MÊME nom et le MÊME dosage
+-- normalisés (rechargement des scripts d'installation, qui n'avaient aucune protection contre les doublons).
+-- Les variantes de nom (accents, abréviations, nom de marque contre DCI) sont aussi détectées par la clé
+-- ci-dessous, qui compare DCI + nom commercial + dosage + forme. Les requêtes 1 et 2 vérifient la contrainte
+-- sur stocks.
 -- ============================================================
 BEGIN READ ONLY;
 

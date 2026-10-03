@@ -19,3 +19,13 @@ Scripts à exécuter **à la main**, jamais par la CLI (ils ne sont volontaireme
    (`DROP SCHEMA sauvegarde_fusion CASCADE;`). Tant qu'elle existe, la migration refuse de se relancer.
 
 Si la CLI Supabase gère un jour l'historique de ce projet : `supabase migration repair --status applied 20261003100000`.
+
+## Ce que couvre (et ne couvre pas) l'index `uq_medicaments_nom_dosage`
+
+- **Couvre** : deux fiches de même nom (minuscules, espaces autour ignorés) et de même dosage (espaces ignorés, vide = NULL)
+  sont refusées. C'est le cas des 20 paires de la production et de tout rechargement futur d'un seed.
+- **Ne couvre pas** : les variantes de nom (accents, espaces ou ponctuation à l'intérieur du nom, abréviations, marque contre
+  DCI). Ces doublons-là ne sont détectés que par la clé produit (DCI + marque + dosage + forme) du diagnostic, de la fusion
+  et du formulaire de l'Espace Pro.
+- **Effet de bord** : l'index ignore la forme et la marque ; deux produits de même nom et même dosage mais de forme différente
+  ne peuvent pas coexister.
