@@ -103,6 +103,30 @@
     };
   }
 
+  /**
+   * Classification du catalogue (admin) : fiches dont `restreint` ou `ordonnance` diffère de l'état chargé.
+   * `original` et `courant` : { [id]: { restreint: bool, ordonnance: bool } }. Aucune valeur n'est jamais déduite ici.
+   */
+  function classificationChanges(original, courant) {
+    var out = [];
+    Object.keys(courant || {}).forEach(function (id) {
+      var a = (original || {})[id], b = courant[id];
+      if (!a || !b) return;
+      if (a.restreint !== b.restreint || a.ordonnance !== b.ordonnance) {
+        out.push({ medicament_id: id, restreint: b.restreint, ordonnance: b.ordonnance });
+      }
+    });
+    return out;
+  }
+
+  /** Éléments envoyés à valider_classification : les valeurs AFFICHÉES des fiches cochées, telles quelles. */
+  function validationElements(courant, ids) {
+    return (ids || []).filter(function (id) { return courant && courant[id]; }).map(function (id) {
+      return { medicament_id: id, restreint: courant[id].restreint === true, ordonnance: courant[id].ordonnance === true };
+    });
+  }
+
   return { formatHoraires: formatHoraires, statutInfo: statutInfo, medIdentityKey: medIdentityKey,
-    findOwnedStock: findOwnedStock, mapLinks: mapLinks };
+    findOwnedStock: findOwnedStock, mapLinks: mapLinks, classificationChanges: classificationChanges,
+    validationElements: validationElements };
 }));

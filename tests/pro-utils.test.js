@@ -1,4 +1,4 @@
-const { formatHoraires, statutInfo, medIdentityKey, findOwnedStock, mapLinks } = require('../public/pro-utils');
+const { formatHoraires, statutInfo, medIdentityKey, findOwnedStock, mapLinks, classificationChanges, validationElements } = require('../public/pro-utils');
 
 const jour = (ouv, fer) => ({ ouv, fer });
 
@@ -86,5 +86,28 @@ describe('mapLinks', () => {
     [[null, null], [undefined, 11], ['abc', '11'], [95, 11], [3, 200], ['3"><script>', 11]].forEach(([a, b]) => {
       expect(mapLinks(a, b)).toBeNull();
     });
+  });
+});
+
+describe('classification du catalogue (admin)', () => {
+  const original = { a: { restreint: true, ordonnance: false }, b: { restreint: true, ordonnance: true } };
+
+  test('aucune modification : liste vide', () => {
+    expect(classificationChanges(original, JSON.parse(JSON.stringify(original)))).toEqual([]);
+  });
+
+  test('seules les fiches modifiées sont renvoyées, avec les valeurs choisies', () => {
+    const courant = { a: { restreint: false, ordonnance: false }, b: { restreint: true, ordonnance: true } };
+    expect(classificationChanges(original, courant)).toEqual([{ medicament_id: 'a', restreint: false, ordonnance: false }]);
+  });
+
+  test('une fiche inconnue de l\'état chargé est ignorée', () => {
+    expect(classificationChanges(original, { z: { restreint: false, ordonnance: false } })).toEqual([]);
+  });
+
+  test('validationElements : valeurs affichées des fiches cochées uniquement, jamais déduites', () => {
+    const courant = { a: { restreint: false, ordonnance: true }, b: { restreint: true, ordonnance: true } };
+    expect(validationElements(courant, ['a', 'inconnue'])).toEqual([{ medicament_id: 'a', restreint: false, ordonnance: true }]);
+    expect(validationElements(courant, [])).toEqual([]);
   });
 });

@@ -275,6 +275,7 @@
             <button class="dash-tab" onclick="ProApp.switchTab('import')">📥 Import CSV</button>
             <button class="dash-tab" onclick="ProApp.switchTab('pharmacy')">🏥 Ma Pharmacie</button>
             <button class="dash-tab" onclick="ProApp.switchTab('alerts')">🔔 Alertes</button>
+            <button class="dash-tab" id="tabBtnClassification" style="display:none" onclick="ProApp.switchTab('classification')">🛡️ Classification du catalogue</button>
         </div>
 
         <!-- TAB: Stocks -->
@@ -341,6 +342,48 @@
                 </div>
                 <div class="pharmacy-info-grid" id="pharmacyInfoGrid">
                     <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Classification du catalogue (admin seul) -->
+        <div class="tab-panel" id="tab-classification">
+            <div class="section-card">
+                <div class="section-header">
+                    <h3>🚦 Passage en production</h3>
+                    <span id="modeBadge" style="font-size:12px;font-weight:600"></span>
+                </div>
+                <p style="font-size:13px;color:var(--text-muted);margin-bottom:10px">Le routage automatique ne passe en mode production que si les cinq conditions ci-dessous sont remplies. La base de données refuse le changement sinon.</p>
+                <ul id="conditionsList" style="list-style:none;padding:0;margin:0 0 12px"></ul>
+                <button class="btn btn-add" id="btnProduction" disabled onclick="ProApp.passerEnProduction()">Passer en production</button>
+            </div>
+            <div class="section-card" style="margin-top:16px">
+                <div class="section-header">
+                    <h3>🛡️ Classification du catalogue</h3>
+                    <span style="font-size:12px;color:var(--text-muted)">Médicaments restreints et sur ordonnance</span>
+                </div>
+                <div style="background:#fff8e1;border:1px solid #ffe08a;border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:12px">
+                    <strong>Cette classification n'est pas décidée par l'application.</strong> Toute fiche est <em>restreinte</em> tant qu'elle n'a pas été classée :
+                    par le propriétaire (catalogue de démonstration) ou par un pharmacien diplômé (production, avec son numéro d'Ordre).
+                    Un médicament restreint n'est jamais routé automatiquement. Modifier une classification remet sa validation à zéro.
+                </div>
+                <div style="overflow-x:auto">
+                    <table class="stock-table" id="classifTable">
+                        <thead><tr><th></th><th>Médicament</th><th>Dosage</th><th>Forme</th><th>Restreint</th><th>Sur ordonnance</th><th>Validation</th></tr></thead>
+                        <tbody id="classifBody"><tr><td colspan="7"><div class="spinner"></div></td></tr></tbody>
+                    </table>
+                </div>
+                <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                    <button class="btn btn-add" id="btnSaveClassif" onclick="ProApp.enregistrerClassification()">💾 Enregistrer les modifications (décision du propriétaire)</button>
+                    <span id="classifDirty" style="font-size:12px;color:var(--text-muted)"></span>
+                </div>
+                <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:14px">
+                    <h4 style="margin-bottom:8px">Validation par un pharmacien</h4>
+                    <p style="font-size:13px;color:var(--text-muted);margin-bottom:10px">Cochez les fiches dont la classification affichée a été validée par le pharmacien, puis saisissez son identité. Enregistrez d'abord les modifications éventuelles ci-dessus.</p>
+                    <div class="form-group"><label for="valNom">Nom du pharmacien validateur</label><input id="valNom" type="text" maxlength="120" autocomplete="off"></div>
+                    <div class="form-group"><label for="valOrdre">Numéro d'Ordre</label><input id="valOrdre" type="text" maxlength="60" autocomplete="off"></div>
+                    <div class="form-group"><label for="valDoc">Référence du document (facultatif)</label><input id="valDoc" type="text" maxlength="200" autocomplete="off"></div>
+                    <button class="btn btn-import" id="btnValider" onclick="ProApp.validerClassification()">✅ Enregistrer la validation pour les fiches cochées</button>
                 </div>
             </div>
         </div>
@@ -533,20 +576,141 @@ var ProApp = (function() {
         document.getElementById('dashboardSection').classList.add('active');
         document.getElementById('navRight').style.display = 'flex';
         document.getElementById('navUserName').textContent = currentProfil.nom_complet || currentUser.email;
+        // Onglet réservé à l'admin (la base refuse de toute façon les écritures des autres rôles).
+        document.getElementById('tabBtnClassification').style.display = currentProfil.role === 'admin' ? '' : 'none';
         loadStocks();
         loadStats();
     }
 
     function switchTab(tabName) {
-        document.querySelectorAll('.dash-tab').forEach(function(t, i) {
-            var tabs = ['stocks', 'import', 'pharmacy', 'alerts'];
-            t.classList.toggle('active', tabs[i] === tabName);
+        document.querySelectorAll('.dash-tab').forEach(function(t) {
+            var m = /switchTab\('([a-z]+)'\)/.exec(t.getAttribute('onclick') || '');
+            t.classList.toggle('active', !!m && m[1] === tabName);
         });
         document.querySelectorAll('.tab-panel').forEach(function(p) {
             p.classList.toggle('active', p.id === 'tab-' + tabName);
         });
         if (tabName === 'pharmacy') loadPharmacyInfo();
         if (tabName === 'alerts') loadAlerts();
+        if (tabName === 'classification') loadClassification();
+    }
+
+    // ── Classification du catalogue (admin) ──
+    var classifOriginal = {};
+    var classifCourant = {};
+
+    function validationLabel(m) {
+        if (!m.classification_validee_le) return '<span style="color:var(--danger)">non validée</span>';
+        return '<span style="color:#155724">validée le ' + esc(new Date(m.classification_validee_le).toLocaleDateString('fr-FR')) + '</span>';
+    }
+
+    function loadClassification() {
+        if (!currentProfil || currentProfil.role !== 'admin') return;
+        _sb.from('medicaments')
+            .select('id, nom, dosage, forme, restreint, ordonnance, est_demo, classification_validee_le, statut_catalogue')
+            .order('nom', { ascending: true })
+            .then(function(res) {
+                var body = document.getElementById('classifBody');
+                if (res.error) { body.innerHTML = '<tr><td colspan="7">Erreur : ' + esc(res.error.message) + '</td></tr>'; return; }
+                var rows = res.data || [];
+                classifOriginal = {}; classifCourant = {};
+                rows.forEach(function(m) {
+                    classifOriginal[m.id] = { restreint: m.restreint === true, ordonnance: m.ordonnance === true };
+                    classifCourant[m.id] = { restreint: m.restreint === true, ordonnance: m.ordonnance === true };
+                });
+                body.innerHTML = rows.map(function(m) {
+                    var id = esc(m.id);
+                    return '<tr>' +
+                        '<td><input type="checkbox" class="classif-check" data-id="' + id + '" aria-label="Fiche validée"></td>' +
+                        '<td><strong>' + esc(m.nom) + '</strong>' + (m.est_demo ? ' <span style="font-size:10px;background:#eee;border-radius:4px;padding:1px 5px">démo</span>' : '') +
+                            (m.statut_catalogue === 'archive' ? ' <span style="font-size:10px;background:#eee;border-radius:4px;padding:1px 5px">archivée</span>' : '') + '</td>' +
+                        '<td>' + esc(m.dosage || '—') + '</td><td>' + esc(m.forme || '—') + '</td>' +
+                        '<td><select class="classif-sel" data-id="' + id + '" data-champ="restreint"><option value="true"' + (m.restreint ? ' selected' : '') + '>Oui (restreint)</option><option value="false"' + (!m.restreint ? ' selected' : '') + '>Non</option></select></td>' +
+                        '<td><select class="classif-sel" data-id="' + id + '" data-champ="ordonnance"><option value="true"' + (m.ordonnance ? ' selected' : '') + '>Oui</option><option value="false"' + (!m.ordonnance ? ' selected' : '') + '>Non</option></select></td>' +
+                        '<td>' + validationLabel(m) + '</td></tr>';
+                }).join('') || '<tr><td colspan="7">Catalogue vide</td></tr>';
+                body.querySelectorAll('.classif-sel').forEach(function(sel) {
+                    sel.addEventListener('change', function() {
+                        classifCourant[sel.getAttribute('data-id')][sel.getAttribute('data-champ')] = sel.value === 'true';
+                        var n = ProUtils.classificationChanges(classifOriginal, classifCourant).length;
+                        document.getElementById('classifDirty').textContent = n ? n + ' modification(s) non enregistrée(s)' : '';
+                    });
+                });
+            });
+        loadConditions();
+    }
+
+    function loadConditions() {
+        Promise.all([
+            _sb.rpc('conditions_passage_production'),
+            _sb.from('config_routage').select('valeur').eq('cle', 'mode_application').maybeSingle()
+        ]).then(function(r) {
+            var list = document.getElementById('conditionsList');
+            var libelles = {
+                validation_pharmacien: 'Validation du catalogue par un pharmacien',
+                catalogue_demo_retire: 'Catalogue de démonstration retiré (aucune fiche de démo active)',
+                pharmacies_demo_depubliees: 'Pharmacies de démonstration non publiées',
+                pharmacie_reelle_verifiee: 'Au moins une pharmacie réelle vérifiée',
+                fournisseur_telegram_reel: 'Fournisseur Telegram réel configuré'
+            };
+            var mode = r[1].data ? r[1].data.valeur : 'demo';
+            var badge = document.getElementById('modeBadge');
+            badge.textContent = mode === 'production' ? 'Mode : PRODUCTION' : 'Mode : DÉMONSTRATION';
+            badge.style.color = mode === 'production' ? '#155724' : '#b26a00';
+            if (r[0].error) { list.innerHTML = '<li>Erreur : ' + esc(r[0].error.message) + '</li>'; return; }
+            var conds = r[0].data || [];
+            list.innerHTML = conds.map(function(c) {
+                return '<li style="padding:4px 0">' + (c.ok ? '✅ ' : '❌ ') + esc(libelles[c.cle] || c.cle) +
+                    ' <span style="font-size:12px;color:var(--text-muted)">— ' + esc(c.detail) + '</span></li>';
+            }).join('');
+            var tout = conds.length > 0 && conds.every(function(c) { return c.ok; });
+            document.getElementById('btnProduction').disabled = !(tout && mode !== 'production');
+        });
+    }
+
+    function passerEnProduction() {
+        if (!window.confirm('Passer l\'application en mode PRODUCTION ? Les médicaments non validés par un pharmacien ne seront plus routés.')) return;
+        _sb.from('config_routage').update({ valeur: 'production', mis_a_jour_par: currentUser.id }).eq('cle', 'mode_application')
+            .then(function(res) {
+                if (res.error) { showToast('Refusé : ' + res.error.message, 'error'); return; }
+                showToast('Mode production activé');
+                loadConditions();
+            });
+    }
+
+    function enregistrerClassification() {
+        var changes = ProUtils.classificationChanges(classifOriginal, classifCourant);
+        if (changes.length === 0) { showToast('Aucune modification', 'error'); return; }
+        if (!window.confirm(changes.length + ' fiche(s) modifiée(s) : leur validation éventuelle sera remise à zéro. Continuer ?')) return;
+        Promise.all(changes.map(function(c) {
+            return _sb.from('medicaments').update({ restreint: c.restreint, ordonnance: c.ordonnance }).eq('id', c.medicament_id);
+        })).then(function(results) {
+            var echec = results.filter(function(r) { return r.error; });
+            if (echec.length) { showToast('Erreur : ' + echec[0].error.message, 'error'); }
+            else { showToast(changes.length + ' fiche(s) enregistrée(s)'); }
+            document.getElementById('classifDirty').textContent = '';
+            loadClassification();
+        });
+    }
+
+    function validerClassification() {
+        var nom = document.getElementById('valNom').value.trim();
+        var ordre = document.getElementById('valOrdre').value.trim();
+        var doc = document.getElementById('valDoc').value.trim();
+        var ids = [];
+        document.querySelectorAll('.classif-check:checked').forEach(function(c) { ids.push(c.getAttribute('data-id')); });
+        if (ProUtils.classificationChanges(classifOriginal, classifCourant).length) { showToast('Enregistrez d\'abord les modifications', 'error'); return; }
+        if (!nom || !ordre) { showToast('Nom et numéro d\'Ordre du pharmacien obligatoires', 'error'); return; }
+        if (ids.length === 0) { showToast('Cochez au moins une fiche', 'error'); return; }
+        _sb.rpc('valider_classification', {
+            p_nom: nom, p_numero_ordre: ordre,
+            p_elements: ProUtils.validationElements(classifCourant, ids),
+            p_document_ref: doc || null
+        }).then(function(res) {
+            if (res.error) { showToast('Refusé : ' + res.error.message, 'error'); return; }
+            showToast(ids.length + ' fiche(s) validée(s)');
+            loadClassification();
+        });
     }
 
     // ── Stats ──
@@ -986,6 +1150,9 @@ var ProApp = (function() {
         login: login,
         logout: logout,
         switchTab: switchTab,
+        enregistrerClassification: enregistrerClassification,
+        validerClassification: validerClassification,
+        passerEnProduction: passerEnProduction,
         loadStocks: loadStocks,
         filterStocks: filterStocks,
         openAddStock: openAddStock,
