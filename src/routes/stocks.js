@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const { supabaseAdmin, supabase: supabaseAnon } = require('../config/supabase');
 const supabase = supabaseAdmin || supabaseAnon;
+const { sanitizeSearchTerm, orIlike } = require('../utils/search');
 
 const router = Router();
 
@@ -37,10 +38,13 @@ router.get('/', async (req, res, next) => {
     }
 
     if (medicament) {
-      const { data: meds } = await supabase
-        .from('medicaments')
-        .select('id')
-        .or(`nom.ilike.%${medicament}%,dci.ilike.%${medicament}%,nom_commercial.ilike.%${medicament}%,categorie.ilike.%${medicament}%`);
+      const term = sanitizeSearchTerm(medicament);
+      const { data: meds } = term
+        ? await supabase
+          .from('medicaments')
+          .select('id')
+          .or(orIlike(['nom', 'dci', 'nom_commercial', 'categorie'], term))
+        : { data: [] };
 
       if (!meds || meds.length === 0) {
         return res.json({ data: [], total: 0, page: pageNum, limit: limitNum, pages: 0 });
@@ -120,7 +124,13 @@ router.get('/', async (req, res, next) => {
  */
 router.get('/meilleurs-prix', async (req, res, next) => {
   try {
-    const { dci, garde, q } = req.query;
+    const { garde } = req.query;
+    // Filtre absent ou vide = pas de filtre ; texte sans caractère admis = aucun résultat
+    const dci = req.query.dci ? sanitizeSearchTerm(req.query.dci) : undefined;
+    const q = req.query.q ? sanitizeSearchTerm(req.query.q) : undefined;
+    if (dci === '' || q === '') {
+      return res.json({ data: [], filters: { garde: garde === 'true', dci: dci || null, q: q || null } });
+    }
 
     // 1. Pré-filtrer les pharmacies si garde=true
     let pharmacieIds = null;
@@ -144,7 +154,7 @@ router.get('/meilleurs-prix', async (req, res, next) => {
         medQuery = medQuery.ilike('dci', `%${dci}%`);
       }
       if (q) {
-        medQuery = medQuery.or(`nom.ilike.%${q}%,dci.ilike.%${q}%,nom_commercial.ilike.%${q}%,categorie.ilike.%${q}%`);
+        medQuery = medQuery.or(orIlike(['nom', 'dci', 'nom_commercial', 'categorie'], q));
       }
       const { data: filteredMeds, error: me } = await medQuery;
       if (me) throw me;

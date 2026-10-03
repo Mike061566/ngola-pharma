@@ -30,7 +30,7 @@ function normalizeValue(s) {
 /** Lit un contenu CSV/texte et renvoie Map<"type|clé", valeur>. Ignore `info|` et les lignes non conformes. */
 function parseInventory(content) {
   const entries = new Map();
-  for (let raw of content.replace(/^﻿/, '').split(/\r?\n/)) {
+  for (let raw of content.replace(/^\uFEFF/, '').split(/\r?\n/)) {
     let line = raw.trim();
     if (line.startsWith('"') && line.endsWith('"') && line.length >= 2) {
       line = line.slice(1, -1).replace(/""/g, '"');
@@ -45,7 +45,7 @@ function parseInventory(content) {
 /** Les informations `info|count...` (comptes de lignes), à titre indicatif. */
 function parseInfo(content) {
   const out = [];
-  for (let raw of content.replace(/^﻿/, '').split(/\r?\n/)) {
+  for (let raw of content.replace(/^\uFEFF/, '').split(/\r?\n/)) {
     let line = raw.trim();
     if (line.startsWith('"') && line.endsWith('"')) line = line.slice(1, -1);
     const m = /^info\|([^|]*)\|(.*)$/.exec(line);

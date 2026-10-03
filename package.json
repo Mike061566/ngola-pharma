@@ -7,7 +7,7 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "seed": "node src/utils/seed.js",
-    "lint": "eslint src/",
+    "lint": "eslint src/ scripts/ tests/",
     "test": "jest --passWithNoTests"
   },
   "keywords": ["pharmacy", "cameroon", "yaounde", "health"],

@@ -91,7 +91,7 @@ if (process.env.NODE_ENV !== 'production') {
     try {
       const { data: q } = await sb.from('quartiers').select('id, slug').limit(1).single();
       if (q) {
-        const { data: p, error: pe, count } = await sb
+        const { error: pe, count } = await sb
           .from('pharmacies')
           .select('id, nom', { count: 'exact' })
           .eq('quartier_id', q.id);
