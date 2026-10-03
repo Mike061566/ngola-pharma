@@ -99,6 +99,9 @@ lignes AS (
     FROM tables t
     CROSS JOIN LATERAL aclexplode(coalesce(t.relacl, acldefault('r', (SELECT relowner FROM pg_class WHERE oid = t.oid)))) x
     JOIN pg_roles r ON r.oid = x.grantee AND r.rolname IN ('anon', 'authenticated')
+    -- MAINTAIN n'existe qu'à partir de PostgreSQL 17 : exclu pour que l'inventaire ne dépende
+    -- pas de la version du serveur (prod, Supabase local, CI).
+    WHERE x.privilege_type <> 'MAINTAIN'
     GROUP BY t.relname, r.rolname
 
     UNION ALL -- Informatif (ignoré par la comparaison) : nombre de lignes par table
