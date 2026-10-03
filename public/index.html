@@ -467,6 +467,7 @@
         .badge-garde { background: #d4edda; color: #155724; }
         .badge-verifie { background: #d1ecf1; color: #0c5460; }
         .badge-partenaire { background: #fff3cd; color: #856404; }
+        .badge-demo { background: #fff3cd; color: #7a4f00; border: 1px solid #ffe08a; font-weight: 700; }
         .badge-ngola-verified { background: linear-gradient(135deg, #f6d365, #f5c842); color: #6b4701; border: 1px solid #e6b800; font-weight: 700; letter-spacing: 0.3px; }
         .badge-stock-fresh { background: #d4edda; color: #155724; }
         .badge-stock-stale { background: #fff3cd; color: #856404; }
@@ -2311,6 +2312,7 @@
                 badges += '<span class="badge badge-ngola-verified">✓ ' + (currentLang === 'en' ? "N'Gola Verified" : "Vérifié N'Gola") + '</span>';
             }
             if (p.statut === 'partenaire') badges += '<span class="badge badge-partenaire">Partenaire</span>';
+            if (p.est_demo) badges += '<span class="badge badge-demo">' + (currentLang === 'en' ? 'Demo data' : 'Données de démonstration') + '</span>';
             // Stock freshness badge if pharmacy has _freshestDate from enrichment
             if (p._freshestDate) {
                 badges += freshnessBadge(p._freshestDate);
@@ -2541,7 +2543,7 @@
                 // Le filtre garde n'est pas dans v_meilleurs_prix,
                 // on requête les stocks directement avec jointures
                 _sb.from('stocks')
-                    .select('medicament_id, prix_fcfa, en_stock, medicaments(id, nom, dci, dosage), pharmacies!inner(id, nom, est_de_garde, quartier_id)')
+                    .select('medicament_id, prix_fcfa, en_stock, medicaments(id, nom, dci, dosage), pharmacies!inner(id, nom, est_de_garde, quartier_id, est_demo)')
                     .eq('en_stock', true)
                     .eq('pharmacies.est_de_garde', true)
                     .order('prix_fcfa', { ascending: true })
@@ -2570,6 +2572,7 @@
                                 dosage: r.medicaments ? r.medicaments.dosage : '',
                                 dci: r.medicaments ? r.medicaments.dci : '',
                                 pharmacie_nom: r.pharmacies ? r.pharmacies.nom : '—',
+                                pharmacie_est_demo: r.pharmacies ? r.pharmacies.est_demo === true : false,
                                 prix_fcfa: r.prix_fcfa,
                                 est_de_garde: true
                             };
@@ -2624,6 +2627,7 @@
                             (currentLang === 'en' ? 'On duty' : 'De garde') + '</span> &bull; ' : '') +
                         (currentLang === 'en' ? 'Best price at ' : 'Meilleur prix chez ') +
                         esc(s.pharmacie_nom) + (s.quartier_nom ? ' &bull; ' + esc(s.quartier_nom) : '') +
+                        (s.pharmacie_est_demo ? ' <span class="badge badge-demo">' + (currentLang === 'en' ? 'Demo data' : 'Données de démonstration') + '</span>' : '') +
                     '</div>' +
                 '</div>';
             });
@@ -2651,6 +2655,7 @@
                     if (p.telephone) html += '<div class="modal-info-row"><span class="modal-info-label">' +
                         (currentLang === 'en' ? 'Phone' : 'Téléphone') + '</span><span class="modal-info-value"><a href="tel:' + esc(p.telephone) + '">' + esc(p.telephone) + '</a></span></div>';
                     html += '<div class="modal-info-row"><span class="modal-info-label">Statut</span><span class="modal-info-value">' + esc(p.statut) + '</span></div>';
+                    if (p.est_demo) html += '<div class="modal-info-row"><span class="modal-info-label"></span><span class="modal-info-value"><span class="badge badge-demo">Données de démonstration</span></span></div>';
                     if (p.est_de_garde) html += '<div class="modal-info-row"><span class="modal-info-label">Garde</span><span class="modal-info-value" style="color:#28a745;font-weight:700">&#9679; ' +
                         (currentLang === 'en' ? 'On duty now' : 'De garde actuellement') + '</span></div>';
 
@@ -3013,6 +3018,7 @@
                 badges += '<span class="badge badge-ngola-verified">✓ ' + (currentLang === 'en' ? "N'Gola Verified" : "Vérifié N'Gola") + '</span>';
             }
             if (p.statut === 'partenaire') badges += '<span class="badge badge-partenaire">Partenaire</span>';
+            if (p.est_demo) badges += '<span class="badge badge-demo">' + (currentLang === 'en' ? 'Demo data' : 'Données de démonstration') + '</span>';
             var distHtml = '';
             if (p._distance !== undefined) {
                 var awayText = currentLang === 'en' ? ' away' : '';
@@ -3232,5 +3238,7 @@
         };
     })();
     </script>
+<script src="/alerte-config.js"></script>
+<script src="/demo-banner.js"></script>
 </body>
 </html>

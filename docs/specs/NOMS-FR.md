@@ -72,3 +72,8 @@ Les **valeurs** de statut (`new`, `routing`, `sent`, `queued`, `telegram`...) re
 | `/api/admin/routing-config` | table `config_routage` (validation `erreur_valeur_config`, journal `config_routage_journal`) |
 | `/api/admin/alerts/metrics` | `indicateurs_alertes`, `etat_budget_messages` |
 | journal d'audit admin | `journal_admin_alertes` ; ordres exécutés par le planificateur : `ordres_admin_alertes` |
+| `seed/demo_catalog.csv` (`dci, brand_name, strength, form, pack_size, requires_prescription, restricted`) | `supabase/seed/demo_catalog.csv` ; chargé par `src/utils/demo-catalog.js` (`restricted` jamais déduit) |
+| `scripts/demo-reset.js` | `scripts/demo-reset.js` + fonction SQL `reinitialiser_demo` (refusée hors démo) |
+| `app_mode` lisible par la bannière | fonction publique `mode_public()` |
+| `is_demo_contact` géré par l'admin | `admin_marquer_contact_demo`, `admin_activer_telegram_demo`, `admin_liste_contacts` |
+| messages `suppressed_demo` visibles | `file_messages_demo` |

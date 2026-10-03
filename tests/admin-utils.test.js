@@ -48,6 +48,7 @@ describe('chronologie', () => {
     expect(U.libelleEvenement({ type: 'reponse', pharmacie: 'P', reponse: 'available', prix_fcfa: 1500, canal: 'telegram' })).toBe('P : Disponible (1500 FCFA) via telegram');
     expect(U.libelleEvenement({ type: 'reponse', pharmacie: 'P', reponse: 'unavailable', canal: 'link' })).toBe('P : Indisponible via link');
     expect(U.libelleEvenement({ type: 'message', canal: 'sms', modele: 'alerte_demande_sms', statut: 'failed', erreur: 'contact_bloque' })).toBe('Message sms (alerte_demande_sms) : failed — contact_bloque');
+    expect(U.libelleEvenement({ type: 'message', canal: 'telegram', modele: 'alerte_demande', statut: 'suppressed_demo' })).toMatch(/aurait été envoyé \(mode démo/);
     expect(U.libelleEvenement({ type: 'action_admin', action: 'annuler' })).toBe('Action admin : annuler');
     expect(U.libelleEvenement({ type: 'inconnu' })).toBe('inconnu');
   });
@@ -72,5 +73,14 @@ describe('réglages', () => {
     expect(U.niveauBudget({ alerte_80: false, depasse: false })).toBe('ok');
     expect(U.niveauBudget({ alerte_80: true, depasse: false })).toBe('alerte');
     expect(U.niveauBudget({ alerte_80: true, depasse: true })).toBe('depasse');
+  });
+});
+
+describe('remise à zéro de la démo', () => {
+  test('résumé lisible, avec les points à traiter', () => {
+    expect(U.resumeReinitialisation(null)).toBe('');
+    const r = { alertes_supprimees: 3, messages_supprimes: 7, stocks: 24, pharmacies_scenario: ['a', 'b'], avertissements: [] };
+    expect(U.resumeReinitialisation(r)).toBe('3 alerte(s) et 7 message(s) supprimés, 24 stocks rétablis. Pharmacies : a, b.');
+    expect(U.resumeReinitialisation({ ...r, avertissements: ['aucun_compte_de_test : ajoutez les comptes'] })).toMatch(/À traiter : aucun compte de test\./);
   });
 });

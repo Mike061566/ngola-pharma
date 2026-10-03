@@ -18,7 +18,7 @@ window.AdminAlertes = (function () {
         }, 15000);
     }
 
-    function chargerTout() { chargerBandeau(); chargerIndicateurs(); chargerFile(); chargerReglages(); }
+    function chargerTout() { chargerBandeau(); chargerIndicateurs(); chargerFile(); chargerReglages(); chargerComptesTest(); }
 
     function rpc(nom, args, ok) {
         return sb.rpc(nom, args || {}).then(function (res) {
@@ -228,5 +228,69 @@ window.AdminAlertes = (function () {
         });
     }
 
-    return { init: init, ouvrir: ouvrir, chargerIndicateurs: chargerIndicateurs, chargerFile: chargerFile, chargerTout: chargerTout };
+        // ── Comptes de test, messages « aurait été envoyé », remise à zéro de la démo ──
+    function chargerComptesTest() {
+        sb.rpc('admin_liste_contacts', { p_limite: 300 }).then(function (res) {
+            var zone = $('consoleContacts');
+            if (res.error) { zone.textContent = 'Liste indisponible.'; return; }
+            var l = res.data || [];
+            var icones = { telegram: '✈️ Telegram', sms: '📱 SMS', email: '✉️ Email' };
+            zone.innerHTML = l.length ? '<table class="stock-table"><thead><tr><th>Pharmacie</th><th>Canal</th><th>Compte</th><th>Liste blanche</th></tr></thead><tbody>' + l.map(function (c) {
+                var etat = c.bloque ? ' (bloqué)' : c.desabonne ? ' (désabonné)' : '';
+                var id = esc(c.contact_id);
+                return '<tr><td>' + esc(c.pharmacie_nom) + (c.pharmacie_est_demo ? ' <span class="badge-unverified">démo</span>' : '') + '</td><td>' + (icones[c.canal] || esc(c.canal)) + '</td><td>' + esc(c.adresse_masquee) + esc(etat) + '</td>' +
+                    '<td>' + (c.est_contact_demo ? '✅ <button class="btn btn-secondary" data-demo="' + id + '" data-valeur="0">Retirer</button>' : '<button class="btn btn-secondary" data-demo="' + id + '" data-valeur="1">Ajouter</button>') + '</td></tr>';
+            }).join('') + '</tbody></table>' : '<div class="empty-state"><p>Aucun contact</p></div>';
+            Array.prototype.forEach.call(zone.querySelectorAll('[data-demo]'), function (b) {
+                b.addEventListener('click', function () {
+                    rpc('admin_marquer_contact_demo', { p_contact_id: b.getAttribute('data-demo'), p_demo: b.getAttribute('data-valeur') === '1' }, 'Liste blanche mise à jour').then(chargerComptesTest);
+                });
+            });
+        });
+        sb.rpc('file_messages_demo', { p_limite: 50 }).then(function (res) {
+            var zone = $('consoleMessagesDemo'), l = res.data || [];
+            zone.innerHTML = l.length ? '<ul class="console-chrono">' + l.map(function (m) {
+                return '<li><span class="console-heure">' + esc(new Date(m.cree_le).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })) + '</span> ' +
+                    esc(m.type_destinataire) + ' · ' + esc(m.canal) + ' · ' + esc(m.modele) + ' — aurait été envoyé</li>';
+            }).join('') + '</ul>' : '<p class="console-note">Aucun message supprimé.</p>';
+        });
+        if (!$('consolePharmaDemo').options.length) {
+            sb.from('pharmacies').select('id, nom').eq('est_demo', true).order('slug').limit(100).then(function (res) {
+                var s = $('consolePharmaDemo'); s.textContent = '';
+                (res.data || []).forEach(function (p) { var o = document.createElement('option'); o.value = p.id; o.textContent = p.nom; s.appendChild(o); });
+            });
+        }
+    }
+
+    function creerCompteTest() {
+        var id = $('consolePharmaDemo').value;
+        if (!id) { toast('Choisissez une pharmacie de démonstration', 'error'); return; }
+        var bot = (window.NGOLA_ALERTE && window.NGOLA_ALERTE.telegramBot) || '';
+        if (!bot) { toast('Le bot Telegram n\'est pas encore configuré', 'error'); return; }
+        rpc('admin_activer_telegram_demo', { p_pharmacie_id: id }).then(function (r) {
+            if (!r) return;
+            var ligne = Array.isArray(r) ? r[0] : r;
+            var lien = window.ProUtils.lienTelegram(bot, ligne.jeton);
+            var zone = $('consoleLienTest'); zone.textContent = '';
+            if (!lien) { zone.textContent = 'Lien indisponible.'; return; }
+            var a = document.createElement('a'); a.href = lien; a.target = '_blank'; a.rel = 'noopener'; a.className = 'btn btn-add'; a.textContent = 'Ouvrir Telegram et appuyer sur « Démarrer »'; a.style.textDecoration = 'none';
+            var p = document.createElement('p'); p.className = 'console-note'; p.textContent = 'Lien à usage unique, valable jusqu\'au ' + new Date(ligne.expire_le).toLocaleString('fr-FR') + '. Une fois activé, ce compte reçoit les messages en vrai.';
+            zone.appendChild(a); zone.appendChild(p);
+            chargerComptesTest();
+        });
+    }
+
+    function reinitialiserDemo() {
+        var saisie = window.prompt('Remettre la démonstration à zéro ? Alertes, messages et liste de blocage seront effacés. Tapez REINITIALISER pour confirmer.', '');
+        if (saisie !== 'REINITIALISER') { if (saisie !== null) toast('Confirmation incorrecte : rien n\'a été fait', 'error'); return; }
+        sb.rpc('reinitialiser_demo', { p_nb_pharmacies: 6 }).then(function (res) {
+            if (res.error) { toast('Refusé : ' + res.error.message, 'error'); return; }
+            $('consoleResumeReset').textContent = U.resumeReinitialisation(res.data);
+            toast('Démonstration remise à zéro');
+            courant = null; $('consoleDetail').innerHTML = '<p class="console-note">Choisissez une alerte dans la file.</p>';
+            chargerTout();
+        });
+    }
+
+    return { creerCompteTest: creerCompteTest, reinitialiserDemo: reinitialiserDemo, init: init, ouvrir: ouvrir, chargerIndicateurs: chargerIndicateurs, chargerFile: chargerFile, chargerTout: chargerTout };
 })();

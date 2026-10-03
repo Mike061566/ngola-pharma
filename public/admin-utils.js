@@ -61,7 +61,9 @@
       case 'envoi': return 'Envoyée à ' + e.pharmacie + ' (vague ' + e.vague + ', score ' + e.score + ')' + (e.detail_score && e.detail_score.manuel ? ' — transmission manuelle' : '');
       case 'relance_sms': return 'SMS de relance à ' + e.pharmacie;
       case 'reponse': return e.pharmacie + ' : ' + (e.reponse === 'available' ? 'Disponible' + (e.prix_fcfa ? ' (' + e.prix_fcfa + ' FCFA)' : '') : 'Indisponible') + ' via ' + e.canal;
-      case 'message': return 'Message ' + e.canal + ' (' + e.modele + ') : ' + e.statut + (e.erreur ? ' — ' + e.erreur : '');
+      case 'message':
+        if (e.statut === 'suppressed_demo') return 'Message ' + e.canal + ' (' + e.modele + ') : aurait été envoyé (mode démo, destinataire hors liste blanche)';
+        return 'Message ' + e.canal + ' (' + e.modele + ') : ' + e.statut + (e.erreur ? ' — ' + e.erreur : '');
       case 'escalade': return 'Escalade vers l\'équipe';
       case 'premiere_reponse_positive': return 'Première réponse positive';
       case 'patient_notifie': return 'Patient informé';
@@ -91,7 +93,15 @@
       .sort(function (a, b) { return a.cle < b.cle ? -1 : a.cle > b.cle ? 1 : 0; });
   }
 
-  return { libelleStatut: libelleStatut, libelleRaison: libelleRaison, libelleRefus: libelleRefus, formaterDuree: formaterDuree,
+  /** Résumé lisible du résultat de reinitialiser_demo (jamais de donnée personnelle). */
+  function resumeReinitialisation(r) {
+    if (!r) return '';
+    var t = r.alertes_supprimees + ' alerte(s) et ' + r.messages_supprimes + ' message(s) supprimés, ' + r.stocks + ' stocks rétablis. Pharmacies : ' + ((r.pharmacies_scenario || []).join(', ') || 'aucune') + '.';
+    var w = (r.avertissements || []).map(function (a) { return String(a).split(' : ')[0].replace(/_/g, ' '); });
+    return w.length ? t + ' À traiter : ' + w.join(' ; ') + '.' : t;
+  }
+
+  return { resumeReinitialisation: resumeReinitialisation, libelleStatut: libelleStatut, libelleRaison: libelleRaison, libelleRefus: libelleRefus, formaterDuree: formaterDuree,
     pourcentage: pourcentage, actionsPossibles: actionsPossibles, libelleEvenement: libelleEvenement,
     analyserValeurConfig: analyserValeurConfig, niveauBudget: niveauBudget, reglagesAffichables: reglagesAffichables };
 }));

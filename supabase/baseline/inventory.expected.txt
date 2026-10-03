@@ -219,6 +219,7 @@ column|v_meilleurs_prix.dosage|text
 column|v_meilleurs_prix.en_stock|boolean
 column|v_meilleurs_prix.medicament_id|uuid
 column|v_meilleurs_prix.medicament_nom|text
+column|v_meilleurs_prix.pharmacie_est_demo|boolean
 column|v_meilleurs_prix.pharmacie_id|uuid
 column|v_meilleurs_prix.pharmacie_nom|text
 column|v_meilleurs_prix.prix_fcfa|integer
@@ -229,6 +230,7 @@ column|v_pharmacies.coordinates|geography(Point,4326)
 column|v_pharmacies.created_at|timestamp with time zone
 column|v_pharmacies.email|text
 column|v_pharmacies.est_de_garde|boolean
+column|v_pharmacies.est_demo|boolean
 column|v_pharmacies.garde_jusqu_a|timestamp with time zone
 column|v_pharmacies.horaires|jsonb
 column|v_pharmacies.id|uuid
@@ -364,9 +366,12 @@ extension|pg_trgm|
 extension|plpgsql|
 extension|postgis|
 function|activer_telegram_pharmacie(p_consentement boolean)|returns=TABLE(contact_id uuid, jeton text, expire_le timestamp with time zone) lang=plpgsql security=definer volatility=v config=search_path=public body=e8ba00358ac334276de9f886018b9e8d
+function|admin_activer_telegram_demo(p_pharmacie_id uuid)|returns=TABLE(contact_id uuid, jeton text, expire_le timestamp with time zone) lang=plpgsql security=definer volatility=v config=search_path=public body=99ee2afd64b6b84fdcea93f3a64c8763
 function|admin_annuler_alerte(p_alerte_id uuid)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=ad5b8cde3d9880739bab15111c625153
 function|admin_bloquer_patient(p_alerte_id uuid, p_motif text)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=29098b54a961a4103f4c754e0eef7e55
 function|admin_cloturer_alerte(p_alerte_id uuid)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=5d0936a1ce91a7588cb2344e684763ec
+function|admin_liste_contacts(p_limite integer)|returns=TABLE(contact_id uuid, pharmacie_id uuid, pharmacie_nom text, pharmacie_est_demo boolean, canal text, adresse_masquee text, est_contact_demo boolean, verifie boolean, desabonne boolean, bloque boolean) lang=plpgsql security=definer volatility=s config=search_path=public body=c21a3d9493539213846d5d91643be6f2
+function|admin_marquer_contact_demo(p_contact_id uuid, p_demo boolean)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=9b4193722111df1771deff4a1c7c2f23
 function|admin_rattacher_medicament(p_alerte_id uuid, p_medicament_id uuid)|returns=text lang=plpgsql security=definer volatility=v config=search_path=public body=7754ed9b43f43bda73dfb8c1982c330e
 function|admin_refuser_alerte(p_alerte_id uuid)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=6b9efe93e93048c983076f16775c1601
 function|admin_relancer_vague(p_alerte_id uuid)|returns=integer lang=plpgsql security=definer volatility=v config=search_path=public body=e34e420a739e61658b8f9e9f41efec44
@@ -394,16 +399,19 @@ function|erreur_valeur_config(p_cle text, p_val jsonb)|returns=text lang=plpgsql
 function|etat_budget_messages()|returns=jsonb lang=plpgsql security=definer volatility=s config=search_path=public body=0c1eda00fd0c3c092681dec636e6e69e
 function|exiger_admin()|returns=void lang=plpgsql security=definer volatility=s config=search_path=public body=74124668a87f9cf295660de3a39936ec
 function|file_alertes_admin(p_statuts text[], p_limite integer)|returns=TABLE(id uuid, id_public text, statut text, raison_revue text, urgence text, medicament text, quartier text, cree_le timestamp with time zone, expire_le timestamp with time zone, vague integer, routage_manuel boolean, nb_envois integer, nb_reponses integer, nb_positives integer, premiere_reponse_positive_le timestamp with time zone, canal_patient text) lang=plpgsql security=definer volatility=s config=search_path=public body=249b85793fff1dbfd5c09814d47f3ebc
+function|file_messages_demo(p_limite integer)|returns=TABLE(cree_le timestamp with time zone, type_destinataire text, canal text, modele text, alerte_id uuid) lang=plpgsql security=definer volatility=s config=search_path=public body=510ff2f7d79a7d611683d52cb3cc1f72
 function|indicateurs_alertes(p_jours integer)|returns=jsonb lang=plpgsql security=definer volatility=s config=search_path=public body=c6c453460a5c844d7abd76535de751ba
 function|journaliser_admin(p_action text, p_alerte uuid, p_details jsonb)|returns=void lang=sql security=definer volatility=v config=search_path=public body=763195bdc37ba3b3b827baa7818df6a9
 function|lier_contact_telegram(p_contact_id uuid, p_chat_id text)|returns=TABLE(resultat text, pharmacie_id uuid, pharmacie_nom text, contact_id uuid, est_contact_demo boolean) lang=plpgsql security=definer volatility=v config=search_path=public body=0379ddc541afea560ade5291762d8b5d
 function|medicament_routable(p_medicament_id uuid)|returns=boolean lang=sql security=definer volatility=s config=search_path=public body=f1c2ddf515b3ea552fc113929f67ab2c
 function|medicaments_reset_validation()|returns=trigger lang=plpgsql security=invoker volatility=v config=search_path=public body=739bdce4d4d1bb13505464b67724cf42
 function|mode_application()|returns=text lang=sql security=definer volatility=s config=search_path=public body=f32182f71ed461de860d17fce85de9b0
+function|mode_public()|returns=text lang=sql security=definer volatility=s config=search_path=public body=0211bafd5ab9c39de32f63dc2cf6ee58
 function|pharmacie_eligible_routage(p_pharmacie_id uuid)|returns=boolean lang=sql security=definer volatility=s config=search_path=public body=e9634314593cb59f87d1ff7a6fa50a0a
 function|pharmacies_proches(lat double precision, lng double precision, rayon_m integer)|returns=TABLE(id uuid, nom text, adresse text, latitude double precision, longitude double precision, distance_m double precision, est_de_garde boolean, statut statut_pharmacie, quartier_nom text) lang=sql security=invoker volatility=s config=- body=2a2c3f57ce6bec7c25f98daa6073e092
 function|protect_pharmacies_columns()|returns=trigger lang=plpgsql security=invoker volatility=v config=search_path=public body=9899877fc7960a268c09502f059f2970
 function|reclamer_notifications(p_limite integer, p_bail_s integer)|returns=SETOF notifications_outbox lang=sql security=definer volatility=v config=search_path=public body=44bebc010e5887dbd0e8078b5bd97cd0
+function|reinitialiser_demo(p_nb_pharmacies integer)|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=cbc1e89a60c5ef8d26bbb75186cf680e
 function|repondre_alerte(p_envoi_id uuid, p_reponse text, p_prix integer)|returns=TABLE(resultat text, reponse text, prix_fcfa integer, repondu_le timestamp with time zone) lang=plpgsql security=definer volatility=v config=search_path=public body=780569b736b12b41937c024b9f3eb34f
 function|stocks_sync_statut()|returns=trigger lang=plpgsql security=invoker volatility=v config=search_path=public body=b839f8ab8607feff3f86a0eda93a5fe1
 function|sync_coordinates()|returns=trigger lang=plpgsql security=invoker volatility=v config=- body=488332f208ac465159f3fc55493e1c67
@@ -589,6 +597,6 @@ trigger|profils.trg_profils_updated|CREATE TRIGGER trg_profils_updated BEFORE UP
 trigger|stocks.trg_stocks_sync_statut|CREATE TRIGGER trg_stocks_sync_statut BEFORE INSERT OR UPDATE ON public.stocks FOR EACH ROW EXECUTE FUNCTION stocks_sync_statut()
 view|drug_catalog|a4b5c48998013b2e1ecb2ee6fe03860a
 view|stock_items|d5dc7dc5769f08e90b2d62619dcade2a
-view|v_meilleurs_prix|75a76791399937d609dc34ba20213d8e
-view|v_pharmacies|a5f32633298f0a74be76c9647c60d73c
+view|v_meilleurs_prix|f23f5f94e18695b5d1e7ab313a58d166
+view|v_pharmacies|18d2a6b735b7767be3e423112efcd6c7
 view|vue_alertes_pharmacie|c67b75c6160c32d871a2cba3ad9db282

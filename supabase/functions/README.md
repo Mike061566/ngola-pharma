@@ -171,3 +171,10 @@ Seules sont acceptées les pharmacies vérifiées avec un contact actif (et, en 
 - Le coût moyen par alerte vaut 0 tant que le fournisseur ne renseigne pas `cout_estime` (le mock ne le fait pas) ; le nombre de messages payants est exact.
 - « Mises à jour de stock issues des alertes » = réponses enregistrées sur un médicament reconnu.
 - L'activation Telegram est mesurée sur les pharmacies **publiées** ayant au moins un compte vérifié et actif.
+
+## Mode démo (PR 6bis)
+
+Migration `20261010000000`, `public/demo-banner.js`, `scripts/demo-reset.js`, `src/utils/demo-catalog.js` et le guide `docs/DEMO.md`.
+Le mode démo ne contourne jamais le garde-fou : un médicament restreint reste bloqué. `restricted` du catalogue de démonstration est écrit
+par le propriétaire dans le CSV (jamais déduit ; vide = restreint). La remise à zéro est une fonction SQL refusée hors mode démo,
+rejouable (même empreinte d'état), qui conserve contacts, liste blanche et classification.

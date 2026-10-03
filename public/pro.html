@@ -381,6 +381,25 @@
                 <div id="consoleDetail"><p class="console-note">Choisissez une alerte dans la file.</p></div>
             </div>
             <div class="section-card" style="margin-top:16px">
+                <div class="section-header"><h3>🧪 Comptes de test (mode démo)</h3></div>
+                <p class="console-note">En mode démo, un message n'est envoyé en vrai que vers un compte de cette liste blanche (le vôtre et ceux des pharmaciens qui participent et ont activé le bot eux-mêmes). Les autres destinataires voient « aurait été envoyé » ci-dessous.</p>
+                <div id="consoleContacts"></div>
+                <div class="console-formulaire">
+                    <strong style="font-size:13px">Créer mon compte de test Telegram</strong>
+                    <select id="consolePharmaDemo" style="width:100%;margin:6px 0;padding:8px;border:1px solid var(--border);border-radius:8px"></select>
+                    <button class="btn btn-add" onclick="AdminAlertes.creerCompteTest()">Générer le lien d'activation</button>
+                    <div id="consoleLienTest" style="margin-top:8px"></div>
+                </div>
+                <h4 style="margin:14px 0 6px">Messages « aurait été envoyé »</h4>
+                <div id="consoleMessagesDemo"></div>
+                <div style="margin-top:14px;padding-top:12px;border-top:1px solid #f0f0f0">
+                    <strong style="font-size:13px">Remise à zéro de la démonstration</strong>
+                    <p class="console-note">Efface alertes, messages, jetons et liste de blocage ; rétablit un échantillon de pharmacies de démonstration et leurs stocks. Conserve les comptes de test et la classification. Refusée hors mode démo.</p>
+                    <button class="btn btn-delete" onclick="AdminAlertes.reinitialiserDemo()">↺ Remettre la démo à zéro</button>
+                    <div id="consoleResumeReset" class="console-note"></div>
+                </div>
+            </div>
+            <div class="section-card" style="margin-top:16px">
                 <div class="section-header"><h3>⚙️ Réglages du routage</h3></div>
                 <div id="consoleReglages"></div>
             </div>
@@ -533,6 +552,7 @@
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
 <script src="/alerte-config.js"></script>
+<script src="/demo-banner.js"></script>
 <script src="/pro-utils.js"></script>
 <script src="/admin-utils.js"></script>
 <script src="/admin-alertes.js"></script>
