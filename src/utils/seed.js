@@ -121,6 +121,7 @@ async function seedPharmacies(quartiers) {
       statut: r.statut || 'non_verifie',
       source: r.source || 'admin',
       horaires,
+      est_demo: true, // données de test (PR 1)
     };
   }).filter(Boolean);
 
@@ -149,6 +150,7 @@ async function seedMedicaments() {
     categorie: r.categorie,
     ordonnance: r.ordonnance === 'true',
     description: r.description,
+    est_demo: true, // catalogue de test ; `restreint` reste à true (décision du propriétaire / d'un pharmacien)
   }));
 
   console.log(`💊 Insertion de ${medicaments.length} médicaments…`);

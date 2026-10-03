@@ -19,6 +19,11 @@ La production contient déjà la baseline (elle est issue de `setup_consolide.sq
    elles sont signalées à part, section « Informations ».
    L'empreinte des fonctions ignore espaces et commentaires `--`.
 
+`inventory.expected.txt` décrit le schéma APRÈS toutes les migrations du dépôt. Tant que les migrations de la PR 1
+(`20261004…`) ne sont pas appliquées en prod, comparer plutôt à l'inventaire de la baseline seule :
+`git show <commit-avant-PR1>:supabase/baseline/inventory.expected.txt > /tmp/attendu.txt` puis
+`node scripts/compare-schema.js prod_inventory.csv /tmp/attendu.txt`. Après les migrations de la PR 1, utiliser le fichier courant.
+
 Les migrations suivantes (`2026…_*.sql`) sont à exécuter en prod **à la main, après relecture**, dans
 l'ordre. La fusion des fiches `medicaments` en double (`20261003100000`) a sa procédure et son retour arrière
 dans `supabase/rollback/README.md`.

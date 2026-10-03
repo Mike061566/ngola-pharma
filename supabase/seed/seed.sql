@@ -169,3 +169,9 @@ BEGIN
     RAISE NOTICE '✅ Seed terminé : % quartiers, % pharmacies, % médicaments, % stocks',
         n_quartiers, n_pharmacies, n_medicaments, n_stocks;
 END $$;
+
+-- ── Données de test (PR 1) : tout ce qui vient d'être chargé est marqué « démonstration ».
+-- `restreint` reste à true (défaut sûr) : le passer à false est une décision du propriétaire (démo) ou d'un
+-- pharmacien (production), via l'écran « Classification du catalogue » ; ce script ne le fait jamais.
+UPDATE public.medicaments SET est_demo = true;
+UPDATE public.pharmacies SET est_demo = true;

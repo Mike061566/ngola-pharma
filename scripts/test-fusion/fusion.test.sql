@@ -10,12 +10,30 @@ BEGIN
     IF ok IS TRUE THEN RAISE NOTICE 'TEST OK : %', nom; ELSE RAISE WARNING 'ERREUR TEST : %', nom; END IF;
 END $$;
 
--- Empreinte de l'état (fiches, stocks, alertes)
+-- Empreinte de l'état (fiches, stocks, alertes) sur les colonnes d'avant la PR 1 : le retour arrière est conçu pour
+-- l'état d'avant les migrations de la PR 1 (colonnes ajoutées ensuite : voir supabase/rollback/README.md).
 CREATE FUNCTION pg_temp.empreinte() RETURNS text LANGUAGE sql AS $$
-    SELECT md5(coalesce((SELECT string_agg(m::text, '|' ORDER BY m.id) FROM public.medicaments m), '')) || '/' ||
-           md5(coalesce((SELECT string_agg(s::text, '|' ORDER BY s.id) FROM public.stocks s), '')) || '/' ||
+    SELECT md5(coalesce((SELECT string_agg(row(m.id, m.nom, m.nom_commercial, m.dci, m.forme, m.dosage, m.categorie,
+                  m.ordonnance, m.description, m.image_url, m.created_at, m.updated_at)::text, '|' ORDER BY m.id)
+                FROM public.medicaments m), '')) || '/' ||
+           md5(coalesce((SELECT string_agg(row(s.id, s.pharmacie_id, s.medicament_id, s.prix_fcfa, s.en_stock, s.date_maj,
+                  s.source, s.created_at)::text, '|' ORDER BY s.id) FROM public.stocks s), '')) || '/' ||
            md5(coalesce((SELECT string_agg(a::text, '|' ORDER BY a.id) FROM public.alertes_stock a), ''))
 $$;
+
+-- La fusion s'exécute en production AVANT les migrations de la PR 1 (voir supabase/rollback/README.md). Ici le
+-- schéma est complet : on retire, dans cette transaction (annulée à la fin), les clés étrangères vers `medicaments`
+-- ajoutées après la fusion, pour que le garde-fou ne bloque que ce que le test veut lui faire bloquer.
+DO $$
+DECLARE r record;
+BEGIN
+    FOR r IN SELECT c.conrelid::regclass AS t, c.conname FROM pg_constraint c
+             WHERE c.contype = 'f' AND c.confrelid = 'public.medicaments'::regclass
+               AND c.conrelid NOT IN ('public.stocks'::regclass, 'public.alertes_stock'::regclass)
+    LOOP
+        EXECUTE format('ALTER TABLE %s DROP CONSTRAINT %I', r.t, r.conname);
+    END LOOP;
+END $$;
 
 \ir fixture.sql
 CREATE TEMP TABLE _etat AS SELECT pg_temp.empreinte() AS avant, (SELECT count(*) FROM public.medicaments) AS fiches, (SELECT count(*) FROM public.stocks) AS stocks;

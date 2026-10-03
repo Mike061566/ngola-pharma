@@ -8,6 +8,12 @@ Scripts à exécuter **à la main**, jamais par la CLI (ils ne sont volontaireme
 
 ## Fusion des fiches `medicaments` en double — ordre d'exécution en production
 
+**La fusion (et son retour arrière) s'exécute AVANT les migrations de la PR 1** (`20261004000000` et suivantes).
+La migration refuse de démarrer si une clé étrangère vers `medicaments` qu'elle ne gère pas existe déjà
+(`alias_medicaments`, `alertes_routage`...). Le retour arrière restaure l'état d'avant la PR 1 : il ne connaît pas
+les colonnes ajoutées ensuite (`est_demo`, `restreint`, `statut_stock`...), donc **ne pas l'utiliser une fois les
+migrations de la PR 1 appliquées**.
+
 1. `supabase/diagnostics/fusion_doublons_dry_run.sql` (lecture seule) : relire le résumé et les conflits ;
    la section `COLLISION_INDEX` doit être **vide**.
 2. `supabase/migrations/20261003100000_fusion_doublons_medicaments.sql` : une transaction, contrôle final,
