@@ -1,3 +1,8 @@
+> ⚠️ **OBSOLÈTE (2026-10-03)** — Ce runbook décrit le modèle « 1 client = 1 projet Supabase », abandonné au
+> profit d'**une plateforme unique multi-pharmacies** (un seul projet). Les scripts qu'il cite sont dans
+> `supabase/legacy/` (ne plus les appliquer). Référence actuelle : `supabase/migrations/` (baseline) et
+> `supabase/baseline/README.md`. Conservé pour l'historique.
+
 # Runbook — Déploiement N'Gola Pharma pour un nouveau client pharmacie
 
 > **Statut** : ce runbook est basé sur la lecture complète du code du dépôt

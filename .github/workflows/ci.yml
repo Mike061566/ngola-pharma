@@ -40,15 +40,14 @@ jobs:
       - uses: supabase/setup-cli@v1
         with:
           version: latest
-      - name: Démarrer Supabase local
+      # `supabase start` applique les migrations de supabase/migrations/ (baseline puis suivantes).
+      - name: Démarrer Supabase local (applique les migrations)
         run: supabase start
-      - name: Appliquer le schéma de référence
-        run: psql "$DB_URL" -v ON_ERROR_STOP=1 -q -f supabase/setup_consolide.sql
       - name: Activer pgTAP
         run: psql "$DB_URL" -v ON_ERROR_STOP=1 -c "create extension if not exists pgtap with schema extensions"
       - name: Tests pgTAP (RLS, triggers, alertes_stock)
         run: supabase test db
-      - name: La baseline correspond au schéma de référence
+      - name: L'inventaire attendu correspond aux migrations
         run: |
           psql "$DB_URL" -X -q --csv -f supabase/diagnostics/schema_inventory.sql > "$RUNNER_TEMP/inventory.csv"
           node scripts/compare-schema.js "$RUNNER_TEMP/inventory.csv"

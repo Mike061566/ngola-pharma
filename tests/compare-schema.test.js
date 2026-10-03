@@ -38,7 +38,7 @@ describe('compare-schema', () => {
   });
 
   test('associe un écart connu à son script correctif', () => {
-    expect(fixHint('trigger|pharmacies.trg_pharmacies_protect', 'x')).toBe('supabase/fix_pharmacies_colonnes_protegees.sql');
+    expect(fixHint('trigger|pharmacies.trg_pharmacies_protect', 'x')).toBe('supabase/applied/fix_pharmacies_colonnes_protegees.sql');
     expect(fixHint('table|stocks', 'x')).toBeNull();
   });
 });

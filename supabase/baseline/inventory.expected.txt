@@ -1,6 +1,6 @@
 # Inventaire attendu du schéma public — généré par supabase/diagnostics/schema_inventory.sql
-# sur setup_consolide.sql (correctifs profils_pharmacie_id et pharmacies_colonnes_protegees inclus).
-# Ne pas éditer à la main : voir scripts/build-baseline-inventory.sh.
+# sur les migrations de supabase/migrations/. Ne pas éditer à la main :
+# voir scripts/build-baseline-inventory.sh.
 column|alertes_stock.active|boolean DEFAULT true
 column|alertes_stock.canal|text DEFAULT 'email'::text
 column|alertes_stock.created_at|timestamp with time zone DEFAULT now()
@@ -143,7 +143,7 @@ enum|statut_pharmacie|non_verifie,verifie,partenaire
 extension|pg_trgm|
 extension|plpgsql|
 extension|postgis|
-function|alertes_stock_avant_insertion()|returns=trigger lang=plpgsql security=definer volatility=v config=search_path=public, pg_temp body=cf770a94532e1ab5723703b2596beaca
+function|alertes_stock_avant_insertion()|returns=trigger lang=plpgsql security=definer volatility=v config=search_path=public, pg_temp body=c4916c85ef69ea6f04a84533c0a6e452
 function|auth_pharmacie_id()|returns=uuid lang=sql security=definer volatility=s config=search_path=public body=b66d1a570fd45eb7602cadb4ed4add95
 function|auth_role()|returns=text lang=sql security=definer volatility=s config=search_path=public body=595b2f0025ac8ab39e052499fb9a94bd
 function|pharmacies_proches(lat double precision, lng double precision, rayon_m integer)|returns=TABLE(id uuid, nom text, adresse text, latitude double precision, longitude double precision, distance_m double precision, est_de_garde boolean, statut statut_pharmacie, quartier_nom text) lang=sql security=invoker volatility=s config=- body=2a2c3f57ce6bec7c25f98daa6073e092

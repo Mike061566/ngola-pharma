@@ -6,13 +6,14 @@
 -- section `info`). Il ne lit aucune donnée métier : pas de contenu de lignes, pas
 -- d'emails, pas de téléphones — uniquement la structure et des comptes.
 --
+-- Les empreintes de fonctions ignorent espaces et commentaires `--`.
 -- Résultat : une colonne `ligne`, format `type|clé|valeur`, triée. Exportez-la en CSV
 -- (ou copiez la colonne) dans un fichier, puis :
 --
 --     node scripts/compare-schema.js prod_inventory.csv
 --
 -- Le script la compare à supabase/baseline/inventory.expected.txt (schéma de
--- référence = setup_consolide.sql à jour, correctifs profils/pharmacies inclus) et
+-- référence = migrations de supabase/migrations/, baseline + suivantes) et
 -- liste : manquant en prod / en trop en prod / différent.
 -- Les objets installés par une extension (PostGIS : spatial_ref_sys, etc.) sont exclus.
 -- ============================================================
@@ -51,8 +52,10 @@ lignes AS (
     LEFT JOIN pg_attrdef ad ON ad.adrelid = a.attrelid AND ad.adnum = a.attnum
 
     UNION ALL -- Contraintes
+    -- « NOT VALID » est retiré : c'est l'état de validation des lignes existantes, pas la structure
+    -- (signalé à part, section `info`).
     SELECT 'constraint|' || t.relname || '.' || co.conname || '|' ||
-           regexp_replace(pg_get_constraintdef(co.oid), '\s+', ' ', 'g')
+           regexp_replace(regexp_replace(pg_get_constraintdef(co.oid), ' NOT VALID$', ''), '\s+', ' ', 'g')
     FROM tables t JOIN pg_constraint co ON co.conrelid = t.oid
     WHERE t.relkind IN ('r', 'p')
 
@@ -76,7 +79,7 @@ lignes AS (
            ' security=' || CASE WHEN p.prosecdef THEN 'definer' ELSE 'invoker' END ||
            ' volatility=' || p.provolatile::text ||
            ' config=' || coalesce(array_to_string(p.proconfig, ','), '-') ||
-           ' body=' || md5(regexp_replace(p.prosrc, '\s+', ' ', 'g'))
+           ' body=' || md5(regexp_replace(regexp_replace(p.prosrc, '--[^\n]*', '', 'g'), '\s+', ' ', 'g'))
     FROM pg_proc p
     JOIN pg_namespace n ON n.oid = p.pronamespace
     JOIN pg_language l ON l.oid = p.prolang
@@ -103,6 +106,11 @@ lignes AS (
     -- pas de la version du serveur (prod, Supabase local, CI).
     WHERE x.privilege_type <> 'MAINTAIN'
     GROUP BY t.relname, r.rolname
+
+    UNION ALL -- Informatif : contraintes dont les lignes existantes n'ont pas été validées (NOT VALID)
+    SELECT 'info|not_valid.' || t.relname || '.' || co.conname || '|'
+    FROM tables t JOIN pg_constraint co ON co.conrelid = t.oid
+    WHERE NOT co.convalidated
 
     UNION ALL -- Informatif (ignoré par la comparaison) : nombre de lignes par table
     SELECT 'info|count.' || relname || '|' ||

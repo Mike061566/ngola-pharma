@@ -24,7 +24,9 @@ cp .env.example .env
 # → Renseigner SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_KEY
 
 # 4. Appliquer le schéma Supabase
-# Exécuter supabase/setup_consolide.sql dans le SQL Editor de Supabase
+# Supabase local : `supabase start` applique supabase/migrations/ (baseline).
+# Projet de développement hébergé : exécuter supabase/migrations/*.sql dans l'ordre.
+# Ne JAMAIS rejouer la baseline en production (voir supabase/baseline/README.md).
 
 # 5. Peupler la base
 npm run seed
@@ -90,10 +92,15 @@ ngola-pharma-api/
 │   └── utils/
 │       └── seed.js           # Import CSV → Supabase
 ├── supabase/
-│   ├── migrations/
-│   │   └── 001_schema.sql    # Schéma complet (PostGIS, RLS)
+│   ├── migrations/           # Migrations versionnées (baseline, puis suivantes)
+│   ├── baseline/             # Inventaire attendu du schéma + mode d'emploi prod
+│   ├── diagnostics/          # Requêtes de LECTURE SEULE (inventaire, doublons de stock)
+│   ├── applied/              # Correctifs déjà appliqués en production (historique)
+│   ├── legacy/               # Anciens scripts (ne plus appliquer)
+│   ├── tests/database/       # Tests pgTAP (RLS, triggers) — `supabase test db`
 │   └── seed/
-│       ├── seed.sql           # Script SQL alternatif
+│       ├── demo_setup.sql    # Données de démonstration (dev uniquement)
+│       ├── seed.sql          # Script SQL alternatif
 │       ├── quartiers.csv
 │       ├── pharmacies.csv
 │       └── medicaments.csv

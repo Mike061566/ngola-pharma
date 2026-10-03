@@ -15,12 +15,12 @@ const path = require('path');
 
 const DEFAULT_EXPECTED = path.join(__dirname, '..', 'supabase', 'baseline', 'inventory.expected.txt');
 
-// Correctifs connus : objet manquant/différent -> script SQL qui le pose.
+// Correctifs connus (déjà appliqués en prod ; conservés dans supabase/applied/) : objet manquant/différent -> script qui le pose.
 const KNOWN_FIXES = [
-  [/^trigger\|pharmacies\.trg_pharmacies_protect\|/, 'supabase/fix_pharmacies_colonnes_protegees.sql'],
-  [/^function\|protect_pharmacies_columns\(/, 'supabase/fix_pharmacies_colonnes_protegees.sql'],
-  [/^policy\|pharmacies\.Pharmacien modifie sa pharmacie\|/, 'supabase/fix_pharmacies_colonnes_protegees.sql'],
-  [/^policy\|profils\.profils_update\|/, 'supabase/fix_profils_pharmacie_id.sql'],
+  [/^trigger\|pharmacies\.trg_pharmacies_protect\|/, 'supabase/applied/fix_pharmacies_colonnes_protegees.sql'],
+  [/^function\|protect_pharmacies_columns\(/, 'supabase/applied/fix_pharmacies_colonnes_protegees.sql'],
+  [/^policy\|pharmacies\.Pharmacien modifie sa pharmacie\|/, 'supabase/applied/fix_pharmacies_colonnes_protegees.sql'],
+  [/^policy\|profils\.profils_update\|/, 'supabase/applied/fix_profils_pharmacie_id.sql'],
 ];
 
 function normalizeValue(s) {
@@ -94,7 +94,7 @@ function formatReport({ missing, different, extra }, info) {
     hints.forEach((h) => out.push(`  - ${h}`));
   }
   if (info.length) {
-    out.push('\nComptes de lignes en prod (informatif) :');
+    out.push('\nInformations en prod (non comparées : contraintes NOT VALID, comptes de lignes) :');
     info.forEach((i) => out.push(`  ${i}`));
   }
   return out.join('\n');
