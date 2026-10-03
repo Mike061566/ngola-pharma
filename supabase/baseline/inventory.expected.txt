@@ -178,6 +178,7 @@ index|medicaments.idx_medicaments_categorie|CREATE INDEX idx_medicaments_categor
 index|medicaments.idx_medicaments_dci|CREATE INDEX idx_medicaments_dci ON public.medicaments USING btree (dci)
 index|medicaments.idx_medicaments_nom|CREATE INDEX idx_medicaments_nom ON public.medicaments USING gin (nom gin_trgm_ops)
 index|medicaments.medicaments_pkey|CREATE UNIQUE INDEX medicaments_pkey ON public.medicaments USING btree (id)
+index|medicaments.uq_medicaments_nom_dosage|CREATE UNIQUE INDEX uq_medicaments_nom_dosage ON public.medicaments USING btree (lower(btrim(nom)), lower(regexp_replace(COALESCE(dosage, ''::text), '\s'::text, ''::text, 'g'::text)))
 index|pharmacies.idx_pharmacies_garde|CREATE INDEX idx_pharmacies_garde ON public.pharmacies USING btree (est_de_garde) WHERE (est_de_garde = true)
 index|pharmacies.idx_pharmacies_geo|CREATE INDEX idx_pharmacies_geo ON public.pharmacies USING gist (coordinates)
 index|pharmacies.idx_pharmacies_nom_trgm|CREATE INDEX idx_pharmacies_nom_trgm ON public.pharmacies USING gin (nom gin_trgm_ops)

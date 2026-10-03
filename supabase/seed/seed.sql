@@ -11,7 +11,8 @@ INSERT INTO quartiers (nom, slug, description) VALUES
     ('Mvan', 'mvan', 'Pôle universitaire et jeune'),
     ('Ngousso', 'ngousso', 'Quartier en pleine expansion'),
     ('Odza', 'odza', 'Zone aéroportuaire et périurbaine'),
-    ('Nlongkak', 'nlongkak', 'Quartier central résidentiel');
+    ('Nlongkak', 'nlongkak', 'Quartier central résidentiel')
+ON CONFLICT (slug) DO NOTHING;
 
 -- 2. Pharmacies (52 — toutes en statut non_verifie par défaut)
 -- Centre-Ville (12)
@@ -27,7 +28,8 @@ INSERT INTO pharmacies (nom, slug, quartier_id, adresse, latitude, longitude, te
     ('Pharmacie de la Cathédrale', 'pharmacie-de-la-cathedrale', (SELECT id FROM quartiers WHERE slug='centre-ville'), 'Rue de la Cathédrale', 3.8678, 11.5200, '+237 222 23 11 22', 'non_verifie', 'admin'),
     ('Pharmacie Warda', 'pharmacie-warda', (SELECT id FROM quartiers WHERE slug='centre-ville'), 'Avenue Monseigneur Vogt', 3.8655, 11.5175, '+237 222 23 33 44', 'non_verifie', 'admin'),
     ('Pharmacie Elig-Essono', 'pharmacie-elig-essono', (SELECT id FROM quartiers WHERE slug='centre-ville'), 'Carrefour Elig-Essono', 3.8690, 11.5210, '+237 222 23 55 66', 'non_verifie', 'admin'),
-    ('Pharmacie du 20 Mai', 'pharmacie-du-20-mai', (SELECT id FROM quartiers WHERE slug='centre-ville'), 'Boulevard du 20 Mai', 3.8695, 11.5165, '+237 222 23 77 88', 'non_verifie', 'admin');
+    ('Pharmacie du 20 Mai', 'pharmacie-du-20-mai', (SELECT id FROM quartiers WHERE slug='centre-ville'), 'Boulevard du 20 Mai', 3.8695, 11.5165, '+237 222 23 77 88', 'non_verifie', 'admin')
+ON CONFLICT (slug) DO NOTHING;
 
 -- Bastos (8)
 INSERT INTO pharmacies (nom, slug, quartier_id, adresse, latitude, longitude, telephone, statut, source) VALUES
@@ -38,7 +40,8 @@ INSERT INTO pharmacies (nom, slug, quartier_id, adresse, latitude, longitude, te
     ('Pharmacie Golf', 'pharmacie-golf', (SELECT id FROM quartiers WHERE slug='bastos'), 'Près du Golf Club, Bastos', 3.8870, 11.5110, '+237 222 20 99 00', 'non_verifie', 'admin'),
     ('Pharmacie Nouvelle Bastos', 'pharmacie-nouvelle-bastos', (SELECT id FROM quartiers WHERE slug='bastos'), 'Carrefour Bastos', 3.8820, 11.5065, '+237 222 20 22 33', 'non_verifie', 'admin'),
     ('Pharmacie Résidence', 'pharmacie-residence', (SELECT id FROM quartiers WHERE slug='bastos'), 'Avenue des Palmiers, Bastos', 3.8860, 11.5095, '+237 222 20 44 55', 'non_verifie', 'admin'),
-    ('Pharmacie Tropicale', 'pharmacie-tropicale', (SELECT id FROM quartiers WHERE slug='bastos'), 'Rue 1.845, Bastos', 3.8845, 11.5080, '+237 222 20 66 77', 'non_verifie', 'admin');
+    ('Pharmacie Tropicale', 'pharmacie-tropicale', (SELECT id FROM quartiers WHERE slug='bastos'), 'Rue 1.845, Bastos', 3.8845, 11.5080, '+237 222 20 66 77', 'non_verifie', 'admin')
+ON CONFLICT (slug) DO NOTHING;
 
 -- Essos (15)
 INSERT INTO pharmacies (nom, slug, quartier_id, adresse, latitude, longitude, telephone, statut, source) VALUES
@@ -56,7 +59,8 @@ INSERT INTO pharmacies (nom, slug, quartier_id, adresse, latitude, longitude, te
     ('Pharmacie Santé Plus Essos', 'pharmacie-sante-plus-essos', (SELECT id FROM quartiers WHERE slug='essos'), 'Carrefour Essos Est', 3.8775, 11.5370, '+237 222 22 55 77', 'non_verifie', 'admin'),
     ('Pharmacie Solidarité Essos', 'pharmacie-solidarite-essos', (SELECT id FROM quartiers WHERE slug='essos'), 'Essos Ouest', 3.8730, 11.5310, '+237 222 22 66 88', 'non_verifie', 'admin'),
     ('Pharmacie Merveilleuse Essos', 'pharmacie-merveilleuse-essos', (SELECT id FROM quartiers WHERE slug='essos'), 'Rue Merveilleuse, Essos', 3.8742, 11.5365, '+237 222 22 77 99', 'non_verifie', 'admin'),
-    ('Pharmacie Bonne Santé Essos', 'pharmacie-bonne-sante-essos', (SELECT id FROM quartiers WHERE slug='essos'), 'Essos Centre-Sud', 3.8758, 11.5328, '+237 222 22 88 11', 'non_verifie', 'admin');
+    ('Pharmacie Bonne Santé Essos', 'pharmacie-bonne-sante-essos', (SELECT id FROM quartiers WHERE slug='essos'), 'Essos Centre-Sud', 3.8758, 11.5328, '+237 222 22 88 11', 'non_verifie', 'admin')
+ON CONFLICT (slug) DO NOTHING;
 
 -- Mvan (10)
 INSERT INTO pharmacies (nom, slug, quartier_id, adresse, latitude, longitude, telephone, statut, source) VALUES
@@ -69,7 +73,8 @@ INSERT INTO pharmacies (nom, slug, quartier_id, adresse, latitude, longitude, te
     ('Pharmacie Jeunesse', 'pharmacie-jeunesse', (SELECT id FROM quartiers WHERE slug='mvan'), 'Quartier Jeunesse, Mvan', 3.8590, 11.4990, '+237 222 21 44 55', 'non_verifie', 'admin'),
     ('Pharmacie le Progrès Mvan', 'pharmacie-le-progres-mvan', (SELECT id FROM quartiers WHERE slug='mvan'), 'Rue du Progrès, Mvan', 3.8555, 11.4970, '+237 222 21 66 77', 'non_verifie', 'admin'),
     ('Pharmacie Bien-Être Mvan', 'pharmacie-bien-etre-mvan', (SELECT id FROM quartiers WHERE slug='mvan'), 'Mvan Nord', 3.8585, 11.4985, '+237 222 21 88 99', 'non_verifie', 'admin'),
-    ('Pharmacie Soleil Mvan', 'pharmacie-soleil-mvan', (SELECT id FROM quartiers WHERE slug='mvan'), 'Mvan Est', 3.8570, 11.4995, '+237 222 21 11 33', 'non_verifie', 'admin');
+    ('Pharmacie Soleil Mvan', 'pharmacie-soleil-mvan', (SELECT id FROM quartiers WHERE slug='mvan'), 'Mvan Est', 3.8570, 11.4995, '+237 222 21 11 33', 'non_verifie', 'admin')
+ON CONFLICT (slug) DO NOTHING;
 
 -- Ngousso (5)
 INSERT INTO pharmacies (nom, slug, quartier_id, adresse, latitude, longitude, telephone, statut, source) VALUES
@@ -77,18 +82,24 @@ INSERT INTO pharmacies (nom, slug, quartier_id, adresse, latitude, longitude, te
     ('Pharmacie Nouvelle Ngousso', 'pharmacie-nouvelle-ngousso', (SELECT id FROM quartiers WHERE slug='ngousso'), 'Avenue Ngousso', 3.8915, 11.5265, '+237 222 25 33 44', 'non_verifie', 'admin'),
     ('Pharmacie la Grâce Ngousso', 'pharmacie-la-grace-ngousso', (SELECT id FROM quartiers WHERE slug='ngousso'), 'Ngousso Centre', 3.8905, 11.5255, '+237 222 25 55 66', 'non_verifie', 'admin'),
     ('Pharmacie Avenir Ngousso', 'pharmacie-avenir-ngousso', (SELECT id FROM quartiers WHERE slug='ngousso'), 'Ngousso Sud', 3.8890, 11.5240, '+237 222 25 77 88', 'non_verifie', 'admin'),
-    ('Pharmacie Développement Ngousso', 'pharmacie-developpement-ngousso', (SELECT id FROM quartiers WHERE slug='ngousso'), 'Ngousso Nord', 3.8920, 11.5270, '+237 222 25 99 00', 'non_verifie', 'admin');
+    ('Pharmacie Développement Ngousso', 'pharmacie-developpement-ngousso', (SELECT id FROM quartiers WHERE slug='ngousso'), 'Ngousso Nord', 3.8920, 11.5270, '+237 222 25 99 00', 'non_verifie', 'admin')
+ON CONFLICT (slug) DO NOTHING;
 
 -- Odza (1)
 INSERT INTO pharmacies (nom, slug, quartier_id, adresse, latitude, longitude, telephone, statut, source) VALUES
-    ('Pharmacie de l''Aéroport', 'pharmacie-de-l-aeroport', (SELECT id FROM quartiers WHERE slug='odza'), 'Route de l''Aéroport, Odza', 3.8380, 11.5520, '+237 222 24 11 22', 'non_verifie', 'admin');
+    ('Pharmacie de l''Aéroport', 'pharmacie-de-l-aeroport', (SELECT id FROM quartiers WHERE slug='odza'), 'Route de l''Aéroport, Odza', 3.8380, 11.5520, '+237 222 24 11 22', 'non_verifie', 'admin')
+ON CONFLICT (slug) DO NOTHING;
 
 -- Nlongkak (1 — on passe à 52 total)
 INSERT INTO pharmacies (nom, slug, quartier_id, adresse, latitude, longitude, telephone, statut, source) VALUES
-    ('Pharmacie la Moderne Nlongkak', 'pharmacie-la-moderne-nlongkak', (SELECT id FROM quartiers WHERE slug='nlongkak'), 'Carrefour Nlongkak', 3.8780, 11.5120, '+237 222 26 11 22', 'non_verifie', 'admin');
+    ('Pharmacie la Moderne Nlongkak', 'pharmacie-la-moderne-nlongkak', (SELECT id FROM quartiers WHERE slug='nlongkak'), 'Carrefour Nlongkak', 3.8780, 11.5120, '+237 222 26 11 22', 'non_verifie', 'admin')
+ON CONFLICT (slug) DO NOTHING;
 
 -- 3. Médicaments (20 essentiels)
-INSERT INTO medicaments (nom, nom_commercial, dci, forme, dosage, categorie, ordonnance, description) VALUES
+-- Idempotent : une fiche déjà présente (même nom + dosage, ou même produit : DCI + marque + dosage + forme)
+-- n'est jamais recréée, avec ou sans index unique (uq_medicaments_nom_dosage, voir la migration de fusion).
+INSERT INTO medicaments (nom, nom_commercial, dci, forme, dosage, categorie, ordonnance, description)
+SELECT v.* FROM (VALUES
     ('Paracétamol 500mg', 'Doliprane', 'Paracétamol', 'Comprimé', '500mg', 'Antalgique', false, 'Antalgique et antipyrétique courant'),
     ('Paracétamol 1000mg', 'Efferalgan', 'Paracétamol', 'Comprimé effervescent', '1000mg', 'Antalgique', false, 'Antalgique effervescent'),
     ('Ibuprofène 400mg', 'Advil', 'Ibuprofène', 'Comprimé', '400mg', 'Anti-inflammatoire', false, 'Anti-inflammatoire non stéroïdien'),
@@ -108,7 +119,14 @@ INSERT INTO medicaments (nom, nom_commercial, dci, forme, dosage, categorie, ord
     ('Lopéramide 2mg', 'Imodium', 'Lopéramide', 'Gélule', '2mg', 'Gastro-entérologie', false, 'Antidiarrhéique'),
     ('Salbutamol', 'Ventoline', 'Salbutamol', 'Aérosol', '100µg/dose', 'Pneumologie', true, 'Bronchodilatateur d''urgence'),
     ('Fer + Acide folique', 'Tardyféron', 'Fer-Acide folique', 'Comprimé', '80mg+0.35mg', 'Hématologie', false, 'Traitement de l''anémie'),
-    ('Ciprofloxacine 500mg', 'Ciflox', 'Ciprofloxacine', 'Comprimé', '500mg', 'Antibiotique', true, 'Fluoroquinolone à large spectre');
+    ('Ciprofloxacine 500mg', 'Ciflox', 'Ciprofloxacine', 'Comprimé', '500mg', 'Antibiotique', true, 'Fluoroquinolone à large spectre')
+) AS v(nom, nom_commercial, dci, forme, dosage, categorie, ordonnance, description)
+WHERE NOT EXISTS (
+    SELECT 1 FROM medicaments m
+    WHERE ((lower(btrim(m.nom)), lower(regexp_replace(coalesce(m.dosage, ''), '\s', '', 'g'))) = (lower(btrim(v.nom)), lower(regexp_replace(coalesce(v.dosage, ''), '\s', '', 'g'))))
+       OR concat_ws('|', lower(btrim(coalesce(m.dci, ''))), lower(btrim(coalesce(m.nom_commercial, ''))), lower(regexp_replace(coalesce(m.dosage, ''), '\s', '', 'g')), lower(btrim(coalesce(m.forme, ''))), CASE WHEN btrim(coalesce(m.dci, '')) = '' AND btrim(coalesce(m.nom_commercial, '')) = '' THEN lower(btrim(m.nom)) END) = concat_ws('|', lower(btrim(coalesce(v.dci, ''))), lower(btrim(coalesce(v.nom_commercial, ''))), lower(regexp_replace(coalesce(v.dosage, ''), '\s', '', 'g')), lower(btrim(coalesce(v.forme, ''))), CASE WHEN btrim(coalesce(v.dci, '')) = '' AND btrim(coalesce(v.nom_commercial, '')) = '' THEN lower(btrim(v.nom)) END)
+)
+ON CONFLICT DO NOTHING;
 
 -- 4. Stocks de démonstration (quelques prix pour les premières pharmacies)
 -- On injecte des prix réalistes en FCFA pour les 5 premières pharmacies × 5 médicaments courants

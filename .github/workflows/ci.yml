@@ -47,6 +47,8 @@ jobs:
         run: psql "$DB_URL" -v ON_ERROR_STOP=1 -c "create extension if not exists pgtap with schema extensions"
       - name: Tests pgTAP (RLS, triggers, alertes_stock)
         run: supabase test db
+      - name: Fusion des doublons de medicaments (données synthétiques, tout est annulé)
+        run: scripts/test-fusion.sh
       - name: L'inventaire attendu correspond aux migrations
         run: |
           psql "$DB_URL" -X -q --csv -f supabase/diagnostics/schema_inventory.sql > "$RUNNER_TEMP/inventory.csv"

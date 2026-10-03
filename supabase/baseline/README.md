@@ -20,7 +20,8 @@ La production contient déjà la baseline (elle est issue de `setup_consolide.sq
    L'empreinte des fonctions ignore espaces et commentaires `--`.
 
 Les migrations suivantes (`2026…_*.sql`) sont à exécuter en prod **à la main, après relecture**, dans
-l'ordre.
+l'ordre. La fusion des fiches `medicaments` en double (`20261003100000`) a sa procédure et son retour arrière
+dans `supabase/rollback/README.md`.
 
 ### Suivi de version (facultatif)
 

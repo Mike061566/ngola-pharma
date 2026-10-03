@@ -315,7 +315,10 @@ INSERT INTO pharmacies (nom, slug, quartier_id, adresse, latitude, longitude, te
 ON CONFLICT (slug) DO NOTHING;
 
 -- Médicaments (20)
-INSERT INTO medicaments (nom, nom_commercial, dci, forme, dosage, categorie, ordonnance, description) VALUES
+-- Idempotent : une fiche déjà présente (même nom + dosage, ou même produit : DCI + marque + dosage + forme)
+-- n'est jamais recréée, avec ou sans index unique (uq_medicaments_nom_dosage, voir la migration de fusion).
+INSERT INTO medicaments (nom, nom_commercial, dci, forme, dosage, categorie, ordonnance, description)
+SELECT v.* FROM (VALUES
     ('Paracétamol 500mg', 'Doliprane', 'Paracétamol', 'Comprimé', '500mg', 'Antalgique', false, 'Antalgique et antipyrétique courant'),
     ('Paracétamol 1000mg', 'Efferalgan', 'Paracétamol', 'Comprimé effervescent', '1000mg', 'Antalgique', false, 'Antalgique effervescent'),
     ('Ibuprofène 400mg', 'Advil', 'Ibuprofène', 'Comprimé', '400mg', 'Anti-inflammatoire', false, 'Anti-inflammatoire non stéroïdien'),
@@ -336,6 +339,12 @@ INSERT INTO medicaments (nom, nom_commercial, dci, forme, dosage, categorie, ord
     ('Salbutamol', 'Ventoline', 'Salbutamol', 'Aérosol', '100µg/dose', 'Pneumologie', true, 'Bronchodilatateur d''urgence'),
     ('Fer + Acide folique', 'Tardyféron', 'Fer-Acide folique', 'Comprimé', '80mg+0.35mg', 'Hématologie', false, 'Traitement de l''anémie'),
     ('Ciprofloxacine 500mg', 'Ciflox', 'Ciprofloxacine', 'Comprimé', '500mg', 'Antibiotique', true, 'Fluoroquinolone à large spectre')
+) AS v(nom, nom_commercial, dci, forme, dosage, categorie, ordonnance, description)
+WHERE NOT EXISTS (
+    SELECT 1 FROM medicaments m
+    WHERE ((lower(btrim(m.nom)), lower(regexp_replace(coalesce(m.dosage, ''), '\s', '', 'g'))) = (lower(btrim(v.nom)), lower(regexp_replace(coalesce(v.dosage, ''), '\s', '', 'g'))))
+       OR concat_ws('|', lower(btrim(coalesce(m.dci, ''))), lower(btrim(coalesce(m.nom_commercial, ''))), lower(regexp_replace(coalesce(m.dosage, ''), '\s', '', 'g')), lower(btrim(coalesce(m.forme, ''))), CASE WHEN btrim(coalesce(m.dci, '')) = '' AND btrim(coalesce(m.nom_commercial, '')) = '' THEN lower(btrim(m.nom)) END) = concat_ws('|', lower(btrim(coalesce(v.dci, ''))), lower(btrim(coalesce(v.nom_commercial, ''))), lower(regexp_replace(coalesce(v.dosage, ''), '\s', '', 'g')), lower(btrim(coalesce(v.forme, ''))), CASE WHEN btrim(coalesce(v.dci, '')) = '' AND btrim(coalesce(v.nom_commercial, '')) = '' THEN lower(btrim(v.nom)) END)
+)
 ON CONFLICT DO NOTHING;
 
 -- Stocks de démonstration (6 pharmacies × 5 médicaments)

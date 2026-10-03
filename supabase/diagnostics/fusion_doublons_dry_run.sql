@@ -17,7 +17,8 @@
 --   5. alertes_stock.medicament_id qui pointent vers une fiche supprimée sont rattachées à la gardée.
 --
 -- Sections du résultat : RESUME (par groupe), CONFLIT (par pharmacie en conflit), A_EXAMINER
--- (fiches proches NON fusionnées : à trancher à la main), TOTAL.
+-- (fiches proches NON fusionnées : à trancher à la main), COLLISION_INDEX (doit être VIDE : sinon l'index
+-- unique de la migration échouerait), TOTAL.
 -- ============================================================
 BEGIN READ ONLY;
 
@@ -122,6 +123,17 @@ FROM (
     WHERE btrim(coalesce(f.dci, '')) <> ''
     GROUP BY lower(btrim(coalesce(f.dci, ''))), lower(btrim(coalesce(f.nom_commercial, ''))), coalesce(f.dosage, '')
     HAVING count(DISTINCT lower(btrim(coalesce(f.forme, '')))) > 1
+
+    UNION ALL
+    -- Après fusion, l'index unique (nom + dosage normalisés) doit pouvoir être créé : toute ligne ici ferait ÉCHOUER la migration
+    SELECT 3, 'COLLISION_INDEX',
+           lower(btrim(f.nom)) || ' / ' || lower(regexp_replace(coalesce(f.dosage, ''), '\s', '', 'g')),
+           NULL, string_agg(f.id || ' (' || f.nom || ')', ' ; ' ORDER BY f.created_at),
+           NULL, NULL, 'même nom + dosage après fusion : corriger ou fusionner à la main AVANT la migration'
+    FROM fiches f
+    WHERE f.id NOT IN (SELECT id FROM rang WHERE rn > 1)
+    GROUP BY lower(btrim(f.nom)), lower(regexp_replace(coalesce(f.dosage, ''), '\s', '', 'g'))
+    HAVING count(*) > 1
 
     UNION ALL
     SELECT 4, 'TOTAL', count(*) || ' groupe(s) de doublons', NULL, NULL,
