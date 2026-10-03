@@ -169,19 +169,88 @@ CREATE TABLE IF NOT EXISTS alertes_stock (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_email      TEXT,
     user_phone      TEXT,
-    canal           TEXT DEFAULT 'email' CHECK (canal IN ('email', 'whatsapp', 'ussd')),
+    canal           TEXT DEFAULT 'email',
     medicament_nom  TEXT NOT NULL,
     medicament_id   UUID REFERENCES medicaments(id),
     quartier_id     UUID REFERENCES quartiers(id),
     created_at      TIMESTAMPTZ DEFAULT now(),
     notified_at     TIMESTAMPTZ,
     active          BOOLEAN DEFAULT true,
-    CONSTRAINT contact_required CHECK (user_email IS NOT NULL OR user_phone IS NOT NULL)
+    -- Alerte « héritée » (canal whatsapp / ussd de l'ancien formulaire) : jamais contactée
+    -- par le système de routage. Posée par le trigger d'insertion. Voir
+    -- supabase/fix_alertes_stock_validation.sql.
+    heritee         BOOLEAN NOT NULL DEFAULT false,
+    CONSTRAINT contact_required CHECK (user_email IS NOT NULL OR user_phone IS NOT NULL),
+    CONSTRAINT alertes_stock_canal_check CHECK (canal IN ('email', 'sms', 'whatsapp', 'ussd')),
+    CONSTRAINT alertes_stock_email_format CHECK (heritee OR user_email IS NULL
+        OR (char_length(user_email) <= 254 AND user_email ~ '^[^@[:space:]]+@[^@[:space:]]+\.[^@[:space:]]+$')),
+    CONSTRAINT alertes_stock_phone_format CHECK (heritee OR user_phone IS NULL OR user_phone ~ '^\+[1-9][0-9]{7,14}$'),
+    CONSTRAINT alertes_stock_medicament_nom_len CHECK (heritee OR char_length(btrim(medicament_nom)) BETWEEN 1 AND 120),
+    CONSTRAINT alertes_stock_canal_contact CHECK (heritee OR canal IS NULL
+        OR (canal = 'email' AND user_email IS NOT NULL)
+        OR (canal <> 'email' AND user_phone IS NOT NULL))
 );
 
 CREATE INDEX IF NOT EXISTS idx_alertes_stock_active ON alertes_stock(active, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_alertes_stock_email ON alertes_stock(user_email);
 CREATE INDEX IF NOT EXISTS idx_alertes_stock_phone ON alertes_stock(user_phone);
+
+-- ── Index pour les contrôles anti-spam ────────────────────────────────
+CREATE INDEX IF NOT EXISTS idx_alertes_stock_email_recent ON alertes_stock (lower(user_email), created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_alertes_stock_phone_recent ON alertes_stock (user_phone, created_at DESC);
+
+-- ── Trigger : normalisation, marquage « héritée », fusion et limite ───
+-- SECURITY DEFINER : le rôle anon n'a pas le droit de lire la table (RLS), le trigger doit
+-- pouvoir compter les alertes déjà reçues pour ce contact.
+CREATE OR REPLACE FUNCTION alertes_stock_avant_insertion()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+    deja_recu INTEGER;
+BEGIN
+    -- Champs décidés par le serveur, jamais par le client.
+    NEW.created_at  := now();
+    NEW.notified_at := NULL;
+    NEW.heritee     := NEW.canal IN ('whatsapp', 'ussd');
+
+    -- Normalisation : le formulaire envoie déjà +237XXXXXXXXX ; on tolère espaces et tirets.
+    NEW.user_email := NULLIF(lower(btrim(NEW.user_email)), '');
+    NEW.user_phone := NULLIF(regexp_replace(btrim(NEW.user_phone), '[\s.\-]', '', 'g'), '');
+
+    -- Même contact + même médicament sous 30 min : fusionné (aucune erreur côté client).
+    IF EXISTS (
+        SELECT 1 FROM alertes_stock a
+        WHERE a.created_at > now() - interval '30 minutes'
+          AND ((NEW.user_email IS NOT NULL AND lower(a.user_email) = NEW.user_email)
+            OR (NEW.user_phone IS NOT NULL AND a.user_phone = NEW.user_phone))
+          AND (a.medicament_id IS NOT DISTINCT FROM NEW.medicament_id)
+          AND lower(btrim(a.medicament_nom)) = lower(btrim(NEW.medicament_nom))
+    ) THEN
+        RETURN NULL;
+    END IF;
+
+    -- Limite : 5 alertes / 24 h par contact (email ou téléphone).
+    SELECT count(*) INTO deja_recu
+    FROM alertes_stock a
+    WHERE a.created_at > now() - interval '24 hours'
+      AND ((NEW.user_email IS NOT NULL AND lower(a.user_email) = NEW.user_email)
+        OR (NEW.user_phone IS NOT NULL AND a.user_phone = NEW.user_phone));
+    IF deja_recu >= 5 THEN
+        RAISE EXCEPTION 'Trop d''alertes pour ce contact aujourd''hui. Réessayez demain.'
+            USING ERRCODE = '54000';
+    END IF;
+
+    RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS trg_alertes_stock_avant_insertion ON alertes_stock;
+CREATE TRIGGER trg_alertes_stock_avant_insertion
+    BEFORE INSERT ON alertes_stock
+    FOR EACH ROW EXECUTE FUNCTION alertes_stock_avant_insertion();
 
 -- ============================================================
 -- ÉTAPE 3 : FONCTION ANTI-RÉCURSION POUR LES POLICIES RLS
@@ -330,8 +399,9 @@ ALTER TABLE alertes_stock ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Tout le monde peut créer une alerte" ON alertes_stock;
 DROP POLICY IF EXISTS "Admins voient les alertes" ON alertes_stock;
 DROP POLICY IF EXISTS "Admins modifient les alertes" ON alertes_stock;
+-- (policy d'insertion publique à retirer quand l'Edge Function de création d'alerte existera)
 CREATE POLICY "Tout le monde peut créer une alerte" ON alertes_stock FOR INSERT
-    TO anon, authenticated WITH CHECK (true);
+    TO anon, authenticated WITH CHECK (notified_at IS NULL AND active IS NOT FALSE);
 CREATE POLICY "Admins voient les alertes" ON alertes_stock FOR SELECT
     TO authenticated USING (auth_role() = 'admin');
 CREATE POLICY "Admins modifient les alertes" ON alertes_stock FOR UPDATE
