@@ -211,7 +211,7 @@ AS $$
 DECLARE
     deja_recu INTEGER;
 BEGIN
-    -- Champs décidés par le serveur, jamais par le client. (canal NULL => pas héritée : COALESCE.)
+    -- Champs décidés par le serveur, jamais par le client.
     NEW.created_at  := now();
     NEW.notified_at := NULL;
     NEW.heritee     := COALESCE(NEW.canal IN ('whatsapp', 'ussd'), false);
