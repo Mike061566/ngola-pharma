@@ -149,6 +149,12 @@
         .info-item label { font-size: 11px; text-transform: uppercase; color: var(--text-muted); letter-spacing: .5px; display: block; margin-bottom: 4px; }
         .info-item span { font-size: 14px; font-weight: 500; color: var(--text); }
         .badge-verified { display: inline-block; padding: 3px 10px; background: linear-gradient(135deg, #f6d365, #f5c842); color: #6b4701; border-radius: 12px; font-size: 11px; font-weight: 700; }
+        .badge-unverified { display: inline-block; padding: 3px 10px; background: #eef0f2; color: #5b6570; border-radius: 12px; font-size: 11px; font-weight: 600; }
+        .badge-suspended { display: inline-block; padding: 3px 10px; background: #fde8e8; color: #b42318; border-radius: 12px; font-size: 11px; font-weight: 600; }
+        .info-item.wide { grid-column: 1 / -1; }
+        .info-note { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+        .map-frame { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 8px; }
+        .map-frame iframe { display: block; width: 100%; height: 220px; border: 0; }
         .badge-partner { display: inline-block; padding: 3px 10px; background: var(--primary); color: #fff; border-radius: 12px; font-size: 11px; font-weight: 600; }
 
         /* Alerts section */
@@ -237,7 +243,7 @@
                 <div class="stat-icon blue">📦</div>
                 <div class="stat-info">
                     <h3 id="statTotalStock">—</h3>
-                    <p>Médicaments en stock</p>
+                    <p>Médicaments référencés</p>
                 </div>
             </div>
             <div class="stat-card">
@@ -399,6 +405,7 @@
 <!-- ===== SheetJS for Excel ===== -->
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
+<script src="/pro-utils.js"></script>
 <script>
 var ProApp = (function() {
     var SUPABASE_URL = 'https://ueycknsdwthmtmpzptqp.supabase.co';
@@ -410,6 +417,7 @@ var ProApp = (function() {
     var currentPharmacy = null;
     var allStocks = [];
     var allMeds = [];
+    var lastSearchMeds = [];
     var importData = [];
 
     // ── Helpers ──
@@ -569,7 +577,7 @@ var ProApp = (function() {
             return;
         }
         _sb.from('stocks')
-            .select('*, medicaments(nom, dosage, dci, forme)')
+            .select('*, medicaments(nom, nom_commercial, dosage, dci, forme)')
             .eq('pharmacie_id', currentPharmacy.id)
             .order('date_maj', { ascending: false })
             .then(function(res) {
@@ -655,15 +663,18 @@ var ProApp = (function() {
         var q = document.getElementById('modalMedSearch').value.trim();
         var sel = document.getElementById('modalMedSelect');
         if (q.length < 2) { sel.style.display = 'none'; return; }
-        _sb.from('medicaments').select('id, nom, dosage, dci').ilike('nom', '%' + q + '%').limit(10)
+        _sb.from('medicaments').select('id, nom, nom_commercial, dosage, dci, forme').ilike('nom', '%' + q + '%').limit(10)
             .then(function(res) {
                 var meds = res.data || [];
+                lastSearchMeds = meds;
                 if (meds.length === 0) {
                     sel.style.display = 'none';
                     return;
                 }
                 sel.innerHTML = meds.map(function(m) {
-                    return '<option value="' + m.id + '">' + esc(m.nom) + (m.dosage ? ' — ' + esc(m.dosage) : '') + (m.dci ? ' (DCI: ' + esc(m.dci) + ')' : '') + '</option>';
+                    // Déjà dans le stock (même fiche ou fiche équivalente) : non sélectionnable, on modifie la ligne existante.
+                    var owned = ProUtils.findOwnedStock(allStocks, m);
+                    return '<option value="' + m.id + '"' + (owned ? ' disabled' : '') + '>' + esc(m.nom) + (m.dosage ? ' — ' + esc(m.dosage) : '') + (m.dci ? ' (DCI: ' + esc(m.dci) + ')' : '') + (owned ? ' — déjà dans vos stocks' : '') + '</option>';
                 }).join('');
                 sel.style.display = 'block';
             });
@@ -688,6 +699,17 @@ var ProApp = (function() {
 
         if (!medId) { showToast('Sélectionnez un médicament', 'error'); return; }
         if (prix <= 0) { showToast('Entrez un prix valide', 'error'); return; }
+
+        // Ajout (pas modification) : un produit déjà présent, même sous une fiche équivalente du catalogue,
+        // ne doit pas créer une seconde ligne (ex. Coartem en double avec deux prix).
+        if (!stockId) {
+            var choisi = lastSearchMeds.filter(function(m) { return m.id === medId; })[0] || { id: medId };
+            var existant = ProUtils.findOwnedStock(allStocks, choisi);
+            if (existant) {
+                showToast('Déjà dans vos stocks : modifiez la ligne existante (✏️).', 'error');
+                return;
+            }
+        }
 
         var data = {
             medicament_id: medId,
@@ -739,19 +761,23 @@ var ProApp = (function() {
             return;
         }
         var p = currentPharmacy;
-        var statusBadge = '';
-        if (p.statut === 'verifie') statusBadge = '<span class="badge-verified">✓ Vérifié N\'Gola</span>';
-        else if (p.statut === 'partenaire') statusBadge = '<span class="badge-partner">Partenaire</span>';
+        var st = ProUtils.statutInfo(p.statut);
+        var statusBadge = '<span class="' + st.css + '">' + esc(st.label) + '</span>';
+        var map = ProUtils.mapLinks(p.latitude, p.longitude);
+        var mapHtml = map
+            ? '<div class="map-frame"><iframe src="' + map.embed + '" loading="lazy" title="Position de la pharmacie"></iframe></div>' +
+              '<a href="' + map.google + '" target="_blank" rel="noopener">Ouvrir dans Google Maps</a>'
+            : '<span>Position non renseignée</span>';
 
         grid.innerHTML =
             '<div class="info-item"><label>Nom</label><span>' + esc(p.nom) + '</span></div>' +
-            '<div class="info-item"><label>Statut</label><span>' + (statusBadge || esc(p.statut)) + '</span></div>' +
+            '<div class="info-item"><label>Statut</label><span>' + statusBadge + '</span></div>' +
             '<div class="info-item"><label>Adresse</label><span>' + esc(p.adresse || '—') + '</span></div>' +
             '<div class="info-item"><label>Téléphone</label><span>' + esc(p.telephone || '—') + '</span></div>' +
-            '<div class="info-item"><label>Horaires</label><span>' + esc(p.horaires || '—') + '</span></div>' +
+            '<div class="info-item"><label>Horaires</label><span>' + esc(ProUtils.formatHoraires(p.horaires)) + '</span></div>' +
             '<div class="info-item"><label>Garde</label><span>' + (p.est_de_garde ? '🟢 En garde' : '⚪ Pas en garde') + '</span></div>' +
-            '<div class="info-item"><label>Latitude</label><span>' + (p.latitude || '—') + '</span></div>' +
-            '<div class="info-item"><label>Longitude</label><span>' + (p.longitude || '—') + '</span></div>';
+            '<div class="info-item wide"><label>Position</label>' + mapHtml +
+                '<div class="info-note">La position, l\'adresse, le statut et la garde sont gérés par l\'équipe N\'Gola : contactez-nous pour toute correction.</div></div>';
     }
 
     // ── Alerts ──

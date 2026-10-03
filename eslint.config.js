@@ -12,7 +12,7 @@ const jestGlobals = {
 };
 
 module.exports = [
-  { ignores: ['node_modules/**', 'public/**', 'supabase/**'] },
+  { ignores: ['node_modules/**', 'supabase/**'] },
   js.configs.recommended,
   {
     files: ['**/*.js'],
@@ -20,6 +20,11 @@ module.exports = [
     rules: {
       'no-unused-vars': ['error', { argsIgnorePattern: '^_', caughtErrors: 'none' }],
     },
+  },
+  {
+    // Code navigateur (UMD, aussi chargé par Jest)
+    files: ['public/**/*.js'],
+    languageOptions: { globals: { ...nodeGlobals, self: 'readonly', window: 'readonly' } },
   },
   {
     files: ['tests/**/*.js'],
