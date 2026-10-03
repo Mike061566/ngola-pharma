@@ -25,7 +25,7 @@ module.exports = [
   {
     // Code navigateur (UMD, aussi chargé par Jest)
     files: ['public/**/*.js'],
-    languageOptions: { globals: { ...nodeGlobals, self: 'readonly', window: 'readonly' } },
+    languageOptions: { globals: { ...nodeGlobals, self: 'readonly', window: 'readonly', document: 'readonly' } },
   },
   {
     // Edge Functions (Deno) et leurs modules partagés : ES modules, API web standard

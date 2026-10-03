@@ -21,6 +21,7 @@ column|alertes_routage.premiere_reponse_positive_le|timestamp with time zone
 column|alertes_routage.quartier_id|uuid NOT NULL
 column|alertes_routage.raison_revue|text
 column|alertes_routage.requete_brute|text
+column|alertes_routage.routage_manuel|boolean NOT NULL DEFAULT false
 column|alertes_routage.second_message_le|timestamp with time zone
 column|alertes_routage.statut|text NOT NULL DEFAULT 'new'::text
 column|alertes_routage.urgence|text NOT NULL DEFAULT 'normal'::text
@@ -88,6 +89,12 @@ column|jetons_telegram.jeton_hash|text NOT NULL
 column|jetons_telegram.objet|text NOT NULL
 column|jetons_telegram.ref_id|uuid NOT NULL
 column|jetons_telegram.utilise_le|timestamp with time zone
+column|journal_admin_alertes.action|text NOT NULL
+column|journal_admin_alertes.admin_id|uuid
+column|journal_admin_alertes.alerte_id|uuid
+column|journal_admin_alertes.cree_le|timestamp with time zone NOT NULL DEFAULT now()
+column|journal_admin_alertes.details|jsonb NOT NULL DEFAULT '{}'::jsonb
+column|journal_admin_alertes.id|uuid NOT NULL DEFAULT gen_random_uuid()
 column|medicaments.categorie|text
 column|medicaments.classification_validee_le|timestamp with time zone
 column|medicaments.created_at|timestamp with time zone NOT NULL DEFAULT now()
@@ -127,6 +134,14 @@ column|notifications_outbox.statut|text NOT NULL DEFAULT 'queued'::text
 column|notifications_outbox.tentatives|integer NOT NULL DEFAULT 0
 column|notifications_outbox.type_destinataire|text NOT NULL
 column|notifications_outbox.variables|jsonb NOT NULL DEFAULT '{}'::jsonb
+column|ordres_admin_alertes.alerte_id|uuid NOT NULL
+column|ordres_admin_alertes.cree_le|timestamp with time zone NOT NULL DEFAULT now()
+column|ordres_admin_alertes.cree_par|uuid
+column|ordres_admin_alertes.erreur|text
+column|ordres_admin_alertes.id|uuid NOT NULL DEFAULT gen_random_uuid()
+column|ordres_admin_alertes.params|jsonb NOT NULL DEFAULT '{}'::jsonb
+column|ordres_admin_alertes.traite_le|timestamp with time zone
+column|ordres_admin_alertes.type|text NOT NULL
 column|patients_bloques.cree_le|timestamp with time zone NOT NULL DEFAULT now()
 column|patients_bloques.empreinte_patient|text NOT NULL
 column|patients_bloques.motif|text
@@ -296,6 +311,8 @@ constraint|etat_onboarding_pharmacie.etat_onboarding_pharmacie_pharmacie_id_fkey
 constraint|etat_onboarding_pharmacie.etat_onboarding_pharmacie_pkey|PRIMARY KEY (pharmacie_id)
 constraint|jetons_telegram.jetons_telegram_objet_check|CHECK ((objet = ANY (ARRAY['pharmacy_contact'::text, 'patient_alert'::text])))
 constraint|jetons_telegram.jetons_telegram_pkey|PRIMARY KEY (jeton_hash)
+constraint|journal_admin_alertes.journal_admin_alertes_alerte_id_fkey|FOREIGN KEY (alerte_id) REFERENCES alertes_routage(id) ON DELETE SET NULL
+constraint|journal_admin_alertes.journal_admin_alertes_pkey|PRIMARY KEY (id)
 constraint|medicaments.medicaments_pkey|PRIMARY KEY (id)
 constraint|medicaments.medicaments_statut_catalogue_check|CHECK ((statut_catalogue = ANY (ARRAY['actif'::text, 'archive'::text])))
 constraint|medicaments.medicaments_validation_classification_fkey|FOREIGN KEY (validation_classification_id) REFERENCES validations_classification(id)
@@ -305,6 +322,9 @@ constraint|notifications_outbox.notifications_outbox_contact_id_fkey|FOREIGN KEY
 constraint|notifications_outbox.notifications_outbox_pkey|PRIMARY KEY (id)
 constraint|notifications_outbox.notifications_outbox_statut_check|CHECK ((statut = ANY (ARRAY['queued'::text, 'sent'::text, 'delivered'::text, 'read'::text, 'failed'::text, 'cancelled'::text, 'suppressed_demo'::text])))
 constraint|notifications_outbox.notifications_outbox_type_destinataire_check|CHECK ((type_destinataire = ANY (ARRAY['pharmacy'::text, 'patient'::text, 'admin'::text])))
+constraint|ordres_admin_alertes.ordres_admin_alertes_alerte_id_fkey|FOREIGN KEY (alerte_id) REFERENCES alertes_routage(id) ON DELETE CASCADE
+constraint|ordres_admin_alertes.ordres_admin_alertes_pkey|PRIMARY KEY (id)
+constraint|ordres_admin_alertes.ordres_admin_alertes_type_check|CHECK ((type = ANY (ARRAY['transmettre'::text, 'refuser'::text])))
 constraint|patients_bloques.patients_bloques_pkey|PRIMARY KEY (empreinte_patient)
 constraint|pharmacies.pharmacies_note_moyenne_check|CHECK (((note_moyenne >= (0)::numeric) AND (note_moyenne <= (5)::numeric)))
 constraint|pharmacies.pharmacies_pkey|PRIMARY KEY (id)
@@ -344,20 +364,38 @@ extension|pg_trgm|
 extension|plpgsql|
 extension|postgis|
 function|activer_telegram_pharmacie(p_consentement boolean)|returns=TABLE(contact_id uuid, jeton text, expire_le timestamp with time zone) lang=plpgsql security=definer volatility=v config=search_path=public body=e8ba00358ac334276de9f886018b9e8d
+function|admin_annuler_alerte(p_alerte_id uuid)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=ad5b8cde3d9880739bab15111c625153
+function|admin_bloquer_patient(p_alerte_id uuid, p_motif text)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=29098b54a961a4103f4c754e0eef7e55
+function|admin_cloturer_alerte(p_alerte_id uuid)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=5d0936a1ce91a7588cb2344e684763ec
+function|admin_rattacher_medicament(p_alerte_id uuid, p_medicament_id uuid)|returns=text lang=plpgsql security=definer volatility=v config=search_path=public body=7754ed9b43f43bda73dfb8c1982c330e
+function|admin_refuser_alerte(p_alerte_id uuid)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=6b9efe93e93048c983076f16775c1601
+function|admin_relancer_vague(p_alerte_id uuid)|returns=integer lang=plpgsql security=definer volatility=v config=search_path=public body=e34e420a739e61658b8f9e9f41efec44
+function|admin_retirer_destinataire(p_envoi_id uuid)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=272d39d6ffdf39259e783dc7810cfd56
+function|admin_transmettre(p_alerte_id uuid, p_pharmacie_ids uuid[])|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=c30a2f3a6c7d6bbb710692a809ce7ae0
 function|ajouter_contact_sms(p_numero text, p_consentement boolean)|returns=uuid lang=plpgsql security=definer volatility=v config=search_path=public body=9df2474191d8014a8201bb7ac1938160
 function|alertes_stock_avant_insertion()|returns=trigger lang=plpgsql security=definer volatility=v config=search_path=public, pg_temp body=c4916c85ef69ea6f04a84533c0a6e452
+function|annuler_alerte_interne(p_alerte_id uuid)|returns=void lang=sql security=definer volatility=v config=search_path=public body=4748c36bc74a2a5c5b853341a7f7ff28
 function|auth_pharmacie_id()|returns=uuid lang=sql security=definer volatility=s config=search_path=public body=b66d1a570fd45eb7602cadb4ed4add95
 function|auth_role()|returns=text lang=sql security=definer volatility=s config=search_path=public body=595b2f0025ac8ab39e052499fb9a94bd
 function|changer_abonnement_contact(p_contact_id uuid, p_abonne boolean)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=bdd6dfc891a0274ee913f0385b0d7c28
+function|chronologie_alerte(p_alerte_id uuid)|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=2923b4e629afcaba1c0585832202298c
 function|compter_messages_payants_du_jour()|returns=integer lang=sql security=definer volatility=s config=search_path=public body=db1d1d07479e32991af04a4f73f19a54
 function|conditions_passage_production()|returns=TABLE(cle text, ok boolean, detail text) lang=plpgsql security=definer volatility=s config=search_path=public body=06dc9c1397f0c371f7ee7981cd9b0abb
 function|config_routage_interdit_suppression_mode()|returns=trigger lang=plpgsql security=invoker volatility=v config=- body=b6a198003ad84536c0c6f521eab9646d
+function|config_routage_journal()|returns=trigger lang=plpgsql security=definer volatility=v config=search_path=public body=f11e904f97a480693cd7d3c2a9f1367e
+function|config_routage_valider()|returns=trigger lang=plpgsql security=invoker volatility=v config=search_path=public body=6e4b2d481045c4dc626fe644809473e7
 function|config_routage_verrou()|returns=trigger lang=plpgsql security=definer volatility=v config=search_path=public body=88c8c4e14d738e17bd39a820d50686ab
 function|consommer_jeton_telegram(p_hash text)|returns=TABLE(objet text, ref_id uuid) lang=sql security=definer volatility=v config=search_path=public body=3fe77b3f33283e2e9ddd7fedb4a0cea0
 function|creer_alerte_routage(p_id_public text, p_medicament_id uuid, p_requete_brute text, p_quartier_id uuid, p_lat numeric, p_lng numeric, p_urgence text, p_canal_patient text, p_contact_chiffre bytea, p_empreinte_patient text, p_empreinte_ip text, p_consentement boolean, p_expire_le timestamp with time zone)|returns=TABLE(alerte_id uuid, id_public text, statut text, raison_revue text, fusionnee boolean, refus text) lang=plpgsql security=definer volatility=v config=search_path=public body=5652bacce8c8224d01cd73729fc93a43
 function|desabonner_telegram(p_chat_id text)|returns=integer lang=sql security=definer volatility=v config=search_path=public body=c56ea7f564f80a36ace9bb83eb3d184e
 function|donnees_routage_pharmacies(p_medicament_id uuid)|returns=jsonb lang=sql security=definer volatility=s config=search_path=public body=efc05d768c4ce76b92d094d8588ac9bb
 function|enregistrer_reponse_alerte(p_envoi_id uuid, p_reponse text, p_prix integer, p_canal text, p_utilisateur uuid)|returns=TABLE(resultat text, alerte_id uuid, pharmacie_id uuid, medicament_id uuid, reponse text, prix_fcfa integer, repondu_le timestamp with time zone, stock_mis_a_jour boolean) lang=plpgsql security=definer volatility=v config=search_path=public body=62b003da25bb42b6b9bc7e8cc9a10f4a
+function|erreur_valeur_config(p_cle text, p_val jsonb)|returns=text lang=plpgsql security=invoker volatility=i config=- body=0b7882b56133144bff6918c55126d4ec
+function|etat_budget_messages()|returns=jsonb lang=plpgsql security=definer volatility=s config=search_path=public body=0c1eda00fd0c3c092681dec636e6e69e
+function|exiger_admin()|returns=void lang=plpgsql security=definer volatility=s config=search_path=public body=74124668a87f9cf295660de3a39936ec
+function|file_alertes_admin(p_statuts text[], p_limite integer)|returns=TABLE(id uuid, id_public text, statut text, raison_revue text, urgence text, medicament text, quartier text, cree_le timestamp with time zone, expire_le timestamp with time zone, vague integer, routage_manuel boolean, nb_envois integer, nb_reponses integer, nb_positives integer, premiere_reponse_positive_le timestamp with time zone, canal_patient text) lang=plpgsql security=definer volatility=s config=search_path=public body=249b85793fff1dbfd5c09814d47f3ebc
+function|indicateurs_alertes(p_jours integer)|returns=jsonb lang=plpgsql security=definer volatility=s config=search_path=public body=c6c453460a5c844d7abd76535de751ba
+function|journaliser_admin(p_action text, p_alerte uuid, p_details jsonb)|returns=void lang=sql security=definer volatility=v config=search_path=public body=763195bdc37ba3b3b827baa7818df6a9
 function|lier_contact_telegram(p_contact_id uuid, p_chat_id text)|returns=TABLE(resultat text, pharmacie_id uuid, pharmacie_nom text, contact_id uuid, est_contact_demo boolean) lang=plpgsql security=definer volatility=v config=search_path=public body=0379ddc541afea560ade5291762d8b5d
 function|medicament_routable(p_medicament_id uuid)|returns=boolean lang=sql security=definer volatility=s config=search_path=public body=f1c2ddf515b3ea552fc113929f67ab2c
 function|medicaments_reset_validation()|returns=trigger lang=plpgsql security=invoker volatility=v config=search_path=public body=739bdce4d4d1bb13505464b67724cf42
@@ -385,8 +423,10 @@ grant|drug_catalog.anon|REFERENCES,SELECT,TRIGGER
 grant|drug_catalog.authenticated|REFERENCES,SELECT,TRIGGER
 grant|etat_onboarding_pharmacie.anon|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
 grant|etat_onboarding_pharmacie.authenticated|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
+grant|journal_admin_alertes.authenticated|SELECT
 grant|medicaments.anon|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
 grant|medicaments.authenticated|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
+grant|ordres_admin_alertes.authenticated|SELECT
 grant|patients_bloques.authenticated|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
 grant|pharmacies.anon|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
 grant|pharmacies.authenticated|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
@@ -433,6 +473,8 @@ index|envois_alerte.envois_alerte_pkey|CREATE UNIQUE INDEX envois_alerte_pkey ON
 index|envois_alerte.idx_envois_alerte_pharmacie|CREATE INDEX idx_envois_alerte_pharmacie ON public.envois_alerte USING btree (pharmacie_id, envoye_le DESC)
 index|etat_onboarding_pharmacie.etat_onboarding_pharmacie_pkey|CREATE UNIQUE INDEX etat_onboarding_pharmacie_pkey ON public.etat_onboarding_pharmacie USING btree (pharmacie_id)
 index|jetons_telegram.jetons_telegram_pkey|CREATE UNIQUE INDEX jetons_telegram_pkey ON public.jetons_telegram USING btree (jeton_hash)
+index|journal_admin_alertes.idx_journal_admin_alertes|CREATE INDEX idx_journal_admin_alertes ON public.journal_admin_alertes USING btree (alerte_id, cree_le)
+index|journal_admin_alertes.journal_admin_alertes_pkey|CREATE UNIQUE INDEX journal_admin_alertes_pkey ON public.journal_admin_alertes USING btree (id)
 index|medicaments.idx_medicaments_categorie|CREATE INDEX idx_medicaments_categorie ON public.medicaments USING btree (categorie)
 index|medicaments.idx_medicaments_dci|CREATE INDEX idx_medicaments_dci ON public.medicaments USING btree (dci)
 index|medicaments.idx_medicaments_nom|CREATE INDEX idx_medicaments_nom ON public.medicaments USING gin (nom gin_trgm_ops)
@@ -441,6 +483,8 @@ index|medicaments.uq_medicaments_nom_dosage|CREATE UNIQUE INDEX uq_medicaments_n
 index|notifications_outbox.idx_notifications_outbox_file|CREATE INDEX idx_notifications_outbox_file ON public.notifications_outbox USING btree (statut, prochaine_tentative_le)
 index|notifications_outbox.notifications_outbox_cle_idempotence_key|CREATE UNIQUE INDEX notifications_outbox_cle_idempotence_key ON public.notifications_outbox USING btree (cle_idempotence)
 index|notifications_outbox.notifications_outbox_pkey|CREATE UNIQUE INDEX notifications_outbox_pkey ON public.notifications_outbox USING btree (id)
+index|ordres_admin_alertes.idx_ordres_admin_en_attente|CREATE INDEX idx_ordres_admin_en_attente ON public.ordres_admin_alertes USING btree (cree_le) WHERE (traite_le IS NULL)
+index|ordres_admin_alertes.ordres_admin_alertes_pkey|CREATE UNIQUE INDEX ordres_admin_alertes_pkey ON public.ordres_admin_alertes USING btree (id)
 index|patients_bloques.patients_bloques_pkey|CREATE UNIQUE INDEX patients_bloques_pkey ON public.patients_bloques USING btree (empreinte_patient)
 index|pharmacies.idx_pharmacies_garde|CREATE INDEX idx_pharmacies_garde ON public.pharmacies USING btree (est_de_garde) WHERE (est_de_garde = true)
 index|pharmacies.idx_pharmacies_geo|CREATE INDEX idx_pharmacies_geo ON public.pharmacies USING gist (coordinates)
@@ -483,9 +527,11 @@ policy|envois_alerte.Admin lit les envois|cmd=SELECT roles=public using=(auth_ro
 policy|envois_alerte.Pharmacie voit ses envois|cmd=SELECT roles=public using=((auth_role() = 'pharmacien'::text) AND (pharmacie_id = auth_pharmacie_id())) with_check=-
 policy|etat_onboarding_pharmacie.Admin gère l'onboarding|cmd=ALL roles=public using=(auth_role() = 'admin'::text) with_check=(auth_role() = 'admin'::text)
 policy|etat_onboarding_pharmacie.Pharmacien voit son onboarding|cmd=SELECT roles=public using=((auth_role() = 'pharmacien'::text) AND (pharmacie_id = auth_pharmacie_id())) with_check=-
+policy|journal_admin_alertes.Admin lit le journal des alertes|cmd=SELECT roles=public using=(auth_role() = 'admin'::text) with_check=-
 policy|medicaments.Médicaments lisibles par tous|cmd=SELECT roles=public using=true with_check=-
 policy|medicaments.Médicaments modifiables par admin|cmd=ALL roles=public using=(auth_role() = 'admin'::text) with_check=-
 policy|notifications_outbox.Admin lit l'outbox|cmd=SELECT roles=public using=(auth_role() = 'admin'::text) with_check=-
+policy|ordres_admin_alertes.Admin lit les ordres|cmd=SELECT roles=public using=(auth_role() = 'admin'::text) with_check=-
 policy|patients_bloques.Admin gère la liste de blocage|cmd=ALL roles=public using=(auth_role() = 'admin'::text) with_check=(auth_role() = 'admin'::text)
 policy|pharmacies.Pharmacien modifie sa pharmacie|cmd=UPDATE roles=public using=((auth_role() = 'pharmacien'::text) AND (id = auth_pharmacie_id())) with_check=((auth_role() = 'pharmacien'::text) AND (id = auth_pharmacie_id()))
 policy|pharmacies.Pharmacies lisibles par tous|cmd=SELECT roles=public using=true with_check=-
@@ -513,8 +559,10 @@ table|drug_catalog|vue rls=false force_rls=false
 table|envois_alerte|table rls=true force_rls=false
 table|etat_onboarding_pharmacie|table rls=true force_rls=false
 table|jetons_telegram|table rls=true force_rls=false
+table|journal_admin_alertes|table rls=true force_rls=false
 table|medicaments|table rls=true force_rls=false
 table|notifications_outbox|table rls=true force_rls=false
+table|ordres_admin_alertes|table rls=true force_rls=false
 table|patients_bloques|table rls=true force_rls=false
 table|pharmacies|table rls=true force_rls=false
 table|profils|table rls=true force_rls=false
@@ -528,7 +576,9 @@ table|v_pharmacies|vue rls=false force_rls=false
 table|validations_classification|table rls=true force_rls=false
 table|vue_alertes_pharmacie|vue rls=false force_rls=false
 trigger|alertes_stock.trg_alertes_stock_avant_insertion|CREATE TRIGGER trg_alertes_stock_avant_insertion BEFORE INSERT ON public.alertes_stock FOR EACH ROW EXECUTE FUNCTION alertes_stock_avant_insertion()
+trigger|config_routage.config_routage_journal|CREATE TRIGGER config_routage_journal AFTER UPDATE ON public.config_routage FOR EACH ROW EXECUTE FUNCTION config_routage_journal()
 trigger|config_routage.config_routage_pas_de_suppression|CREATE TRIGGER config_routage_pas_de_suppression BEFORE DELETE ON public.config_routage FOR EACH ROW EXECUTE FUNCTION config_routage_interdit_suppression_mode()
+trigger|config_routage.config_routage_valider|CREATE TRIGGER config_routage_valider BEFORE INSERT OR UPDATE ON public.config_routage FOR EACH ROW EXECUTE FUNCTION config_routage_valider()
 trigger|config_routage.config_routage_verrou|CREATE TRIGGER config_routage_verrou BEFORE INSERT OR UPDATE ON public.config_routage FOR EACH ROW EXECUTE FUNCTION config_routage_verrou()
 trigger|medicaments.trg_medicaments_reset_validation|CREATE TRIGGER trg_medicaments_reset_validation BEFORE UPDATE ON public.medicaments FOR EACH ROW EXECUTE FUNCTION medicaments_reset_validation()
 trigger|medicaments.trg_medicaments_updated|CREATE TRIGGER trg_medicaments_updated BEFORE UPDATE ON public.medicaments FOR EACH ROW EXECUTE FUNCTION update_updated_at()

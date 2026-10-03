@@ -169,6 +169,19 @@
         @keyframes spin { to { transform: rotate(360deg); } }
 
         /* Toast */
+        .console-pastille { display: inline-block; padding: 4px 12px; border-radius: 14px; background: #eef0f2; font-size: 12px; font-weight: 600; margin: 0 6px 6px 0; }
+        #consoleIndicateurs { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
+        .console-carte { border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 13px; }
+        .console-carte small { display: block; color: var(--text-muted); }
+        .console-valeur { font-size: 22px; font-weight: 700; }
+        .console-ligne.actif { background: #eef4fb; }
+        .console-actions { display: flex; gap: 6px; flex-wrap: wrap; margin: 10px 0; }
+        .console-note { font-size: 12px; color: var(--text-muted); margin: 6px 0; }
+        .console-chrono { list-style: none; padding: 0; font-size: 13px; }
+        .console-chrono li { padding: 4px 0; border-bottom: 1px solid #f0f0f0; }
+        .console-heure { color: var(--text-muted); font-variant-numeric: tabular-nums; margin-right: 6px; }
+        .console-formulaire { background: #f8f9fa; border-radius: 8px; padding: 10px 12px; margin: 8px 0; }
+        .console-formulaire input[type=text] { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; }
         .toast { position: fixed; bottom: 20px; right: 20px; padding: 14px 24px; border-radius: 10px; color: #fff; font-size: 14px; z-index: 300; transform: translateY(100px); opacity: 0; transition: .3s; }
         .toast.show { transform: translateY(0); opacity: 1; }
         .toast.success { background: var(--success); }
@@ -275,6 +288,7 @@
             <button class="dash-tab" onclick="ProApp.switchTab('import')">📥 Import CSV</button>
             <button class="dash-tab" onclick="ProApp.switchTab('pharmacy')">🏥 Ma Pharmacie</button>
             <button class="dash-tab" onclick="ProApp.switchTab('alerts')">🔔 Alertes</button>
+            <button class="dash-tab" id="tabBtnConsole" style="display:none" onclick="ProApp.switchTab('console')">🛰️ Console alertes</button>
             <button class="dash-tab" id="tabBtnClassification" style="display:none" onclick="ProApp.switchTab('classification')">🛡️ Classification du catalogue</button>
         </div>
 
@@ -343,6 +357,32 @@
                 <div class="pharmacy-info-grid" id="pharmacyInfoGrid">
                     <div class="spinner"></div>
                 </div>
+            </div>
+        </div>
+
+        <!-- TAB: Console admin des alertes (admin seul) -->
+        <div class="tab-panel" id="tab-console">
+            <div class="section-card">
+                <div class="section-header"><h3>🛰️ Supervision des alertes</h3><button class="btn btn-secondary" onclick="AdminAlertes.chargerTout()">↻ Actualiser</button></div>
+                <div id="consoleBandeau"></div>
+            </div>
+            <div class="section-card" style="margin-top:16px">
+                <div class="section-header"><h3>📊 Indicateurs</h3>
+                    <select id="consolePeriode" onchange="AdminAlertes.chargerIndicateurs()"><option value="7">7 jours</option><option value="30" selected>30 jours</option><option value="90">90 jours</option></select></div>
+                <div id="consoleIndicateurs"></div>
+            </div>
+            <div class="section-card" style="margin-top:16px">
+                <div class="section-header"><h3>📋 File des alertes</h3>
+                    <select id="consoleFiltre" onchange="AdminAlertes.chargerFile()"><option value="">Toutes</option><option value="needs_review">À examiner</option><option value="new,routing,escalated">En cours</option><option value="answered">Répondues</option><option value="fulfilled,expired,cancelled">Terminées</option></select></div>
+                <div id="consoleFile"><div class="spinner"></div></div>
+            </div>
+            <div class="section-card" style="margin-top:16px">
+                <div class="section-header"><h3>🔎 Détail et actions</h3></div>
+                <div id="consoleDetail"><p class="console-note">Choisissez une alerte dans la file.</p></div>
+            </div>
+            <div class="section-card" style="margin-top:16px">
+                <div class="section-header"><h3>⚙️ Réglages du routage</h3></div>
+                <div id="consoleReglages"></div>
             </div>
         </div>
 
@@ -494,6 +534,8 @@
 
 <script src="/alerte-config.js"></script>
 <script src="/pro-utils.js"></script>
+<script src="/admin-utils.js"></script>
+<script src="/admin-alertes.js"></script>
 <script>
 var ProApp = (function() {
     var SUPABASE_URL = 'https://ueycknsdwthmtmpzptqp.supabase.co';
@@ -623,6 +665,8 @@ var ProApp = (function() {
         document.getElementById('navUserName').textContent = currentProfil.nom_complet || currentUser.email;
         // Onglet réservé à l'admin (la base refuse de toute façon les écritures des autres rôles).
         document.getElementById('tabBtnClassification').style.display = currentProfil.role === 'admin' ? '' : 'none';
+        document.getElementById('tabBtnConsole').style.display = currentProfil.role === 'admin' ? '' : 'none';
+        if (currentProfil.role === 'admin') window.AdminAlertes.init({ sb: _sb, esc: esc, toast: showToast });
         loadStocks();
         loadStats();
         if (currentProfil.role === 'pharmacien') chargerAlertesPharmacie();
@@ -639,6 +683,7 @@ var ProApp = (function() {
         if (tabName === 'pharmacy') loadPharmacyInfo();
         if (tabName === 'alerts') loadAlerts();
         if (tabName === 'classification') loadClassification();
+        if (tabName === 'console' && currentProfil && currentProfil.role === 'admin') window.AdminAlertes.ouvrir();
     }
 
     // ── Classification du catalogue (admin) ──

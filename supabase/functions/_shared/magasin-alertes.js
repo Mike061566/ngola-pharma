@@ -8,9 +8,13 @@ function ok({ data, error }, contexte) {
 }
 const STATUTS_ACTIFS = ['new', 'routing', 'escalated', 'answered', 'needs_review'];
 const SELECTION_ALERTE = 'id, id_public, statut, urgence, quartier_id, lat, lng, vague, cree_le, debut_routage_le, expire_le, ' +
-  'premiere_reponse_positive_le, escalade_le, patient_notifie_le, second_message_le, canal_patient, contact_patient_chiffre, raison_revue, ' +
+  'premiere_reponse_positive_le, escalade_le, patient_notifie_le, second_message_le, canal_patient, contact_patient_chiffre, raison_revue, routage_manuel, ' +
   'quartiers(nom), medicaments(id, nom, dosage, forme, restreint, classification_validee_le, est_demo, statut_catalogue, ordonnance), ' +
   'envois_alerte(pharmacie_id)';
+
+const aplatirAlerte = ({ quartiers, medicaments, envois_alerte, ...a }) => ({
+  ...a, quartier_nom: quartiers?.nom ?? '', medicament: medicaments ?? null,
+  deja_sollicitees: (envois_alerte || []).map((e) => e.pharmacie_id) });
 
 export function creerMagasinAlertes(sb) {
   return {
@@ -39,9 +43,19 @@ export function creerMagasinAlertes(sb) {
     // ── Planificateur ──
     async alertesActives() {
       const lignes = ok(await sb.from('alertes_routage').select(SELECTION_ALERTE).in('statut', STATUTS_ACTIFS).order('cree_le').limit(500), 'alertesActives');
-      return (lignes || []).map(({ quartiers, medicaments, envois_alerte, ...a }) => ({
-        ...a, quartier_nom: quartiers?.nom ?? '', medicament: medicaments ?? null,
-        deja_sollicitees: (envois_alerte || []).map((e) => e.pharmacie_id) }));
+      return (lignes || []).map(aplatirAlerte);
+    },
+    /** Une alerte, quel que soit son statut (ordres de l'admin sur une alerte refusée ou annulée). */
+    async alerteParId(id) {
+      const a = ok(await sb.from('alertes_routage').select(SELECTION_ALERTE).eq('id', id).maybeSingle(), 'alerteParId');
+      return a ? aplatirAlerte(a) : null;
+    },
+    /** Ordres déposés par la console admin (transmettre / refuser), non encore exécutés. */
+    async ordresAdminEnAttente() {
+      return ok(await sb.from('ordres_admin_alertes').select('id, alerte_id, type, params').is('traite_le', null).order('cree_le').limit(100), 'ordresAdminEnAttente') || [];
+    },
+    async marquerOrdreTraite(id, erreur) {
+      ok(await sb.from('ordres_admin_alertes').update({ traite_le: new Date().toISOString(), erreur: erreur ?? null }).eq('id', id), 'marquerOrdreTraite');
     },
     async donneesPharmacies(medicamentId) {
       return ok(await sb.rpc('donnees_routage_pharmacies', { p_medicament_id: medicamentId }), 'donneesPharmacies') || [];

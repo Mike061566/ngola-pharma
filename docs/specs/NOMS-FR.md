@@ -67,3 +67,8 @@ Les **valeurs** de statut (`new`, `routing`, `sent`, `queued`, `telegram`...) re
 | enregistrement d'une réponse | fonction SQL `enregistrer_reponse_alerte` ; depuis l'Espace Pro : `repondre_alerte` |
 | activation Telegram / SMS d'une pharmacie | `activer_telegram_pharmacie`, `ajouter_contact_sms`, `changer_abonnement_contact` |
 | `opted_out_at` | `contacts_pharmacie.desabonne_le` |
+| `/api/admin/alerts` (liste, chronologie) | fonctions SQL `file_alertes_admin`, `chronologie_alerte` |
+| `/api/admin/alerts/:id/{dispatch,cancel,close,reroute,approve}` | `admin_transmettre`, `admin_annuler_alerte`, `admin_cloturer_alerte`, `admin_relancer_vague`, `admin_rattacher_medicament` (+ `admin_refuser_alerte`, `admin_retirer_destinataire`, `admin_bloquer_patient`) |
+| `/api/admin/routing-config` | table `config_routage` (validation `erreur_valeur_config`, journal `config_routage_journal`) |
+| `/api/admin/alerts/metrics` | `indicateurs_alertes`, `etat_budget_messages` |
+| journal d'audit admin | `journal_admin_alertes` ; ordres exécutés par le planificateur : `ordres_admin_alertes` |

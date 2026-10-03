@@ -30,14 +30,20 @@ export async function planifierAlertes({ magasin, cle, env = {}, maintenant = ()
   const now = maintenant();
   const config = await magasin.lireConfig();
   const p = parametresRoutage(config);
-  const resume = { alertes: 0, vagues: 0, envois: 0, needs_review: 0, escalades: 0, expirees: 0, messages_patient: 0, relances_sms: 0, erreurs: 0, inactif: false };
-
-  const nbValidations = p.mode_application === 'production' ? await magasin.compterValidations() : 0;
-  const demarrage = verifierDemarrageRoutage({ mode: p.mode_application, routageAuto: env.ALERT_AUTO_ROUTING === 'true', nbValidationsPharmacien: nbValidations });
-  if (!demarrage.actif) { resume.inactif = true; resume.raison = demarrage.raison; return resume; }
+  const resume = { alertes: 0, vagues: 0, envois: 0, needs_review: 0, escalades: 0, expirees: 0, messages_patient: 0, relances_sms: 0, ordres_admin: 0, alertes_budget: 0, erreurs: 0, inactif: false };
 
   const accel = p.mode_application === 'demo' ? p.facteur_temps_demo : 1;
   const heure = heureLocale(now, p.decalage_horaire_min);
+
+  const nbValidations = p.mode_application === 'production' ? await magasin.compterValidations() : 0;
+  const demarrage = verifierDemarrageRoutage({ mode: p.mode_application, routageAuto: env.ALERT_AUTO_ROUTING === 'true', nbValidationsPharmacien: nbValidations });
+  if (!demarrage.actif) {
+    // Routage automatique désactivé : seuls les ordres manuels de l'admin sont exécutés (comportement actuel).
+    resume.inactif = true; resume.raison = demarrage.raison;
+    await traiterOrdresAdmin();
+    return resume;
+  }
+
 
   // ── Messages au patient (via l'outbox) ──
   async function messagePatient(a, modeleTelegram, variables, suffixe) {
@@ -52,7 +58,7 @@ export async function planifierAlertes({ magasin, cle, env = {}, maintenant = ()
   }
 
   // ── Envoi d'une vague : lignes envois_alerte + messages aux contacts de chaque pharmacie ──
-  async function executerVague(a, action) {
+  async function executerVague(a, action, { majAlerte = true } = {}) {
     const lignes = action.pharmacies.map((e) => ({ alerte_id: a.id, pharmacie_id: e.pharmacie_id, vague: e.vague, score: e.score,
       detail_score: e.detail_score, code_reponse: aleatoireBase32(10) }));
     const envois = await magasin.creerEnvois(a.id, lignes);
@@ -81,8 +87,46 @@ export async function planifierAlertes({ magasin, cle, env = {}, maintenant = ()
       resume.envois += 1;
     }
     resume.vagues += 1;
-    await magasin.majAlerte(a.id, { statut: a.statut === 'escalated' ? 'escalated' : 'routing', vague: action.vague,
-      ...(action.vague === 1 ? { debut_routage_le: now.toISOString() } : {}) });
+    if (majAlerte) {
+      await magasin.majAlerte(a.id, { statut: a.statut === 'escalated' ? 'escalated' : 'routing', vague: action.vague,
+        ...(action.vague === 1 ? { debut_routage_le: now.toISOString() } : {}) });
+    }
+  }
+
+  // ── Ordres de l'admin (transmission manuelle, refus) : déposés par la console, exécutés ici (seul à détenir la clé) ──
+  // Exécutés même si le routage automatique est désactivé : c'est le « dispatch manuel par l'admin » du comportement actuel.
+  async function traiterOrdresAdmin() {
+    for (const o of await magasin.ordresAdminEnAttente()) {
+      try {
+        const a = await magasin.alerteParId(o.alerte_id);
+        if (!a) { await magasin.marquerOrdreTraite(o.id, 'alerte_introuvable'); continue; }
+        if (o.type === 'transmettre') {
+          const ids = Array.isArray(o.params?.pharmacie_ids) ? o.params.pharmacie_ids : [];
+          await executerVague(a, { vague: Math.max(a.vague || 0, 1), pharmacies: ids.map((pharmacie_id) => ({
+            pharmacie_id, vague: Math.max(a.vague || 0, 1), score: 0, detail_score: { manuel: true } })) }, { majAlerte: false });
+        } else if (o.type === 'refuser') {
+          await messagePatient(a, 'restricted_refus', {}, 'restricted_refus');
+        }
+        await magasin.marquerOrdreTraite(o.id, null);
+        resume.ordres_admin += 1;
+      } catch (e) {
+        resume.erreurs += 1;                                   // l'ordre reste en attente : nouvel essai au prochain passage
+        journal({ evt: 'erreur_ordre_admin', ordre: o.id, erreur: e?.name || 'inconnue' });
+      }
+    }
+  }
+
+  // ── Budget quotidien de messages : alerte admin à 80 % puis à 100 % (une fois par jour et par niveau) ──
+  async function alerterBudget() {
+    const plafond = Number(config.budget_messages_jour ?? 50);
+    if (!env.ADMIN_ALERT_EMAIL || !(plafond > 0)) return;
+    const utilises = await magasin.compterPayantsDuJour();
+    const niveau = utilises >= plafond ? '100' : utilises >= 0.8 * plafond ? '80' : null;
+    if (!niveau) return;
+    const jour = new Date(now.getTime() + p.decalage_horaire_min * MIN).toISOString().slice(0, 10);
+    const r = await enfiler(magasin, cle, { typeDestinataire: 'admin', destinataireRef: null, canal: 'email', modele: 'alerte_budget',
+      adresse: env.ADMIN_ALERT_EMAIL, cleBase: `budget:${jour}:${niveau}`, variables: { utilises: String(utilises), plafond: String(plafond), niveau } });
+    if (r.cree) resume.alertes_budget += 1;
   }
 
   async function executer(a, action) {
@@ -154,6 +198,7 @@ export async function planifierAlertes({ magasin, cle, env = {}, maintenant = ()
   }
 
   // ── Boucle principale ──
+  await traiterOrdresAdmin();
   const alertes = await magasin.alertesActives();
   for (const a of alertes) {
     resume.alertes += 1;
@@ -198,5 +243,6 @@ export async function planifierAlertes({ magasin, cle, env = {}, maintenant = ()
       journal({ evt: 'erreur_relance', erreur: err?.name || 'inconnue' });
     }
   }
+  try { await alerterBudget(); } catch (e) { resume.erreurs += 1; journal({ evt: 'erreur_budget', erreur: e?.name || 'inconnue' }); }
   return resume;
 }

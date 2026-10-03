@@ -200,6 +200,16 @@ export const MODELES = {
     },
   },
   // ── Vers l'admin ──
+  alerte_budget: {
+    canaux: {
+      email: (v) => {
+        exiger(v, ['utilises', 'plafond', 'niveau']);
+        return { format: 'texte', sujet: `Budget de messages : ${v.niveau} % atteint`,
+          texte: `Le budget quotidien de messages payants (SMS, email) est atteint à ${v.niveau} % : ${v.utilises} sur ${v.plafond}.` +
+            (String(v.niveau) === '100' ? '\nLes SMS de relance sont suspendus, sauf alertes urgentes des pharmacies de garde.' : '') };
+      },
+    },
+  },
   escalade_admin: {
     canaux: {
       email: (v) => {

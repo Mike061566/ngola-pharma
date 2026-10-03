@@ -364,3 +364,14 @@ test('distanceKm : formule de haversine ; coordonnées manquantes -> null', () =
   assert.equal(distanceKm(null, 11, 3, 11), null);
   assert.equal(distanceKm('3', 11, 3, 11), null);
 });
+
+test('routage manuel (transmission par l\'admin) : aucune vague automatique, même sur un médicament restreint ; escalade et expiration restent actives', () => {
+  const min = (m) => new Date(NOW.getTime() + m * 60000);
+  const a = (s = {}) => alerte({ statut: 'routing', vague: 1, routage_manuel: true, medicament: { ...medValide, restreint: true }, ...s });
+  assert.equal(vague(planDispatch(a({ vague: 0 }), dix(10), CONFIG, NOW)), undefined, 'pas de vague 1');
+  assert.equal(vague(planDispatch(a(), dix(10), CONFIG, min(15))), undefined, 'pas de vague 2');
+  assert.deepEqual(planDispatch(a(), dix(10), CONFIG, min(30)).actions, [{ type: 'escalader', raison: 'sans_reponse' }]);
+  assert.deepEqual(planDispatch(a({ statut: 'escalated' }), dix(10), CONFIG, min(120)).actions, [{ type: 'expirer' }]);
+  // sans le drapeau, la même alerte reçoit bien sa vague 2
+  assert.equal(vague(planDispatch(a({ routage_manuel: false, medicament: medDemo }), dix(10), CONFIG, min(15))).vague, 2);
+});

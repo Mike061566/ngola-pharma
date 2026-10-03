@@ -143,3 +143,31 @@ boutons des messages Telegram de la pharmacie sont retirés.
 - Les réponses du bot (activation, `/stop`...) partent au prochain passage du worker (≤ 1 min).
 - Un jeton d'activation consommé alors que le plafond de comptes est atteint doit être régénéré.
 - `/c/:token` (« Confirmer mes stocks ») n'est pas dans cette PR.
+
+## Console admin des alertes (PR 6)
+
+Onglet « 🛰️ Console alertes » de l'Espace Pro (**rôle admin seulement**, `public/admin-alertes.js` + `admin-utils.js`) et migration
+`20261009000000`. Aucune Edge Function nouvelle : la console appelle des **fonctions SQL réservées à l'admin** (`file_alertes_admin`,
+`chronologie_alerte`, `indicateurs_alertes`, `etat_budget_messages`, `admin_*`), qui vérifient le rôle (42501 sinon) et journalisent dans
+`journal_admin_alertes` (identifiants et compteurs uniquement, jamais de contact).
+
+| Besoin (SPEC 2) | Réalisation |
+|---|---|
+| File en temps réel | `file_alertes_admin`, rafraîchie toutes les 15 s ; alertes à examiner en tête |
+| Chronologie (vagues, destinataires, scores, réponses, coûts) | `chronologie_alerte` : **chaque consultation est journalisée** (§11) ; aucun contact ni empreinte renvoyés |
+| Revue `needs_review` (§4.0) | `admin_rattacher_medicament` (routable → repart en `new`, restreint → reste en revue), `admin_transmettre`, `admin_refuser_alerte` |
+| Actions §4.5 | ajouter une pharmacie / transmettre, `admin_retirer_destinataire`, `admin_relancer_vague`, `admin_cloturer_alerte`, `admin_annuler_alerte`, `admin_bloquer_patient` (empreintes) |
+| Réglages `routing_config` | table `config_routage` éditable ; **valeurs validées par la base** (types, bornes, clés connues, critères de score), changements journalisés (avant / après) ; `mode_application` reste sous le verrou de production |
+| Indicateurs §10 | `indicateurs_alertes(jours)` : délai médian, part < 15 min, taux de réponse par pharmacie, activation Telegram, échecs et repli SMS, coût, mises à jour de stock |
+| Budget (§6.2) | bandeau à 80 % / 100 % ; le planificateur envoie un email admin (`ADMIN_ALERT_EMAIL`) une fois par jour et par niveau |
+
+**Transmission manuelle et refus** : la base dépose un ordre (`ordres_admin_alertes`) que le **planificateur** exécute dans la minute (il est
+seul à détenir la clé de chiffrement : le navigateur ne manipule jamais de contact chiffré). Une alerte transmise passe en `routing` avec
+`routage_manuel = true` : **plus aucune vague automatique**, même pour un médicament restreint (le moteur le garantit : `planDispatch`).
+Les ordres sont exécutés **même si `ALERT_AUTO_ROUTING` est désactivé** : c'est le « dispatch manuel par l'admin » du comportement actuel.
+Seules sont acceptées les pharmacies vérifiées avec un contact actif (et, en production, non « démo ») ; les refus sont motivés.
+
+**À savoir**
+- Le coût moyen par alerte vaut 0 tant que le fournisseur ne renseigne pas `cout_estime` (le mock ne le fait pas) ; le nombre de messages payants est exact.
+- « Mises à jour de stock issues des alertes » = réponses enregistrées sur un médicament reconnu.
+- L'activation Telegram est mesurée sur les pharmacies **publiées** ayant au moins un compte vérifié et actif.

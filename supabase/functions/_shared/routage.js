@@ -5,7 +5,7 @@
 // planificateur (PR 4) exécute ; ce module ne fait rien lui-même.
 //
 // Entrées
-//  alerte : { id, statut, urgence, quartier_id, lat, lng, quartiers_adjacents?: [id], vague (vagues déjà envoyées),
+//  alerte : { id, statut, urgence, quartier_id, lat, lng, quartiers_adjacents?: [id], vague (vagues déjà envoyées), routage_manuel?: bool,
 //             cree_le, debut_routage_le?, expire_le?, premiere_reponse_positive_le?, deja_sollicitees?: [pharmacie_id],
 //             medicament: null | { restreint, classification_validee_le, est_demo, statut_catalogue, ordonnance } }
 //  pharmacies : [{ id, statut, est_publiee, est_demo?, quartier_id, latitude, longitude, horaires, est_de_garde,
@@ -221,7 +221,8 @@ export function planDispatch(alerte, pharmacies, config, now) {
   const positive = Boolean(alerte.premiere_reponse_positive_le) || alerte.statut === 'answered';
   const vague = alerte.vague || 0;
   let vagueAEnvoyer = null;
-  if (!positive) {
+  // Routage manuel (transmission par l'admin) : jamais de vague automatique, même pour un médicament restreint.
+  if (!positive && alerte.routage_manuel !== true) {
     if (vague === 0) vagueAEnvoyer = 1;
     else if (vague === 1 && t >= ech.vague2) vagueAEnvoyer = 2;
   }

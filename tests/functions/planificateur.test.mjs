@@ -318,3 +318,83 @@ test('heureLocale : UTC+1 par défaut, passage de minuit', () => {
   assert.equal(heureLocale(new Date('2026-10-05T23:30:00Z')), '00:30');
   assert.equal(heureLocale(new Date('2026-10-05T10:00:00Z'), 0), '10:00');
 });
+
+// ── PR 6 : ordres de l'admin, budget ──
+const ordre = (type, params = {}, s = {}) => ({ id: `o-${type}`, alerte_id: 'a1', type, params, traite_le: null, ...s });
+
+test('ordre « transmettre » : une ligne envois_alerte par pharmacie choisie (score 0, marquée manuelle), message avec rappel d\'ordonnance, alerte inchangée', async () => {
+  const t = await monter({ alertes: [alerteBase({ statut: 'routing', vague: 1, routage_manuel: true, medicament: { ...MED, ordonnance: true, restreint: true } })] });
+  t.etat.ordres.push(ordre('transmettre', { pharmacie_ids: ['p02', 'p05'] }));
+  const r = await t.lancer();
+  assert.equal(r.ordres_admin, 1);
+  assert.deepEqual(t.etat.envois.map((e) => e.pharmacie_id).sort(), ['p02', 'p05']);
+  assert.ok(t.etat.envois.every((e) => e.score === 0 && e.detail_score.manuel === true && e.vague === 1));
+  assert.equal(t.outbox().length, 2);
+  assert.ok(t.outbox().every((l) => l.modele === 'alerte_demande' && l.variables.sur_ordonnance === true));
+  assert.equal(alerte(t).statut, 'routing'); assert.equal(alerte(t).vague, 1);
+  assert.ok(t.etat.ordres[0].traite_le);
+  await t.lancer();
+  assert.equal(t.etat.envois.length, 2, 'ordre traité une seule fois');
+  assert.equal(t.outbox().length, 2);
+});
+
+test('transmission manuelle : jamais de vague automatique ensuite (médicament restreint), même après plusieurs passages', async () => {
+  const t = await monter({ alertes: [alerteBase({ statut: 'routing', vague: 1, routage_manuel: true, medicament: { ...MED, restreint: true } })] });
+  t.etat.ordres.push(ordre('transmettre', { pharmacie_ids: ['p01'] }));
+  await t.lancer(); minutes(t, 12); await t.lancer();
+  assert.equal(t.etat.envois.length, 1, 'aucune vague 2 automatique');
+});
+
+test('ordre « refuser » : message restricted_refus au patient, une seule fois, alerte annulée non reprise', async () => {
+  const cle = await cleTest();
+  const t = await monter({ alertes: [alerteBase({ statut: 'cancelled', raison_revue: 'restreint', medicament: { ...MED, restreint: true }, canal_patient: 'sms',
+    contact_patient_chiffre: versBytea(await chiffrer(cle, '+237699123456')) })] });
+  t.etat.ordres.push(ordre('refuser'));
+  const r = await t.lancer();
+  assert.equal(r.ordres_admin, 1);
+  const m = t.outbox();
+  assert.equal(m.length, 1); assert.equal(m[0].modele, 'restricted_refus'); assert.equal(m[0].canal, 'sms'); assert.equal(m[0].type_destinataire, 'patient');
+  assert.equal(await dechiffrer(t.cle, depuisBytea(m[0].adresse_chiffree)), '+237699123456');
+  assert.equal(t.etat.envois.length, 0);
+  await t.lancer(); assert.equal(t.outbox().length, 1);
+});
+
+test('ordres de l\'admin exécutés même quand le routage automatique est désactivé (comportement actuel : dispatch manuel)', async () => {
+  const hors = { ...ENV, ALERT_AUTO_ROUTING: 'false' };
+  const t = await monter({ env: hors, alertes: [alerteBase({ statut: 'routing', vague: 1, routage_manuel: true })] });
+  t.etat.ordres.push(ordre('transmettre', { pharmacie_ids: ['p01'] }));
+  const r = await t.lancer(hors);
+  assert.equal(r.inactif, true); assert.equal(r.ordres_admin, 1);
+  assert.equal(t.etat.envois.length, 1);
+  assert.equal(alerte(t).statut, 'routing');
+});
+
+test('ordre sur une alerte inconnue : clos avec une erreur ; panne d\'infrastructure : l\'ordre reste en attente', async () => {
+  const t = await monter();
+  t.etat.ordres.push(ordre('refuser', {}, { alerte_id: 'fantome' }));
+  await t.lancer();
+  assert.equal(t.etat.ordres[0].erreur, 'alerte_introuvable'); assert.ok(t.etat.ordres[0].traite_le);
+  const u = await monter({ alertes: [alerteBase({ statut: 'routing', vague: 1, routage_manuel: true })] });
+  u.etat.ordres.push(ordre('transmettre', { pharmacie_ids: ['p01'] }));
+  const orig = u.magasin.creerEnvois; u.magasin.creerEnvois = async () => { throw new Error('base indisponible'); };
+  const r = await u.lancer(); assert.equal(r.erreurs, 1); assert.equal(u.etat.ordres[0].traite_le, null);
+  u.magasin.creerEnvois = orig; await u.lancer(); assert.ok(u.etat.ordres[0].traite_le);
+});
+
+test('budget : email admin à 80 % puis à 100 %, une fois par jour et par niveau ; rien sans ADMIN_ALERT_EMAIL ni sous 80 %', async () => {
+  const t = await monter({ alertes: [], config: { budget_messages_jour: 50 } });
+  t.etat.payants = 39; await t.lancer();
+  assert.equal(t.outbox().length, 0);
+  t.etat.payants = 40; let r = await t.lancer();
+  assert.equal(r.alertes_budget, 1);
+  let m = t.outbox()[0];
+  assert.equal(m.modele, 'alerte_budget'); assert.equal(m.type_destinataire, 'admin'); assert.equal(m.variables.niveau, '80'); assert.equal(m.variables.utilises, '40');
+  await t.lancer(); assert.equal(t.outbox().length, 1, 'une seule alerte à 80 % ce jour-là');
+  t.etat.payants = 50; r = await t.lancer();
+  assert.equal(r.alertes_budget, 1); assert.equal(t.outbox().length, 2); assert.equal(t.outbox()[1].variables.niveau, '100');
+  minutes(t, 24 * 60); await t.lancer();
+  assert.equal(t.outbox().length, 3, 'le lendemain, nouvelle alerte');
+  const sans = await monter({ alertes: [], env: { ...ENV, ADMIN_ALERT_EMAIL: undefined } });
+  sans.etat.payants = 60; await sans.lancer({ ...ENV, ADMIN_ALERT_EMAIL: undefined });
+  assert.equal(sans.outbox().length, 0);
+});

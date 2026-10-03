@@ -65,10 +65,13 @@ export function magasinMemoire({ config = {}, lignes = [], contacts = [], payant
 export function magasinAlertesMemoire({ config = {}, alertes = [], pharmacies = [], contacts = [], reponses = [], demoAdresses = [], validations = 0, horloge: h }) {
   const sortie = magasinMemoire({ config: { mode_application: 'demo', ...config }, lignes: [], contacts, horloge: h });
   const etat = sortie.etat;
-  Object.assign(etat, { alertes: alertes.map((a) => ({ ...a })), pharmacies, envois: [], reponses: [...reponses], jetons: [], creations: [], validations });
+  Object.assign(etat, { alertes: alertes.map((a) => ({ ...a })), pharmacies, envois: [], reponses: [...reponses], jetons: [], creations: [], validations, ordres: [] });
   const trouver = (id) => etat.alertes.find((a) => a.id === id);
   Object.assign(sortie, {
     async compterValidations() { return etat.validations; },
+    async alerteParId(id) { const a = trouver(id); return a ? { ...a, deja_sollicitees: etat.envois.filter((e) => e.alerte_id === id).map((e) => e.pharmacie_id) } : null; },
+    async ordresAdminEnAttente() { return etat.ordres.filter((o) => !o.traite_le); },
+    async marquerOrdreTraite(id, erreur) { Object.assign(etat.ordres.find((o) => o.id === id), { traite_le: h.maintenant().toISOString(), erreur: erreur ?? null }); },
     async alertesActives() {
       return etat.alertes.filter((a) => ['new', 'routing', 'escalated', 'answered', 'needs_review'].includes(a.statut))
         .map((a) => ({ ...a, deja_sollicitees: etat.envois.filter((e) => e.alerte_id === a.id).map((e) => e.pharmacie_id) }));
