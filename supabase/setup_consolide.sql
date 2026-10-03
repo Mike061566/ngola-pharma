@@ -267,15 +267,20 @@ DROP POLICY IF EXISTS "profils_update" ON profils;
 DROP POLICY IF EXISTS "profils_insert" ON profils;
 CREATE POLICY "profils_select" ON profils FOR SELECT
     USING (id = auth.uid() OR auth_role() = 'admin');
--- Un utilisateur peut modifier son propre profil, mais ne peut pas
--- s'auto-attribuer un rôle pharmacien/admin en le modifiant après coup
--- (seul un admin existant le peut). Sans cette restriction sur `role`,
--- n'importe quel compte pourrait s'octroyer l'accès admin.
+-- Un utilisateur peut modifier son propre profil, mais ne peut changer ni son
+-- `role` ni son `pharmacie_id` (seul un admin le peut). Sans la restriction sur
+-- `role`, n'importe quel compte pourrait s'octroyer l'accès admin ; sans celle sur
+-- `pharmacie_id`, un pharmacien pourrait se rattacher à une autre officine et
+-- modifier ses stocks. Voir supabase/fix_profils_pharmacie_id.sql.
 CREATE POLICY "profils_update" ON profils FOR UPDATE
-    USING (id = auth.uid())
+    USING (id = auth.uid() OR auth_role() = 'admin')
     WITH CHECK (
-        id = auth.uid()
-        AND (role = (SELECT role FROM profils WHERE id = auth.uid()) OR auth_role() = 'admin')
+        auth_role() = 'admin'
+        OR (
+            id = auth.uid()
+            AND role = auth_role()
+            AND pharmacie_id IS NOT DISTINCT FROM auth_pharmacie_id()
+        )
     );
 -- Auto-inscription publique : uniquement en tant que patient, sans
 -- pharmacie liée. Un admin existant peut créer un profil avec
