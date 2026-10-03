@@ -6,12 +6,15 @@
 -- pharmacie, dont `statut` (se passer `verifie` / `partenaire`), `nom`, `adresse`,
 -- le GPS et `est_de_garde`. SPEC 1 §6 : ces champs relèvent de l'admin.
 --
--- Colonnes modifiables par un pharmacien (sa propre pharmacie uniquement) :
---     telephone, email, site_web, logo_url, horaires
--- Toutes les autres colonnes — y compris celles ajoutées plus tard — sont protégées
--- par défaut : nom, slug, quartier_id, adresse, latitude, longitude, coordinates,
--- est_de_garde, garde_jusqu_a, statut, source, note_moyenne, nombre_avis, verified_at,
--- id, created_at. (updated_at est géré par trigger.)
+-- Colonnes modifiables par un pharmacien (sa propre pharmacie uniquement), 5 :
+--     horaires, telephone, email, site_web, logo_url   (contact et informatif)
+-- Réservées à l'admin et aux rôles serveur : identité (nom, slug, quartier_id, adresse,
+-- latitude, longitude, coordinates), garde (est_de_garde, garde_jusqu_a), statut et
+-- vérification (statut, verified_at, source), champs calculés ou techniques (note_moyenne,
+-- nombre_avis, id, created_at ; updated_at est posé par trigger).
+-- Protection PAR DÉFAUT : toute colonne ajoutée plus tard (numéro d'Ordre, is_published,
+-- is_demo, onboarding_state...) est réservée à l'admin sans modifier ce script.
+-- La garde sera demandée par le pharmacien via une demande de modification (plus tard).
 --
 -- Mécanisme : trigger BEFORE UPDATE (et non GRANT par colonne : l'admin utilise le même
 -- rôle `authenticated`). Sont exemptés : l'admin applicatif (profils.role = 'admin') et
