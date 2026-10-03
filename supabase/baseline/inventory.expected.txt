@@ -1,0 +1,226 @@
+# Inventaire attendu du schéma public — généré par supabase/diagnostics/schema_inventory.sql
+# sur setup_consolide.sql (correctifs profils_pharmacie_id et pharmacies_colonnes_protegees inclus).
+# Ne pas éditer à la main : voir scripts/build-baseline-inventory.sh.
+column|alertes_stock.active|boolean DEFAULT true
+column|alertes_stock.canal|text DEFAULT 'email'::text
+column|alertes_stock.created_at|timestamp with time zone DEFAULT now()
+column|alertes_stock.id|uuid NOT NULL DEFAULT gen_random_uuid()
+column|alertes_stock.medicament_id|uuid
+column|alertes_stock.medicament_nom|text NOT NULL
+column|alertes_stock.notified_at|timestamp with time zone
+column|alertes_stock.quartier_id|uuid
+column|alertes_stock.user_email|text
+column|alertes_stock.user_phone|text
+column|medicaments.categorie|text
+column|medicaments.created_at|timestamp with time zone NOT NULL DEFAULT now()
+column|medicaments.dci|text
+column|medicaments.description|text
+column|medicaments.dosage|text
+column|medicaments.forme|text
+column|medicaments.id|uuid NOT NULL DEFAULT gen_random_uuid()
+column|medicaments.image_url|text
+column|medicaments.nom_commercial|text
+column|medicaments.nom|text NOT NULL
+column|medicaments.ordonnance|boolean NOT NULL DEFAULT false
+column|medicaments.updated_at|timestamp with time zone NOT NULL DEFAULT now()
+column|pharmacies.adresse|text
+column|pharmacies.coordinates|geography(Point,4326)
+column|pharmacies.created_at|timestamp with time zone NOT NULL DEFAULT now()
+column|pharmacies.email|text
+column|pharmacies.est_de_garde|boolean NOT NULL DEFAULT false
+column|pharmacies.garde_jusqu_a|timestamp with time zone
+column|pharmacies.horaires|jsonb DEFAULT '{}'::jsonb
+column|pharmacies.id|uuid NOT NULL DEFAULT gen_random_uuid()
+column|pharmacies.latitude|double precision
+column|pharmacies.logo_url|text
+column|pharmacies.longitude|double precision
+column|pharmacies.nombre_avis|integer DEFAULT 0
+column|pharmacies.nom|text NOT NULL
+column|pharmacies.note_moyenne|numeric(2,1) DEFAULT 0.0
+column|pharmacies.quartier_id|uuid NOT NULL
+column|pharmacies.site_web|text
+column|pharmacies.slug|text NOT NULL
+column|pharmacies.source|source_donnee NOT NULL DEFAULT 'admin'::source_donnee
+column|pharmacies.statut|statut_pharmacie NOT NULL DEFAULT 'non_verifie'::statut_pharmacie
+column|pharmacies.telephone|text
+column|pharmacies.updated_at|timestamp with time zone NOT NULL DEFAULT now()
+column|pharmacies.verified_at|timestamp with time zone
+column|profils.avatar_url|text
+column|profils.created_at|timestamp with time zone NOT NULL DEFAULT now()
+column|profils.id|uuid NOT NULL
+column|profils.langue|text NOT NULL DEFAULT 'fr'::text
+column|profils.nom_complet|text
+column|profils.pharmacie_id|uuid
+column|profils.quartier_id|uuid
+column|profils.role|text NOT NULL DEFAULT 'patient'::text
+column|profils.telephone|text
+column|profils.updated_at|timestamp with time zone NOT NULL DEFAULT now()
+column|quartiers.created_at|timestamp with time zone NOT NULL DEFAULT now()
+column|quartiers.description|text
+column|quartiers.id|uuid NOT NULL DEFAULT gen_random_uuid()
+column|quartiers.nom|text NOT NULL
+column|quartiers.slug|text NOT NULL
+column|recherches.created_at|timestamp with time zone NOT NULL DEFAULT now()
+column|recherches.id|uuid NOT NULL DEFAULT gen_random_uuid()
+column|recherches.resultats|integer DEFAULT 0
+column|recherches.terme|text NOT NULL
+column|recherches.user_id|uuid
+column|stocks.created_at|timestamp with time zone NOT NULL DEFAULT now()
+column|stocks.date_maj|timestamp with time zone NOT NULL DEFAULT now()
+column|stocks.en_stock|boolean NOT NULL DEFAULT true
+column|stocks.id|uuid NOT NULL DEFAULT gen_random_uuid()
+column|stocks.medicament_id|uuid NOT NULL
+column|stocks.pharmacie_id|uuid NOT NULL
+column|stocks.prix_fcfa|integer NOT NULL
+column|stocks.source|source_donnee NOT NULL DEFAULT 'admin'::source_donnee
+column|v_meilleurs_prix.dci|text
+column|v_meilleurs_prix.dosage|text
+column|v_meilleurs_prix.en_stock|boolean
+column|v_meilleurs_prix.medicament_id|uuid
+column|v_meilleurs_prix.medicament_nom|text
+column|v_meilleurs_prix.pharmacie_id|uuid
+column|v_meilleurs_prix.pharmacie_nom|text
+column|v_meilleurs_prix.prix_fcfa|integer
+column|v_meilleurs_prix.quartier_id|uuid
+column|v_meilleurs_prix.quartier_nom|text
+column|v_pharmacies.adresse|text
+column|v_pharmacies.coordinates|geography(Point,4326)
+column|v_pharmacies.created_at|timestamp with time zone
+column|v_pharmacies.email|text
+column|v_pharmacies.est_de_garde|boolean
+column|v_pharmacies.garde_jusqu_a|timestamp with time zone
+column|v_pharmacies.horaires|jsonb
+column|v_pharmacies.id|uuid
+column|v_pharmacies.latitude|double precision
+column|v_pharmacies.logo_url|text
+column|v_pharmacies.longitude|double precision
+column|v_pharmacies.nombre_avis|integer
+column|v_pharmacies.nom|text
+column|v_pharmacies.note_moyenne|numeric(2,1)
+column|v_pharmacies.quartier_id|uuid
+column|v_pharmacies.quartier_nom|text
+column|v_pharmacies.quartier_slug|text
+column|v_pharmacies.site_web|text
+column|v_pharmacies.slug|text
+column|v_pharmacies.source|source_donnee
+column|v_pharmacies.statut|statut_pharmacie
+column|v_pharmacies.telephone|text
+column|v_pharmacies.updated_at|timestamp with time zone
+column|v_pharmacies.verified_at|timestamp with time zone
+constraint|alertes_stock.alertes_stock_canal_check|CHECK ((canal = ANY (ARRAY['email'::text, 'whatsapp'::text, 'ussd'::text])))
+constraint|alertes_stock.alertes_stock_medicament_id_fkey|FOREIGN KEY (medicament_id) REFERENCES medicaments(id)
+constraint|alertes_stock.alertes_stock_pkey|PRIMARY KEY (id)
+constraint|alertes_stock.alertes_stock_quartier_id_fkey|FOREIGN KEY (quartier_id) REFERENCES quartiers(id)
+constraint|alertes_stock.contact_required|CHECK (((user_email IS NOT NULL) OR (user_phone IS NOT NULL)))
+constraint|medicaments.medicaments_pkey|PRIMARY KEY (id)
+constraint|pharmacies.pharmacies_note_moyenne_check|CHECK (((note_moyenne >= (0)::numeric) AND (note_moyenne <= (5)::numeric)))
+constraint|pharmacies.pharmacies_pkey|PRIMARY KEY (id)
+constraint|pharmacies.pharmacies_quartier_id_fkey|FOREIGN KEY (quartier_id) REFERENCES quartiers(id)
+constraint|pharmacies.pharmacies_slug_key|UNIQUE (slug)
+constraint|profils.profils_id_fkey|FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE
+constraint|profils.profils_langue_check|CHECK ((langue = ANY (ARRAY['fr'::text, 'en'::text])))
+constraint|profils.profils_pharmacie_id_fkey|FOREIGN KEY (pharmacie_id) REFERENCES pharmacies(id)
+constraint|profils.profils_pkey|PRIMARY KEY (id)
+constraint|profils.profils_quartier_id_fkey|FOREIGN KEY (quartier_id) REFERENCES quartiers(id)
+constraint|profils.profils_role_check|CHECK ((role = ANY (ARRAY['patient'::text, 'pharmacien'::text, 'admin'::text])))
+constraint|quartiers.quartiers_nom_key|UNIQUE (nom)
+constraint|quartiers.quartiers_pkey|PRIMARY KEY (id)
+constraint|quartiers.quartiers_slug_key|UNIQUE (slug)
+constraint|recherches.recherches_pkey|PRIMARY KEY (id)
+constraint|recherches.recherches_user_id_fkey|FOREIGN KEY (user_id) REFERENCES auth.users(id)
+constraint|stocks.stocks_medicament_id_fkey|FOREIGN KEY (medicament_id) REFERENCES medicaments(id) ON DELETE CASCADE
+constraint|stocks.stocks_pharmacie_id_fkey|FOREIGN KEY (pharmacie_id) REFERENCES pharmacies(id) ON DELETE CASCADE
+constraint|stocks.stocks_pharmacie_id_medicament_id_key|UNIQUE (pharmacie_id, medicament_id)
+constraint|stocks.stocks_pkey|PRIMARY KEY (id)
+constraint|stocks.stocks_prix_fcfa_check|CHECK ((prix_fcfa >= 0))
+enum|source_donnee|scraping,terrain,pharmacien,admin
+enum|statut_pharmacie|non_verifie,verifie,partenaire
+extension|pg_trgm|
+extension|plpgsql|
+extension|postgis|
+function|auth_pharmacie_id()|returns=uuid lang=sql security=definer volatility=s config=search_path=public body=b66d1a570fd45eb7602cadb4ed4add95
+function|auth_role()|returns=text lang=sql security=definer volatility=s config=search_path=public body=595b2f0025ac8ab39e052499fb9a94bd
+function|pharmacies_proches(lat double precision, lng double precision, rayon_m integer)|returns=TABLE(id uuid, nom text, adresse text, latitude double precision, longitude double precision, distance_m double precision, est_de_garde boolean, statut statut_pharmacie, quartier_nom text) lang=sql security=invoker volatility=s config=- body=2a2c3f57ce6bec7c25f98daa6073e092
+function|protect_pharmacies_columns()|returns=trigger lang=plpgsql security=invoker volatility=v config=search_path=public body=9899877fc7960a268c09502f059f2970
+function|sync_coordinates()|returns=trigger lang=plpgsql security=invoker volatility=v config=- body=488332f208ac465159f3fc55493e1c67
+function|update_updated_at()|returns=trigger lang=plpgsql security=invoker volatility=v config=- body=a27bb088c067b7b77a9f0707b0048e40
+grant|alertes_stock.anon|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
+grant|alertes_stock.authenticated|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
+grant|medicaments.anon|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
+grant|medicaments.authenticated|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
+grant|pharmacies.anon|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
+grant|pharmacies.authenticated|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
+grant|profils.anon|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
+grant|profils.authenticated|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
+grant|quartiers.anon|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
+grant|quartiers.authenticated|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
+grant|recherches.anon|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
+grant|recherches.authenticated|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
+grant|stocks.anon|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
+grant|stocks.authenticated|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
+grant|v_meilleurs_prix.anon|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
+grant|v_meilleurs_prix.authenticated|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
+grant|v_pharmacies.anon|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
+grant|v_pharmacies.authenticated|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
+index|alertes_stock.alertes_stock_pkey|CREATE UNIQUE INDEX alertes_stock_pkey ON public.alertes_stock USING btree (id)
+index|alertes_stock.idx_alertes_stock_active|CREATE INDEX idx_alertes_stock_active ON public.alertes_stock USING btree (active, created_at DESC)
+index|alertes_stock.idx_alertes_stock_email|CREATE INDEX idx_alertes_stock_email ON public.alertes_stock USING btree (user_email)
+index|alertes_stock.idx_alertes_stock_phone|CREATE INDEX idx_alertes_stock_phone ON public.alertes_stock USING btree (user_phone)
+index|medicaments.idx_medicaments_categorie|CREATE INDEX idx_medicaments_categorie ON public.medicaments USING btree (categorie)
+index|medicaments.idx_medicaments_dci|CREATE INDEX idx_medicaments_dci ON public.medicaments USING btree (dci)
+index|medicaments.idx_medicaments_nom|CREATE INDEX idx_medicaments_nom ON public.medicaments USING gin (nom gin_trgm_ops)
+index|medicaments.medicaments_pkey|CREATE UNIQUE INDEX medicaments_pkey ON public.medicaments USING btree (id)
+index|pharmacies.idx_pharmacies_garde|CREATE INDEX idx_pharmacies_garde ON public.pharmacies USING btree (est_de_garde) WHERE (est_de_garde = true)
+index|pharmacies.idx_pharmacies_geo|CREATE INDEX idx_pharmacies_geo ON public.pharmacies USING gist (coordinates)
+index|pharmacies.idx_pharmacies_nom_trgm|CREATE INDEX idx_pharmacies_nom_trgm ON public.pharmacies USING gin (nom gin_trgm_ops)
+index|pharmacies.idx_pharmacies_quartier|CREATE INDEX idx_pharmacies_quartier ON public.pharmacies USING btree (quartier_id)
+index|pharmacies.idx_pharmacies_statut|CREATE INDEX idx_pharmacies_statut ON public.pharmacies USING btree (statut)
+index|pharmacies.pharmacies_pkey|CREATE UNIQUE INDEX pharmacies_pkey ON public.pharmacies USING btree (id)
+index|pharmacies.pharmacies_slug_key|CREATE UNIQUE INDEX pharmacies_slug_key ON public.pharmacies USING btree (slug)
+index|profils.idx_profils_pharmacie|CREATE INDEX idx_profils_pharmacie ON public.profils USING btree (pharmacie_id)
+index|profils.idx_profils_role|CREATE INDEX idx_profils_role ON public.profils USING btree (role)
+index|profils.profils_pkey|CREATE UNIQUE INDEX profils_pkey ON public.profils USING btree (id)
+index|quartiers.quartiers_nom_key|CREATE UNIQUE INDEX quartiers_nom_key ON public.quartiers USING btree (nom)
+index|quartiers.quartiers_pkey|CREATE UNIQUE INDEX quartiers_pkey ON public.quartiers USING btree (id)
+index|quartiers.quartiers_slug_key|CREATE UNIQUE INDEX quartiers_slug_key ON public.quartiers USING btree (slug)
+index|recherches.idx_recherches_date|CREATE INDEX idx_recherches_date ON public.recherches USING btree (created_at DESC)
+index|recherches.idx_recherches_terme|CREATE INDEX idx_recherches_terme ON public.recherches USING btree (terme)
+index|recherches.recherches_pkey|CREATE UNIQUE INDEX recherches_pkey ON public.recherches USING btree (id)
+index|stocks.idx_stocks_medicament|CREATE INDEX idx_stocks_medicament ON public.stocks USING btree (medicament_id)
+index|stocks.idx_stocks_pharmacie|CREATE INDEX idx_stocks_pharmacie ON public.stocks USING btree (pharmacie_id)
+index|stocks.idx_stocks_prix|CREATE INDEX idx_stocks_prix ON public.stocks USING btree (prix_fcfa)
+index|stocks.stocks_pharmacie_id_medicament_id_key|CREATE UNIQUE INDEX stocks_pharmacie_id_medicament_id_key ON public.stocks USING btree (pharmacie_id, medicament_id)
+index|stocks.stocks_pkey|CREATE UNIQUE INDEX stocks_pkey ON public.stocks USING btree (id)
+policy|alertes_stock.Admins modifient les alertes|cmd=UPDATE roles=authenticated using=(auth_role() = 'admin'::text) with_check=-
+policy|alertes_stock.Admins voient les alertes|cmd=SELECT roles=authenticated using=(auth_role() = 'admin'::text) with_check=-
+policy|alertes_stock.Tout le monde peut créer une alerte|cmd=INSERT roles=anon,authenticated using=- with_check=true
+policy|medicaments.Médicaments lisibles par tous|cmd=SELECT roles=public using=true with_check=-
+policy|medicaments.Médicaments modifiables par admin|cmd=ALL roles=public using=(auth_role() = 'admin'::text) with_check=-
+policy|pharmacies.Pharmacien modifie sa pharmacie|cmd=UPDATE roles=public using=((auth_role() = 'pharmacien'::text) AND (id = auth_pharmacie_id())) with_check=((auth_role() = 'pharmacien'::text) AND (id = auth_pharmacie_id()))
+policy|pharmacies.Pharmacies lisibles par tous|cmd=SELECT roles=public using=true with_check=-
+policy|pharmacies.Pharmacies modifiables par admin|cmd=ALL roles=public using=(auth_role() = 'admin'::text) with_check=-
+policy|profils.profils_insert|cmd=INSERT roles=public using=- with_check=((id = auth.uid()) AND (((role = 'patient'::text) AND (pharmacie_id IS NULL)) OR (auth_role() = 'admin'::text)))
+policy|profils.profils_select|cmd=SELECT roles=public using=((id = auth.uid()) OR (auth_role() = 'admin'::text)) with_check=-
+policy|profils.profils_update|cmd=UPDATE roles=public using=((id = auth.uid()) OR (auth_role() = 'admin'::text)) with_check=((auth_role() = 'admin'::text) OR ((id = auth.uid()) AND (role = auth_role()) AND (NOT (pharmacie_id IS DISTINCT FROM auth_pharmacie_id()))))
+policy|quartiers.Quartiers lisibles par tous|cmd=SELECT roles=public using=true with_check=-
+policy|recherches.Recherches lisibles par admin|cmd=SELECT roles=public using=(auth_role() = 'admin'::text) with_check=-
+policy|recherches.Tout le monde peut rechercher|cmd=INSERT roles=public using=- with_check=true
+policy|stocks.Pharmacien gère ses stocks|cmd=ALL roles=public using=((auth_role() = 'pharmacien'::text) AND (pharmacie_id = auth_pharmacie_id())) with_check=-
+policy|stocks.Stocks lisibles par tous|cmd=SELECT roles=public using=true with_check=-
+policy|stocks.Stocks modifiables par admin|cmd=ALL roles=public using=(auth_role() = 'admin'::text) with_check=-
+table|alertes_stock|table rls=true force_rls=false
+table|medicaments|table rls=true force_rls=false
+table|pharmacies|table rls=true force_rls=false
+table|profils|table rls=true force_rls=false
+table|quartiers|table rls=true force_rls=false
+table|recherches|table rls=true force_rls=false
+table|stocks|table rls=true force_rls=false
+table|v_meilleurs_prix|vue rls=false force_rls=false
+table|v_pharmacies|vue rls=false force_rls=false
+trigger|medicaments.trg_medicaments_updated|CREATE TRIGGER trg_medicaments_updated BEFORE UPDATE ON public.medicaments FOR EACH ROW EXECUTE FUNCTION update_updated_at()
+trigger|pharmacies.trg_pharmacies_geo|CREATE TRIGGER trg_pharmacies_geo BEFORE INSERT OR UPDATE OF latitude, longitude ON public.pharmacies FOR EACH ROW EXECUTE FUNCTION sync_coordinates()
+trigger|pharmacies.trg_pharmacies_protect|CREATE TRIGGER trg_pharmacies_protect BEFORE UPDATE ON public.pharmacies FOR EACH ROW EXECUTE FUNCTION protect_pharmacies_columns()
+trigger|pharmacies.trg_pharmacies_updated|CREATE TRIGGER trg_pharmacies_updated BEFORE UPDATE ON public.pharmacies FOR EACH ROW EXECUTE FUNCTION update_updated_at()
+trigger|profils.trg_profils_updated|CREATE TRIGGER trg_profils_updated BEFORE UPDATE ON public.profils FOR EACH ROW EXECUTE FUNCTION update_updated_at()
+view|v_meilleurs_prix|75a76791399937d609dc34ba20213d8e
+view|v_pharmacies|a5f32633298f0a74be76c9647c60d73c
