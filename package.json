@@ -7,8 +7,8 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "seed": "node src/utils/seed.js",
-    "lint": "eslint src/ scripts/ tests/ public/",
-    "test": "jest --passWithNoTests"
+    "lint": "eslint src/ scripts/ tests/ public/ supabase/functions/",
+    "test": "jest --passWithNoTests && node --test tests/functions/*.test.mjs"
   },
   "keywords": ["pharmacy", "cameroon", "yaounde", "health"],
   "author": "N'Gola Pharma",

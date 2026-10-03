@@ -36,6 +36,7 @@ column|config_routage.mis_a_jour_le|timestamp with time zone NOT NULL DEFAULT no
 column|config_routage.mis_a_jour_par|uuid
 column|config_routage.valeur|jsonb NOT NULL
 column|contacts_pharmacie.adresse|text NOT NULL
+column|contacts_pharmacie.bloque_le|timestamp with time zone
 column|contacts_pharmacie.canal|text NOT NULL
 column|contacts_pharmacie.consentement_le|timestamp with time zone NOT NULL
 column|contacts_pharmacie.desabonne_le|timestamp with time zone
@@ -98,11 +99,16 @@ column|medicaments.updated_at|timestamp with time zone NOT NULL DEFAULT now()
 column|medicaments.validation_classification_id|uuid
 column|notifications_outbox.adresse_chiffree|bytea NOT NULL
 column|notifications_outbox.canal|text NOT NULL
+column|notifications_outbox.canaux_tentes|text[] NOT NULL DEFAULT '{}'::text[]
+column|notifications_outbox.cle_base|text
 column|notifications_outbox.cle_idempotence|text NOT NULL
+column|notifications_outbox.contact_id|uuid
 column|notifications_outbox.cout_estime|numeric(8,4)
 column|notifications_outbox.cree_le|timestamp with time zone NOT NULL DEFAULT now()
 column|notifications_outbox.derniere_erreur|text
 column|notifications_outbox.destinataire_ref|uuid
+column|notifications_outbox.est_destinataire_demo|boolean NOT NULL DEFAULT false
+column|notifications_outbox.exempte_budget|boolean NOT NULL DEFAULT false
 column|notifications_outbox.id_discussion_fournisseur|text
 column|notifications_outbox.id_message_fournisseur|text
 column|notifications_outbox.id|uuid NOT NULL DEFAULT gen_random_uuid()
@@ -283,6 +289,7 @@ constraint|medicaments.medicaments_statut_catalogue_check|CHECK ((statut_catalog
 constraint|medicaments.medicaments_validation_classification_fkey|FOREIGN KEY (validation_classification_id) REFERENCES validations_classification(id)
 constraint|notifications_outbox.notifications_outbox_canal_check|CHECK ((canal = ANY (ARRAY['telegram'::text, 'sms'::text, 'email'::text])))
 constraint|notifications_outbox.notifications_outbox_cle_idempotence_key|UNIQUE (cle_idempotence)
+constraint|notifications_outbox.notifications_outbox_contact_id_fkey|FOREIGN KEY (contact_id) REFERENCES contacts_pharmacie(id) ON DELETE SET NULL
 constraint|notifications_outbox.notifications_outbox_pkey|PRIMARY KEY (id)
 constraint|notifications_outbox.notifications_outbox_statut_check|CHECK ((statut = ANY (ARRAY['queued'::text, 'sent'::text, 'delivered'::text, 'read'::text, 'failed'::text, 'cancelled'::text, 'suppressed_demo'::text])))
 constraint|notifications_outbox.notifications_outbox_type_destinataire_check|CHECK ((type_destinataire = ANY (ARRAY['pharmacy'::text, 'patient'::text, 'admin'::text])))
@@ -327,15 +334,17 @@ extension|postgis|
 function|alertes_stock_avant_insertion()|returns=trigger lang=plpgsql security=definer volatility=v config=search_path=public, pg_temp body=c4916c85ef69ea6f04a84533c0a6e452
 function|auth_pharmacie_id()|returns=uuid lang=sql security=definer volatility=s config=search_path=public body=b66d1a570fd45eb7602cadb4ed4add95
 function|auth_role()|returns=text lang=sql security=definer volatility=s config=search_path=public body=595b2f0025ac8ab39e052499fb9a94bd
+function|compter_messages_payants_du_jour()|returns=integer lang=sql security=definer volatility=s config=search_path=public body=db1d1d07479e32991af04a4f73f19a54
 function|conditions_passage_production()|returns=TABLE(cle text, ok boolean, detail text) lang=plpgsql security=definer volatility=s config=search_path=public body=06dc9c1397f0c371f7ee7981cd9b0abb
 function|config_routage_interdit_suppression_mode()|returns=trigger lang=plpgsql security=invoker volatility=v config=- body=b6a198003ad84536c0c6f521eab9646d
 function|config_routage_verrou()|returns=trigger lang=plpgsql security=definer volatility=v config=search_path=public body=88c8c4e14d738e17bd39a820d50686ab
 function|medicament_routable(p_medicament_id uuid)|returns=boolean lang=sql security=definer volatility=s config=search_path=public body=f1c2ddf515b3ea552fc113929f67ab2c
 function|medicaments_reset_validation()|returns=trigger lang=plpgsql security=invoker volatility=v config=search_path=public body=739bdce4d4d1bb13505464b67724cf42
 function|mode_application()|returns=text lang=sql security=definer volatility=s config=search_path=public body=f32182f71ed461de860d17fce85de9b0
-function|pharmacie_eligible_routage(p_pharmacie_id uuid)|returns=boolean lang=sql security=definer volatility=s config=search_path=public body=f0f311f8ee5535d0ea6396751a60faa6
+function|pharmacie_eligible_routage(p_pharmacie_id uuid)|returns=boolean lang=sql security=definer volatility=s config=search_path=public body=e9634314593cb59f87d1ff7a6fa50a0a
 function|pharmacies_proches(lat double precision, lng double precision, rayon_m integer)|returns=TABLE(id uuid, nom text, adresse text, latitude double precision, longitude double precision, distance_m double precision, est_de_garde boolean, statut statut_pharmacie, quartier_nom text) lang=sql security=invoker volatility=s config=- body=2a2c3f57ce6bec7c25f98daa6073e092
 function|protect_pharmacies_columns()|returns=trigger lang=plpgsql security=invoker volatility=v config=search_path=public body=9899877fc7960a268c09502f059f2970
+function|reclamer_notifications(p_limite integer, p_bail_s integer)|returns=SETOF notifications_outbox lang=sql security=definer volatility=v config=search_path=public body=44bebc010e5887dbd0e8078b5bd97cd0
 function|stocks_sync_statut()|returns=trigger lang=plpgsql security=invoker volatility=v config=search_path=public body=b839f8ab8607feff3f86a0eda93a5fe1
 function|sync_coordinates()|returns=trigger lang=plpgsql security=invoker volatility=v config=- body=488332f208ac465159f3fc55493e1c67
 function|update_updated_at()|returns=trigger lang=plpgsql security=invoker volatility=v config=- body=a27bb088c067b7b77a9f0707b0048e40

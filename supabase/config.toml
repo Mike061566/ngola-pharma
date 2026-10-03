@@ -29,3 +29,10 @@ enabled = false
 
 [auth]
 enabled = true
+
+# Edge Function de l'outbox (PR 2). Appelée par pg_cron/pg_net SANS jeton Supabase : elle s'authentifie elle-même
+# avec l'en-tête x-cron-secret (secret CRON_SECRET), d'où verify_jwt = false.
+[functions.traiter-outbox]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/traiter-outbox/index.js"

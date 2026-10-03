@@ -12,7 +12,8 @@ const jestGlobals = {
 };
 
 module.exports = [
-  { ignores: ['node_modules/**', 'supabase/**'] },
+  // supabase/functions (Edge Functions, ES modules) est analysé ; le reste de supabase/ (SQL) est ignoré.
+  { ignores: ['node_modules/**', 'supabase/*', '!supabase/functions'] },
   js.configs.recommended,
   {
     files: ['**/*.js'],
@@ -25,6 +26,15 @@ module.exports = [
     // Code navigateur (UMD, aussi chargé par Jest)
     files: ['public/**/*.js'],
     languageOptions: { globals: { ...nodeGlobals, self: 'readonly', window: 'readonly' } },
+  },
+  {
+    // Edge Functions (Deno) et leurs modules partagés : ES modules, API web standard
+    files: ['supabase/functions/**/*.js', 'tests/functions/**/*.mjs'],
+    languageOptions: {
+      ecmaVersion: 2022, sourceType: 'module',
+      globals: { ...nodeGlobals, Deno: 'readonly', Response: 'readonly', Request: 'readonly', crypto: 'readonly', atob: 'readonly',
+        TextEncoder: 'readonly', TextDecoder: 'readonly', Uint8Array: 'readonly' },
+    },
   },
   {
     files: ['tests/**/*.js'],
