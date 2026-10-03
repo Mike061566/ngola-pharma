@@ -1,7 +1,7 @@
 -- pgTAP — alertes_stock : validation, anti-spam, alertes héritées, insertion anonyme.
 -- Exécution : `supabase test db` (Supabase local, Docker). Tout est annulé en fin de test.
 BEGIN;
-SELECT plan(14);
+SELECT plan(15);
 
 SET LOCAL ROLE anon;
 
@@ -50,6 +50,11 @@ SELECT lives_ok($$INSERT INTO alertes_stock (medicament_nom, canal, user_phone, 
     VALUES ('Coartem', 'whatsapp', '+237699999999', false)$$,
     'canal whatsapp encore accepté, même si le client prétend heritee = false');
 
+-- canal NULL explicite (le DEFAULT 'email' ne s'applique qu'en l'absence de la colonne)
+SELECT lives_ok($$INSERT INTO alertes_stock (medicament_nom, canal, user_email)
+    VALUES ('Coartem', NULL, 'canal-null@test.local')$$,
+    'insertion avec canal NULL acceptée (non héritée)');
+
 -- ── Lecture : anon ne voit rien ───────────────────────────────────────
 SELECT is((SELECT count(*) FROM alertes_stock), 0::bigint, 'anon ne peut pas lire alertes_stock');
 
@@ -60,9 +65,10 @@ SELECT is(
         AND medicament_nom = 'Coartem') ||' / '||
     (SELECT count(*) FROM alertes_stock WHERE user_phone = '+237612345678') ||' / '||
     (SELECT count(*) FROM alertes_stock WHERE canal = 'whatsapp' AND heritee) ||' / '||
-    (SELECT count(*) FROM alertes_stock WHERE user_email = 'triche@test.local' AND notified_at IS NULL),
-    '1 / 1 / 1 / 1',
-    'email normalisé et fusionné, téléphone normalisé, alerte whatsapp marquée héritée, notified_at nul');
+    (SELECT count(*) FROM alertes_stock WHERE user_email = 'triche@test.local' AND notified_at IS NULL) ||' / '||
+    (SELECT count(*) FROM alertes_stock WHERE user_email = 'canal-null@test.local' AND canal IS NULL AND NOT heritee),
+    '1 / 1 / 1 / 1 / 1',
+    'email normalisé et fusionné, téléphone normalisé, alerte whatsapp marquée héritée, notified_at nul, canal NULL non hérité');
 
 SELECT * FROM finish();
 ROLLBACK;

@@ -211,10 +211,10 @@ AS $$
 DECLARE
     deja_recu INTEGER;
 BEGIN
-    -- Champs décidés par le serveur, jamais par le client.
+    -- Champs décidés par le serveur, jamais par le client. (canal NULL => pas héritée : COALESCE.)
     NEW.created_at  := now();
     NEW.notified_at := NULL;
-    NEW.heritee     := NEW.canal IN ('whatsapp', 'ussd');
+    NEW.heritee     := COALESCE(NEW.canal IN ('whatsapp', 'ussd'), false);
 
     -- Normalisation : le formulaire envoie déjà +237XXXXXXXXX ; on tolère espaces et tirets.
     NEW.user_email := NULLIF(lower(btrim(NEW.user_email)), '');
