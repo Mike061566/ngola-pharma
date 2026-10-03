@@ -237,7 +237,33 @@ CREATE POLICY "Pharmacies lisibles par tous" ON pharmacies FOR SELECT USING (tru
 CREATE POLICY "Pharmacies modifiables par admin" ON pharmacies FOR ALL
     USING (auth_role() = 'admin');
 CREATE POLICY "Pharmacien modifie sa pharmacie" ON pharmacies FOR UPDATE
-    USING (auth_role() = 'pharmacien' AND id = auth_pharmacie_id());
+    USING (auth_role() = 'pharmacien' AND id = auth_pharmacie_id())
+    WITH CHECK (auth_role() = 'pharmacien' AND id = auth_pharmacie_id());
+
+-- Un pharmacien ne peut modifier que telephone, email, site_web, logo_url et horaires :
+-- statut, nom, adresse, GPS, garde... restent à l'admin (trigger ci-dessous).
+-- Voir supabase/fix_pharmacies_colonnes_protegees.sql.
+CREATE OR REPLACE FUNCTION protect_pharmacies_columns()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SET search_path = public
+AS $$
+DECLARE
+    editable CONSTANT text[] := ARRAY['telephone', 'email', 'site_web', 'logo_url', 'horaires', 'updated_at'];
+BEGIN
+    IF current_user NOT IN ('anon', 'authenticated') OR auth_role() = 'admin' THEN
+        RETURN NEW;
+    END IF;
+    IF (to_jsonb(NEW) - editable) IS DISTINCT FROM (to_jsonb(OLD) - editable) THEN
+        RAISE EXCEPTION 'Seuls telephone, email, site_web, logo_url et horaires sont modifiables par la pharmacie'
+            USING ERRCODE = '42501';
+    END IF;
+    RETURN NEW;
+END;
+$$;
+DROP TRIGGER IF EXISTS trg_pharmacies_protect ON pharmacies;
+CREATE TRIGGER trg_pharmacies_protect BEFORE UPDATE ON pharmacies
+    FOR EACH ROW EXECUTE FUNCTION protect_pharmacies_columns();
 
 -- Médicaments : lecture publique, écriture admin
 ALTER TABLE medicaments ENABLE ROW LEVEL SECURITY;
