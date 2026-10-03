@@ -191,6 +191,12 @@ function echeances(alerte, p) {
   return { vague2: t0 + d(p.vague2_delai_min), escalade: t0 + d(p.escalade_min), expiration: expire };
 }
 
+/** Date d'expiration d'une alerte créée à `debut` (SPEC 2 §4.3 : T+2 h, délais réduits si urgent, accélérés en démo). */
+export function calculerExpiration(alerte, config, debut) {
+  const p = parametresRoutage(config);
+  return new Date(echeances({ urgence: alerte.urgence, cree_le: debut.toISOString() }, p).expiration);
+}
+
 /**
  * @returns {{ version, alerte_id, mode, sur_ordonnance, actions: Array, prochaine_echeance: string|null, audit: object|null }}
  * Actions : needs_review{raison} | expirer | envoyer_vague{vague, pharmacies:[{pharmacie_id, vague, score, detail_score}]}

@@ -60,3 +60,42 @@ export function magasinMemoire({ config = {}, lignes = [], contacts = [], payant
   };
   return m;
 }
+
+// ── Magasin des alertes en mémoire (planificateur, création, suivi) ──
+export function magasinAlertesMemoire({ config = {}, alertes = [], pharmacies = [], contacts = [], reponses = [], demoAdresses = [], validations = 0, horloge: h }) {
+  const sortie = magasinMemoire({ config: { mode_application: 'demo', ...config }, lignes: [], contacts, horloge: h });
+  const etat = sortie.etat;
+  Object.assign(etat, { alertes: alertes.map((a) => ({ ...a })), pharmacies, envois: [], reponses: [...reponses], jetons: [], creations: [], validations });
+  const trouver = (id) => etat.alertes.find((a) => a.id === id);
+  Object.assign(sortie, {
+    async compterValidations() { return etat.validations; },
+    async alertesActives() {
+      return etat.alertes.filter((a) => ['new', 'routing', 'escalated', 'answered', 'needs_review'].includes(a.statut))
+        .map((a) => ({ ...a, deja_sollicitees: etat.envois.filter((e) => e.alerte_id === a.id).map((e) => e.pharmacie_id) }));
+    },
+    async donneesPharmacies() { return etat.pharmacies.map((p) => ({ ...p })); },
+    async creerEnvois(alerteId, lignes) {
+      for (const l of lignes) if (!etat.envois.some((e) => e.alerte_id === alerteId && e.pharmacie_id === l.pharmacie_id)) {
+        etat.envois.push({ id: globalThis.crypto.randomUUID(), statut: 'sent', envoye_le: h.maintenant().toISOString(), relance_sms_le: null, ...l });
+      }
+      return etat.envois.filter((e) => e.alerte_id === alerteId && lignes.some((l) => l.pharmacie_id === e.pharmacie_id));
+    },
+    async contactsPharmacies(ids) { return etat.contacts.filter((c) => ids.includes(c.pharmacie_id)); },
+    async pharmaciesInfo(ids) { return etat.pharmacies.filter((p) => ids.includes(p.id)); },
+    async majAlerte(id, patch) { Object.assign(trouver(id), patch); },
+    async expirerEnvois(alerteId) { etat.envois.filter((e) => e.alerte_id === alerteId && e.statut === 'sent').forEach((e) => { e.statut = 'expired'; }); },
+    async reponsesPositives(alerteId) {
+      return etat.reponses.filter((r) => r.alerte_id === alerteId).map((r) => ({ pharmacie_id: r.pharmacie_id, prix_fcfa: r.prix_fcfa, repondu_le: r.repondu_le }));
+    },
+    async prixStock() { return new Map(); },
+    async envoisARelancer() {
+      return etat.envois.filter((e) => e.statut === 'sent' && !e.relance_sms_le && trouver(e.alerte_id)?.urgence === 'urgent');
+    },
+    async marquerRelance(id) { etat.envois.find((e) => e.id === id).relance_sms_le = h.maintenant().toISOString(); },
+    async adresseEstContactDemo(adresse) { return demoAdresses.includes(adresse); },
+    async creerAlerte(params) { etat.creations.push(params); return etat.reponseCreation ?? { alerte_id: 'a-new', id_public: params.p_id_public, statut: 'new', raison_revue: null, fusionnee: false, refus: null }; },
+    async creerJetonTelegram(l) { etat.jetons.push(l); },
+    async lireSuivi(id) { return etat.suivis?.[id] ?? null; },
+  });
+  return sortie;
+}

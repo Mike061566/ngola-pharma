@@ -46,3 +46,19 @@ ce tableau fait foi pour le code. Les clés de `config_routage` sont traduites a
 `demo_time_factor`→`facteur_temps_demo`. Ajout : `fournisseur_telegram_reel` (condition (d) du passage en production).
 
 Les **valeurs** de statut (`new`, `routing`, `sent`, `queued`, `telegram`...) restent celles de la spec : ce sont des codes, pas des noms.
+
+## Fonctions et colonnes ajoutées (PR 2 à 4)
+
+| Spec | Dépôt |
+|---|---|
+| fournisseur de canal (`ChannelProvider`) | `envoyer()` / `modifierMessage()` (`supabase/functions/_shared/fournisseur-mock.js`) |
+| `idempotency_key` | `notifications_outbox.cle_idempotence` (`<cle_base>:<canal>:<modele>[:<contact>]`) |
+| `template_key` | `notifications_outbox.modele` |
+| `contact.blocked` | `contacts_pharmacie.bloque_le` |
+| `public_id` | `alertes_routage.id_public` (`NG-XXXXXXXX`) |
+| `patient_hash` | `alertes_routage.empreinte_patient` (HMAC du numéro, sinon de l'IP) ; `empreinte_ip` pour la limite par IP |
+| `needs_review` (raison) | `alertes_routage.raison_revue` (`restreint`, `non_reconnu`, `classification_non_validee`) |
+| `dispatch.short_id` (callback Telegram) | 8 premiers caractères hexadécimaux de `envois_alerte.id` |
+| `sms_nudge_after_min` | `config_routage.relance_sms_apres_min` ; `envois_alerte.relance_sms_le` |
+| création d'alerte | fonction SQL `creer_alerte_routage` (service role) |
+| `planDispatch` | `supabase/functions/_shared/routage.js` |

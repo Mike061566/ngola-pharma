@@ -36,3 +36,20 @@ enabled = true
 enabled = true
 verify_jwt = false
 entrypoint = "./functions/traiter-outbox/index.js"
+
+# PR 4 : création publique d'alertes et suivi (publics : captcha, liste blanche de champs, limites en base),
+# planificateur (appelé par pg_cron avec x-cron-secret).
+[functions.creer-alerte]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/creer-alerte/index.js"
+
+[functions.suivi-alerte]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/suivi-alerte/index.js"
+
+[functions.planifier-alertes]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/planifier-alertes/index.js"

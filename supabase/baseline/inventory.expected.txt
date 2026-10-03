@@ -5,16 +5,22 @@ column|alertes_routage.canal_patient|text
 column|alertes_routage.consentement_le|timestamp with time zone
 column|alertes_routage.contact_patient_chiffre|bytea
 column|alertes_routage.cree_le|timestamp with time zone NOT NULL DEFAULT now()
+column|alertes_routage.debut_routage_le|timestamp with time zone
+column|alertes_routage.empreinte_ip|text
 column|alertes_routage.empreinte_patient|text NOT NULL
+column|alertes_routage.escalade_le|timestamp with time zone
 column|alertes_routage.expire_le|timestamp with time zone NOT NULL
 column|alertes_routage.id_public|text NOT NULL
 column|alertes_routage.id|uuid NOT NULL DEFAULT gen_random_uuid()
 column|alertes_routage.lat|numeric(9,6)
 column|alertes_routage.lng|numeric(9,6)
 column|alertes_routage.medicament_id|uuid
+column|alertes_routage.patient_notifie_le|timestamp with time zone
 column|alertes_routage.premiere_reponse_positive_le|timestamp with time zone
 column|alertes_routage.quartier_id|uuid NOT NULL
+column|alertes_routage.raison_revue|text
 column|alertes_routage.requete_brute|text
+column|alertes_routage.second_message_le|timestamp with time zone
 column|alertes_routage.statut|text NOT NULL DEFAULT 'new'::text
 column|alertes_routage.urgence|text NOT NULL DEFAULT 'normal'::text
 column|alertes_routage.vague|integer NOT NULL DEFAULT 0
@@ -69,6 +75,7 @@ column|envois_alerte.detail_score|jsonb NOT NULL
 column|envois_alerte.envoye_le|timestamp with time zone NOT NULL DEFAULT now()
 column|envois_alerte.id|uuid NOT NULL DEFAULT gen_random_uuid()
 column|envois_alerte.pharmacie_id|uuid NOT NULL
+column|envois_alerte.relance_sms_le|timestamp with time zone
 column|envois_alerte.score|numeric(5,2) NOT NULL
 column|envois_alerte.statut|text NOT NULL DEFAULT 'sent'::text
 column|envois_alerte.vague|integer NOT NULL
@@ -338,6 +345,8 @@ function|compter_messages_payants_du_jour()|returns=integer lang=sql security=de
 function|conditions_passage_production()|returns=TABLE(cle text, ok boolean, detail text) lang=plpgsql security=definer volatility=s config=search_path=public body=06dc9c1397f0c371f7ee7981cd9b0abb
 function|config_routage_interdit_suppression_mode()|returns=trigger lang=plpgsql security=invoker volatility=v config=- body=b6a198003ad84536c0c6f521eab9646d
 function|config_routage_verrou()|returns=trigger lang=plpgsql security=definer volatility=v config=search_path=public body=88c8c4e14d738e17bd39a820d50686ab
+function|creer_alerte_routage(p_id_public text, p_medicament_id uuid, p_requete_brute text, p_quartier_id uuid, p_lat numeric, p_lng numeric, p_urgence text, p_canal_patient text, p_contact_chiffre bytea, p_empreinte_patient text, p_empreinte_ip text, p_consentement boolean, p_expire_le timestamp with time zone)|returns=TABLE(alerte_id uuid, id_public text, statut text, raison_revue text, fusionnee boolean, refus text) lang=plpgsql security=definer volatility=v config=search_path=public body=5652bacce8c8224d01cd73729fc93a43
+function|donnees_routage_pharmacies(p_medicament_id uuid)|returns=jsonb lang=sql security=definer volatility=s config=search_path=public body=efc05d768c4ce76b92d094d8588ac9bb
 function|medicament_routable(p_medicament_id uuid)|returns=boolean lang=sql security=definer volatility=s config=search_path=public body=f1c2ddf515b3ea552fc113929f67ab2c
 function|medicaments_reset_validation()|returns=trigger lang=plpgsql security=invoker volatility=v config=search_path=public body=739bdce4d4d1bb13505464b67724cf42
 function|mode_application()|returns=text lang=sql security=definer volatility=s config=search_path=public body=f32182f71ed461de860d17fce85de9b0
@@ -388,6 +397,7 @@ grant|vue_alertes_pharmacie.authenticated|SELECT
 index|alertes_routage.alertes_routage_id_public_key|CREATE UNIQUE INDEX alertes_routage_id_public_key ON public.alertes_routage USING btree (id_public)
 index|alertes_routage.alertes_routage_pkey|CREATE UNIQUE INDEX alertes_routage_pkey ON public.alertes_routage USING btree (id)
 index|alertes_routage.idx_alertes_routage_empreinte|CREATE INDEX idx_alertes_routage_empreinte ON public.alertes_routage USING btree (empreinte_patient, cree_le)
+index|alertes_routage.idx_alertes_routage_ip|CREATE INDEX idx_alertes_routage_ip ON public.alertes_routage USING btree (empreinte_ip, cree_le) WHERE (empreinte_ip IS NOT NULL)
 index|alertes_routage.idx_alertes_routage_statut|CREATE INDEX idx_alertes_routage_statut ON public.alertes_routage USING btree (statut, expire_le)
 index|alertes_stock.alertes_stock_pkey|CREATE UNIQUE INDEX alertes_stock_pkey ON public.alertes_stock USING btree (id)
 index|alertes_stock.idx_alertes_stock_active|CREATE INDEX idx_alertes_stock_active ON public.alertes_stock USING btree (active, created_at DESC)

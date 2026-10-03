@@ -74,3 +74,34 @@ Interprétations à connaître (la spec ne tranche pas) :
   `facteur_temps_demo` divise les délais **en mode démo seulement**.
 - Le garde-fou (`raisonNonRoutable`) reproduit la fonction SQL `medicament_routable` ; `verifierDemarrageRoutage` porte le
   refus de démarrer (production + `ALERT_AUTO_ROUTING=true` + aucune validation pharmacien).
+
+## Création d'alertes et planificateur (PR 4)
+
+| Fichier | Rôle |
+|---|---|
+| `creer-alerte/index.js` + `_shared/creation-alerte.js` | `POST` public : feature flag, validation en liste blanche, captcha, empreintes HMAC, création atomique |
+| `suivi-alerte/index.js` + `_shared/suivi-alerte.js` | `GET ?id=NG-XXXXXXXX` : état de suivi, sans donnée patient |
+| `planifier-alertes/index.js` + `_shared/planificateur.js` | Chaque minute : exécute les décisions de `planDispatch` |
+| `_shared/captcha.js`, `_shared/http.js`, `_shared/magasin-alertes.js` | Turnstile (ou mock en démo), CORS/IP, accès base |
+| `public/alerte.html` (+ `alerte-utils.js`, `alerte-config.js`) | Page patient : formulaire, suivi rafraîchi toutes les 15 s (`/alerte/:id` via `netlify.toml`) |
+
+**Variables d'environnement** (secrets de fonction, jamais dans le dépôt) : `ALERT_AUTO_ROUTING` (`true` pour activer),
+`SIGNING_SECRET` (≥ 16 car., HMAC des empreintes), `ENCRYPTION_KEY`, `CAPTCHA_PROVIDER` (`mock` par défaut | `turnstile`),
+`CAPTCHA_SECRET`, `ALLOWED_ORIGINS` (origines du site, séparées par des virgules), `APP_BASE_URL`, `TELEGRAM_BOT_USERNAME`,
+`ADMIN_ALERT_EMAIL`, `CRON_SECRET`. La clé de SITE Turnstile (publique) se met dans `public/alerte-config.js`.
+
+**Création** (`creer_alerte_routage`, SQL atomique, service role seulement) : liste de blocage → consentement SMS → fusion
+(même patient + même médicament < 30 min) → limite de 5 alertes / 24 h par numéro et par IP (la 6e est refusée) → insertion.
+Médicament inconnu, restreint ou non routable : statut `needs_review`, jamais routé. Aucun champ d'ordonnance n'est accepté.
+Le numéro est chiffré (AES-GCM) ; seules des empreintes HMAC servent à la limitation ; ni numéro ni IP ne sont journalisés.
+
+**Planificateur** : appelle `planDispatch` puis exécute : `needs_review` (message `restricted_attente` si restreint, expiration à
+`expire_le`), vagues 1 et 2, escalade (message d'attente au patient + email admin), expiration (message seulement si personne n'a
+répondu), agrégation des réponses (fenêtre de 120 s, 3 pharmacies au plus par prix croissant puis distance, un 2e message court
+au plus), SMS de relance des alertes `urgent` (jamais `normal`). Idempotent : relancer ne duplique rien.
+
+**À savoir**
+- Le canal Telegram du patient n'est utilisable qu'après son `/start` (PR 5) : d'ici là, il suit sa demande sur la page `/alerte/:id`.
+- La file `needs_review` est l'ensemble des alertes de ce statut ; les actions admin (rattacher, transmettre, refuser) sont en PR 6.
+- Le captcha `mock` n'est accepté qu'en mode démo ; en production il faut `CAPTCHA_PROVIDER=turnstile`.
+- Planification : `supabase/ops/planifier_alertes.sql` (à exécuter à la main, après `planifier_outbox.sql`).
