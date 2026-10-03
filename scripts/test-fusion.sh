@@ -10,7 +10,7 @@ tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
 # Les fichiers de production portent leur propre BEGIN/COMMIT : on les retire pour les jouer dans la transaction du test.
 grep -v -x -E 'BEGIN;|COMMIT;' supabase/migrations/20261003100000_fusion_doublons_medicaments.sql > "$tmp/migration.sql"
 grep -v -x -E 'BEGIN;|COMMIT;' supabase/rollback/20261003100000_fusion_doublons_medicaments_rollback.sql > "$tmp/rollback.sql"
-out="$(cd supabase/tests/fusion && psql "$DATABASE_URL" -X -q -v migration="$tmp/migration.sql" -v rollback="$tmp/rollback.sql" -f fusion.test.sql 2>&1)"
+out="$(cd scripts/test-fusion && psql "$DATABASE_URL" -X -q -v migration="$tmp/migration.sql" -v rollback="$tmp/rollback.sql" -f fusion.test.sql 2>&1)"
 echo "$out" | grep -E "TEST OK|ERREUR TEST" || true
 attendus=(
   "fusion : 5 fiches supprimées" "fusion : 4 lignes de stock supprimées" "fusion : sauvegarde = 1 déplacé"
