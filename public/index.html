@@ -1969,7 +1969,7 @@
             return '<span class="badge badge-stock-old">📊 ' + (currentLang === 'en' ? 'Outdated' : 'Données anciennes') + '</span>';
         }
 
-        // ── Phase 3 : Alerte stock (Email / WhatsApp / USSD) ─
+        // ── Phase 3 : Alerte stock (Email / SMS) ─
         function buildAlertFormHtml(medName, medId) {
             var uid = 'alert_' + (medId || '').replace(/-/g, '').substring(0, 8) + '_' + Date.now();
             var escName = esc(medName).replace(/'/g, '&#39;');
@@ -1981,8 +1981,7 @@
                     : 'Recevez une alerte quand <strong>' + esc(medName) + '</strong> sera disponible près de chez vous.') + '</p>' +
                 '<div class="ngola-alert-channel-tabs">' +
                     '<button class="ngola-alert-channel-tab active" data-canal="email" onclick="NGolaApp.switchAlertChannel(\'' + uid + '\', \'email\')">📧 Email</button>' +
-                    '<button class="ngola-alert-channel-tab" data-canal="whatsapp" onclick="NGolaApp.switchAlertChannel(\'' + uid + '\', \'whatsapp\')">💬 WhatsApp</button>' +
-                    '<button class="ngola-alert-channel-tab" data-canal="ussd" onclick="NGolaApp.switchAlertChannel(\'' + uid + '\', \'ussd\')">📱 USSD/SMS</button>' +
+                    '<button class="ngola-alert-channel-tab" data-canal="sms" onclick="NGolaApp.switchAlertChannel(\'' + uid + '\', \'sms\')">📱 SMS</button>' +
                 '</div>' +
                 '<div class="ngola-alert-form" id="form_' + uid + '">' +
                     '<input type="email" id="contact_' + uid + '" placeholder="' + (currentLang === 'en' ? 'Your email' : 'Votre email') + '" />' +
@@ -2014,18 +2013,12 @@
                     contactInput.placeholder = currentLang === 'en' ? 'Your email' : 'Votre email';
                     contactInput.value = '';
                     if (hintDiv) hintDiv.innerHTML = '';
-                } else if (canal === 'whatsapp') {
-                    contactInput.type = 'tel';
-                    contactInput.placeholder = currentLang === 'en' ? 'WhatsApp number (e.g. 6XXXXXXXX)' : 'Numéro WhatsApp (ex: 6XXXXXXXX)';
-                    contactInput.value = '';
-                    if (hintDiv) hintDiv.innerHTML = '<div class="ngola-alert-hint">' +
-                        (currentLang === 'en' ? 'Cameroon number without country code (+237)' : 'Numéro camerounais sans indicatif (+237)') + '</div>';
                 } else {
                     contactInput.type = 'tel';
                     contactInput.placeholder = currentLang === 'en' ? 'Phone number (e.g. 6XXXXXXXX)' : 'Numéro de téléphone (ex: 6XXXXXXXX)';
                     contactInput.value = '';
                     if (hintDiv) hintDiv.innerHTML = '<div class="ngola-alert-hint">' +
-                        (currentLang === 'en' ? 'You will receive an SMS/USSD notification' : 'Vous recevrez une notification SMS/USSD') + '</div>';
+                        (currentLang === 'en' ? 'Cameroon number, with or without country code (+237). You will be notified by SMS.' : 'Numéro camerounais, avec ou sans indicatif (+237). Vous serez prévenu(e) par SMS.') + '</div>';
                 }
             }
             // Clear any error message
@@ -2081,8 +2074,8 @@
                         (currentLang === 'en' ? 'Error: ' + res.error.message : 'Erreur : ' + res.error.message) + '</div>';
                     if (btn) { btn.disabled = false; btn.textContent = '🔔 ' + (currentLang === 'en' ? 'Notify me' : 'Me prévenir'); }
                 } else {
-                    var channelIcon = canal === 'email' ? '📧' : (canal === 'whatsapp' ? '💬' : '📱');
-                    var channelName = canal === 'email' ? 'email' : (canal === 'whatsapp' ? 'WhatsApp' : 'SMS');
+                    var channelIcon = canal === 'email' ? '📧' : '📱';
+                    var channelName = canal === 'email' ? 'email' : 'SMS';
                     document.getElementById(boxId).innerHTML =
                         '<div class="ngola-alert-success">✅ ' +
                         (currentLang === 'en'
@@ -2903,7 +2896,7 @@
                         "<ul style=\"margin:0;padding-left:18px;font-size:14px;color:#555;line-height:1.7\">" +
                         "<li>les termes de recherche saisis (médicament, quartier, pharmacie) ;</li>" +
                         "<li>votre position géographique, uniquement si vous l'autorisez, pour afficher les pharmacies les plus proches ;</li>" +
-                        "<li>un email, un numéro de téléphone ou WhatsApp, uniquement si vous créez une alerte de disponibilité, afin de vous notifier.</li>" +
+                        "<li>un email ou un numéro de téléphone (SMS), uniquement si vous créez une alerte de disponibilité, afin de vous notifier.</li>" +
                         "</ul>" +
                         "<p style=\"margin-top:12px\">Ces données ne sont ni vendues ni partagées avec des tiers à des fins publicitaires ; elles servent uniquement à fournir et améliorer le service.</p>" +
                         "<p>Vous pouvez demander l'accès, la correction ou la suppression de vos données en écrivant à <a href=\"mailto:" + SUPPORT_EMAIL + "\">" + SUPPORT_EMAIL + "</a>.</p>"
@@ -2914,7 +2907,7 @@
                         "<ul style=\"margin:0;padding-left:18px;font-size:14px;color:#555;line-height:1.7\">" +
                         "<li>search terms you enter (medication, neighborhood, pharmacy);</li>" +
                         "<li>your location, only if you allow it, to show the nearest pharmacies;</li>" +
-                        "<li>an email, phone number, or WhatsApp number, only if you set up an availability alert, so we can notify you.</li>" +
+                        "<li>an email or a phone number (SMS), only if you set up an availability alert, so we can notify you.</li>" +
                         "</ul>" +
                         "<p style=\"margin-top:12px\">This data is never sold or shared with third parties for advertising purposes; it is used only to provide and improve the service.</p>" +
                         "<p>You may request access to, correction of, or deletion of your data by writing to <a href=\"mailto:" + SUPPORT_EMAIL + "\">" + SUPPORT_EMAIL + "</a>.</p>"

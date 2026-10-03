@@ -768,7 +768,7 @@ var ProApp = (function() {
                     }
                     div.innerHTML = alerts.map(function(a) {
                         var contact = a.user_email || a.user_phone || '—';
-                        var channelLabel = a.canal === 'whatsapp' ? '💬 WhatsApp' : (a.canal === 'ussd' ? '📱 SMS' : '📧 Email');
+                        var channelLabel = a.canal === 'whatsapp' ? '💬 WhatsApp (hérité)' : (a.canal === 'ussd' ? '📱 USSD (hérité)' : (a.canal === 'sms' ? '📱 SMS' : '📧 Email'));
                         return '<div class="alert-item">' +
                             '<div><strong>' + esc(a.medicament_nom) + '</strong><br><span class="alert-contact">' + esc(contact) + '</span></div>' +
                             '<div style="text-align:right"><span class="alert-channel">' + channelLabel + '</span><br><span class="alert-date">' + timeAgo(a.created_at) + '</span></div>' +
