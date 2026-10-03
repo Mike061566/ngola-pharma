@@ -51,3 +51,26 @@ avant l'écriture du statut, le message peut être renvoyé une fois le bail exp
    **Sauvegarder la clé hors du dépôt** : sans elle, les adresses en file sont illisibles.
 3. `supabase functions deploy traiter-outbox`.
 4. `supabase/ops/planifier_outbox.sql` (planification toutes les minutes).
+
+## Moteur de routage (PR 3) — `_shared/routage.js`
+
+`planDispatch(alerte, pharmacies, config, now)` est une **fonction pure** : aucun réseau, base, horloge ni aléa, entrées
+jamais modifiées, même entrée = même plan (départages compris). Elle renvoie des **actions** que le planificateur
+(PR 4) exécutera : `needs_review`, `envoyer_vague`, `aucun_candidat`, `escalader`, `expirer`, avec l'audit complet
+(`detail_score` par critère, rang, pharmacies exclues et raisons) destiné à `envois_alerte.detail_score`.
+
+Interprétations à connaître (la spec ne tranche pas) :
+- **Horaires inconnus** (`{}`, absents, illisibles) : jamais « ouverte » ; seule une pharmacie de garde est alors candidate.
+  `ouv = fer` : fermé. `fer < ouv` : horaire de nuit (passe minuit). Fuseau : `decalage_horaire_min` (60, UTC+1).
+- **Ligne `rupture` ancienne** (≥ 3 j) : incluse « à confirmer », notée comme un stock périmé (+10).
+  Ligne `archive` : équivaut à « aucun enregistrement ». Stock `faible` : compté comme en stock.
+- **Bonus de garde** (+10) : pharmacie de garde dont les horaires ne couvrent pas l'instant (ou sont inconnus).
+- **Quartier adjacent** : liste `alerte.quartiers_adjacents` (aucune table d'adjacence n'existe) ou distance ≤ `rayon_adjacent_km`
+  quand les deux positions GPS sont connues.
+- **« Rayon élargi » de la vague 2** : non modélisé, car tous les candidats éligibles de la ville sont déjà classés ; la vague 2
+  prend simplement les 5 suivants (hors pharmacies déjà sollicitées), réévalués à l'instant T+10 min.
+- **Aucun candidat en vague 1** : action `aucun_candidat` + escalade immédiate (personne à solliciter).
+- **Urgence** : tous les délais (vague 2, escalade, expiration) sont multipliés par `facteur_delai_urgent` (0,5).
+  `facteur_temps_demo` divise les délais **en mode démo seulement**.
+- Le garde-fou (`raisonNonRoutable`) reproduit la fonction SQL `medicament_routable` ; `verifierDemarrageRoutage` porte le
+  refus de démarrer (production + `ALERT_AUTO_ROUTING=true` + aucune validation pharmacien).
