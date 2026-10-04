@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devenir partenaire — N'Gola Pharma</title>
+    <style>
+        :root { --primary:#003366; --primary-light:#0a4d8c; --bg:#f4f6f9; --text:#1c2733; --muted:#5d6b7a; --border:#d9e0e8; --danger:#b3261e; --ok:#1b7a3d; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+        header { background: var(--primary); color: #fff; padding: 14px 16px; }
+        header a { color: #fff; text-decoration: none; font-weight: 700; }
+        main { max-width: 640px; margin: 0 auto; padding: 16px; }
+        .carte { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 16px; }
+        h1 { font-size: 22px; margin-bottom: 6px; } h2 { font-size: 16px; margin-bottom: 8px; }
+        p.aide { color: var(--muted); font-size: 13px; margin-bottom: 8px; }
+        label { display: block; font-weight: 600; font-size: 14px; margin: 14px 0 4px; }
+        input[type=text], input[type=tel], input[type=email], input[type=time], select, textarea { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 16px; background: #fff; font-family: inherit; }
+        input:focus, select:focus { outline: 2px solid var(--primary-light); outline-offset: 1px; }
+        .ligne-jour { display: grid; grid-template-columns: 96px 1fr 1fr auto; gap: 8px; align-items: center; margin-bottom: 6px; font-size: 14px; }
+        .ligne-jour label { margin: 0; font-weight: 500; } .ligne-jour .ferme { display: flex; gap: 4px; align-items: center; font-size: 13px; }
+        .ligne-jour input[type=time] { padding: 8px; font-size: 15px; }
+        .coche { display: flex; gap: 10px; align-items: flex-start; font-weight: 500; margin: 10px 0 0; }
+        .coche input { margin-top: 4px; width: 18px; height: 18px; flex: none; }
+        .erreur { color: var(--danger); font-size: 13px; margin-top: 4px; }
+        .erreur-globale { background: #fdecea; border: 1px solid #f5c2be; color: var(--danger); padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; font-size: 14px; }
+        .avertissement { background: #fff8e1; border: 1px solid #ffe08a; padding: 10px 12px; border-radius: 8px; margin-bottom: 14px; font-size: 14px; font-weight: 600; }
+        button.principal { width: 100%; margin-top: 18px; padding: 14px; background: var(--primary); color: #fff; border: 0; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; }
+        button.principal:disabled { background: #8a97a5; cursor: not-allowed; }
+        button.secondaire { padding: 10px 14px; background: #fff; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; cursor: pointer; }
+        .succes { text-align: center; } .succes .ref { font-size: 22px; font-weight: 800; letter-spacing: 1px; margin: 10px 0; }
+        .masque { display: none; } .note { font-size: 12px; color: var(--muted); margin-top: 8px; }
+        @media (max-width: 480px) { .ligne-jour { grid-template-columns: 1fr 1fr; } .ligne-jour > :first-child, .ligne-jour .ferme { grid-column: 1 / -1; } }
+    </style>
+</head>
+<body>
+<header><a href="/">N'Gola Pharma</a></header>
+<main>
+    <section id="vueFormulaire">
+        <div class="carte">
+            <h1>Devenir pharmacie partenaire</h1>
+            <p class="aide">Recevez les demandes des patients de votre quartier et tenez vos stocks à jour. Le service est gratuit pour le moment. Notre équipe vérifie chaque dossier avant d'activer votre compte.</p>
+            <div id="avertissementDemo" class="avertissement masque" role="note">N'envoyez pas de documents réels en mode démo : joignez un fichier fictif (PDF, JPG ou PNG).</div>
+            <div id="erreurGlobale" class="erreur-globale masque" role="alert"></div>
+            <form id="formulaire" novalidate>
+                <h2>L'officine</h2>
+                <label for="nom_pharmacie">Nom de l'officine</label>
+                <input id="nom_pharmacie" type="text" autocomplete="organization" maxlength="120"><div class="erreur" id="err_nom_pharmacie"></div>
+                <label for="quartier_id">Quartier</label>
+                <select id="quartier_id"><option value="">Chargement…</option></select><div class="erreur" id="err_quartier_id"></div>
+                <label for="adresse">Adresse</label>
+                <input id="adresse" type="text" autocomplete="street-address" maxlength="250"><div class="erreur" id="err_adresse"></div>
+                <label for="telephone_fixe">Téléphone fixe de l'officine</label>
+                <input id="telephone_fixe" type="tel" inputmode="tel" placeholder="222 23 45 67"><div class="erreur" id="err_telephone_fixe"></div>
+                <p class="aide" style="margin-top:12px">Position (facultatif, recommandé) : elle permet aux patients de vous trouver.</p>
+                <button type="button" class="secondaire" id="boutonPosition">📍 Utiliser ma position</button>
+                <span id="positionInfo" class="note"></span>
+
+                <h2 style="margin-top:22px">Pharmacien titulaire</h2>
+                <label for="nom_titulaire">Nom complet</label>
+                <input id="nom_titulaire" type="text" autocomplete="name" maxlength="120"><div class="erreur" id="err_nom_titulaire"></div>
+                <label for="numero_ordre">Numéro d'inscription à l'Ordre des Pharmaciens</label>
+                <input id="numero_ordre" type="text" maxlength="40"><div class="erreur" id="err_numero_ordre"></div>
+                <label for="email_titulaire">Email</label>
+                <input id="email_titulaire" type="email" autocomplete="email" maxlength="200"><div class="erreur" id="err_email_titulaire"></div>
+                <label for="telephone_mobile">Téléphone mobile</label>
+                <input id="telephone_mobile" type="tel" inputmode="tel" autocomplete="tel" placeholder="6XX XX XX XX"><div class="erreur" id="err_telephone_mobile"></div>
+
+                <h2 style="margin-top:22px">Horaires d'ouverture</h2>
+                <div id="grilleHoraires"></div><div class="erreur" id="err_horaires"></div>
+                <label class="coche"><input type="checkbox" id="participe_garde"><span>Mon officine participe à la garde</span></label>
+
+                <h2 style="margin-top:22px">Justificatifs</h2>
+                <p class="aide">PDF, JPG ou PNG, 5 Mo au maximum par fichier. Stockés dans un espace privé, visibles seulement par notre équipe de vérification.</p>
+                <label for="doc_ordre_attestation">Attestation d'inscription à l'Ordre (obligatoire)</label>
+                <input id="doc_ordre_attestation" type="file" accept="application/pdf,image/jpeg,image/png"><div class="erreur" id="err_doc_ordre_attestation"></div>
+                <label for="doc_autorisation_exploitation">Autorisation d'ouverture / d'exploitation (obligatoire)</label>
+                <input id="doc_autorisation_exploitation" type="file" accept="application/pdf,image/jpeg,image/png"><div class="erreur" id="err_doc_autorisation_exploitation"></div>
+                <div class="erreur" id="err_documents"></div>
+
+                <h2 style="margin-top:22px">Consentements</h2>
+                <label class="coche"><input type="checkbox" id="consentement_conditions"><span>J'accepte les conditions d'usage de N'Gola Pharma.</span></label>
+                <label class="coche"><input type="checkbox" id="consentement_messages"><span>J'accepte de recevoir les demandes de patients et les messages de service par Telegram, SMS et email. (Telegram sera activé plus tard, depuis votre Espace Pro.)</span></label>
+                <div class="erreur" id="err_consentements"></div>
+
+                <div id="zoneCaptcha" style="margin-top:14px"></div>
+                <button type="submit" class="principal" id="boutonEnvoyer">Envoyer ma demande</button>
+                <p class="note">Aucune ordonnance ni donnée de patient n'est demandée sur ce formulaire.</p>
+            </form>
+        </div>
+    </section>
+    <section id="vueSucces" class="masque">
+        <div class="carte succes">
+            <h1>Demande reçue ✅</h1>
+            <p>Référence de votre dossier :</p><div class="ref" id="reference"></div>
+            <p>Un accusé de réception vous est envoyé par email. Notre équipe examine le dossier et vous répondra par email.</p>
+            <p class="note">Pensez à vérifier vos courriers indésirables.</p>
+        </div>
+    </section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/alerte-config.js"></script>
+<script src="/demo-banner.js"></script>
+<script src="/demande-utils.js"></script>
+<script>
+(function () {
+    var U = window.DemandeUtils, C = window.NGOLA_ALERTE;
+    var sb = window.supabase.createClient(C.apiBase, C.anonKey);
+    var $ = function (id) { return document.getElementById(id); };
+    var etat = { jetonCaptcha: null, lat: null, lng: null, grille: U.horairesParDefaut() };
+
+    // ── Mode démo : avertissement « N'envoyez pas de documents réels » ──
+    fetch(C.apiBase + '/rest/v1/rpc/mode_public', { method: 'POST', headers: { apikey: C.anonKey, 'content-type': 'application/json' }, body: '{}' })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (m) { if (m === 'demo') $('avertissementDemo').classList.remove('masque'); }).catch(function () {});
+
+    // ── Quartiers ──
+    sb.from('quartiers').select('id, nom').order('nom').then(function (res) {
+        var s = $('quartier_id'); s.innerHTML = '<option value="">Choisissez…</option>';
+        (res.data || []).forEach(function (q) { var o = document.createElement('option'); o.value = q.id; o.textContent = q.nom; s.appendChild(o); });
+    });
+
+    // ── Grille d'horaires ──
+    var grille = $('grilleHoraires');
+    U.JOURS.forEach(function (j) {
+        var k = j[0], d = etat.grille[k];
+        var l = document.createElement('div'); l.className = 'ligne-jour';
+        l.innerHTML = '<label for="ouv_' + k + '">' + j[1] + '</label>' +
+            '<input type="time" id="ouv_' + k + '" value="' + d.ouv + '" aria-label="Ouverture ' + j[1] + '">' +
+            '<input type="time" id="fer_' + k + '" value="' + d.fer + '" aria-label="Fermeture ' + j[1] + '">' +
+            '<label class="ferme"><input type="checkbox" id="ferme_' + k + '"' + (d.ferme ? ' checked' : '') + '> Fermé</label>';
+        grille.appendChild(l);
+    });
+    function lireGrille() {
+        var g = {};
+        U.JOURS.forEach(function (j) { var k = j[0]; g[k] = { ferme: $('ferme_' + k).checked, ouv: $('ouv_' + k).value, fer: $('fer_' + k).value }; });
+        return g;
+    }
+
+    // ── Position ──
+    $('boutonPosition').addEventListener('click', function () {
+        if (!navigator.geolocation) { $('positionInfo').textContent = ' Position indisponible sur cet appareil.'; return; }
+        navigator.geolocation.getCurrentPosition(function (p) {
+            etat.lat = Math.round(p.coords.latitude * 1e6) / 1e6; etat.lng = Math.round(p.coords.longitude * 1e6) / 1e6;
+            $('positionInfo').textContent = ' Position enregistrée (' + etat.lat + ', ' + etat.lng + '). Notre équipe la vérifiera sur la carte.';
+        }, function () { $('positionInfo').textContent = ' Position refusée : vous pourrez la confirmer plus tard.'; }, { enableHighAccuracy: true, timeout: 10000 });
+    });
+
+    // ── Captcha (Turnstile ; simulé tant que la clé de site est vide, accepté par le serveur en démo seulement) ──
+    if (!C.turnstileSiteKey) etat.jetonCaptcha = 'mock-ok';
+    else {
+        var s = document.createElement('script'); s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'; s.async = true;
+        s.onload = function () { window.turnstile.render('#zoneCaptcha', { sitekey: C.turnstileSiteKey, callback: function (t) { etat.jetonCaptcha = t; }, 'expired-callback': function () { etat.jetonCaptcha = null; } }); };
+        document.head.appendChild(s);
+    }
+
+    function effacerErreurs() { document.querySelectorAll('.erreur').forEach(function (e) { e.textContent = ''; }); $('erreurGlobale').classList.add('masque'); }
+    function erreurGlobale(m) { var e = $('erreurGlobale'); e.textContent = m; e.classList.remove('masque'); e.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+
+    $('formulaire').addEventListener('submit', function (ev) {
+        ev.preventDefault(); effacerErreurs();
+        var v = { nom_pharmacie: $('nom_pharmacie').value, quartier_id: $('quartier_id').value, adresse: $('adresse').value, telephone_fixe: $('telephone_fixe').value,
+            nom_titulaire: $('nom_titulaire').value, numero_ordre: $('numero_ordre').value, email_titulaire: $('email_titulaire').value, telephone_mobile: $('telephone_mobile').value,
+            grille: lireGrille(), participe_garde: $('participe_garde').checked, consentement_conditions: $('consentement_conditions').checked,
+            consentement_messages: $('consentement_messages').checked, latitude: etat.lat, longitude: etat.lng };
+        var r = U.validerFormulaire(v), ok = r.ok;
+        Object.keys(r.erreurs).forEach(function (k) { var e = $('err_' + k); if (e) e.textContent = r.erreurs[k]; });
+        var fo = $('doc_ordre_attestation').files[0], fa = $('doc_autorisation_exploitation').files[0];
+        if (!fo) { $('err_doc_ordre_attestation').textContent = 'Document obligatoire.'; ok = false; }
+        else { var m1 = U.erreurFichier(fo); if (m1) { $('err_doc_ordre_attestation').textContent = m1; ok = false; } }
+        if (!fa) { $('err_doc_autorisation_exploitation').textContent = 'Document obligatoire.'; ok = false; }
+        else { var m2 = U.erreurFichier(fa); if (m2) { $('err_doc_autorisation_exploitation').textContent = m2; ok = false; } }
+        if (!ok) { var premiere = document.querySelector('.erreur:not(:empty)'); if (premiere) premiere.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+        if (!etat.jetonCaptcha) { erreurGlobale(U.messageErreur('captcha_invalide')); return; }
+
+        var form = new FormData();
+        form.append('donnees', JSON.stringify(U.construireDonnees(v, etat.jetonCaptcha)));
+        form.append('ordre_attestation', fo); form.append('autorisation_exploitation', fa);
+        $('boutonEnvoyer').disabled = true; $('boutonEnvoyer').textContent = 'Envoi en cours…';
+        fetch(C.apiBase + '/functions/v1/creer-demande', { method: 'POST', headers: { apikey: C.anonKey }, body: form })
+            .then(function (res) { return res.json().catch(function () { return {}; }).then(function (j) { return { ok: res.ok, j: j }; }); })
+            .then(function (res) {
+                if (!res.ok) {
+                    erreurGlobale(U.messageErreur(res.j.erreur));
+                    if (window.turnstile) window.turnstile.reset(); etat.jetonCaptcha = C.turnstileSiteKey ? null : 'mock-ok';
+                    $('boutonEnvoyer').disabled = false; $('boutonEnvoyer').textContent = 'Envoyer ma demande'; return;
+                }
+                $('reference').textContent = res.j.reference || '';
+                $('vueFormulaire').classList.add('masque'); $('vueSucces').classList.remove('masque'); window.scrollTo(0, 0);
+            })
+            .catch(function () { erreurGlobale('Connexion impossible. Vérifiez votre réseau et réessayez.'); $('boutonEnvoyer').disabled = false; $('boutonEnvoyer').textContent = 'Envoyer ma demande'; });
+    });
+}());
+</script>
+</body>
+</html>

@@ -289,6 +289,7 @@
             <button class="dash-tab" onclick="ProApp.switchTab('pharmacy')">🏥 Ma Pharmacie</button>
             <button class="dash-tab" onclick="ProApp.switchTab('alerts')">🔔 Alertes</button>
             <button class="dash-tab" id="tabBtnConsole" style="display:none" onclick="ProApp.switchTab('console')">🛰️ Console alertes</button>
+            <button class="dash-tab" id="tabBtnDemandes" style="display:none" onclick="ProApp.switchTab('demandes')">📥 Demandes</button>
             <button class="dash-tab" id="tabBtnClassification" style="display:none" onclick="ProApp.switchTab('classification')">🛡️ Classification du catalogue</button>
         </div>
 
@@ -402,6 +403,20 @@
             <div class="section-card" style="margin-top:16px">
                 <div class="section-header"><h3>⚙️ Réglages du routage</h3></div>
                 <div id="consoleReglages"></div>
+            </div>
+        </div>
+
+        <!-- TAB: Demandes de pré-inscription (admin seul) -->
+        <div class="tab-panel" id="tab-demandes">
+            <div class="section-card">
+                <div class="section-header"><h3>📥 Demandes de partenariat</h3>
+                    <select id="demandesFiltre" onchange="AdminDemandes.chargerFile()"><option value="">Toutes</option><option value="submitted">Soumises</option><option value="in_review">En revue</option><option value="needs_info">Compléments demandés</option><option value="approved">Approuvées</option><option value="rejected">Refusées</option><option value="doublons">Doublons suspects</option></select></div>
+                <p class="console-note">Cible de traitement : 48 h. Les justificatifs sont dans un espace privé ; chaque consultation est journalisée. En mode démo, aucune pièce réelle ne doit être déposée.</p>
+                <div id="demandesFile"><div class="spinner"></div></div>
+            </div>
+            <div class="section-card" style="margin-top:16px">
+                <div class="section-header"><h3>🔎 Dossier</h3></div>
+                <div id="demandesDetail"><p class="console-note">Choisissez une demande dans la liste.</p></div>
             </div>
         </div>
 
@@ -556,6 +571,8 @@
 <script src="/pro-utils.js"></script>
 <script src="/admin-utils.js"></script>
 <script src="/admin-alertes.js"></script>
+<script src="/admin-demandes-utils.js"></script>
+<script src="/admin-demandes.js"></script>
 <script>
 var ProApp = (function() {
     var SUPABASE_URL = 'https://ueycknsdwthmtmpzptqp.supabase.co';
@@ -686,7 +703,8 @@ var ProApp = (function() {
         // Onglet réservé à l'admin (la base refuse de toute façon les écritures des autres rôles).
         document.getElementById('tabBtnClassification').style.display = currentProfil.role === 'admin' ? '' : 'none';
         document.getElementById('tabBtnConsole').style.display = currentProfil.role === 'admin' ? '' : 'none';
-        if (currentProfil.role === 'admin') window.AdminAlertes.init({ sb: _sb, esc: esc, toast: showToast });
+        document.getElementById('tabBtnDemandes').style.display = currentProfil.role === 'admin' ? '' : 'none';
+        if (currentProfil.role === 'admin') { window.AdminAlertes.init({ sb: _sb, esc: esc, toast: showToast }); window.AdminDemandes.init({ sb: _sb, esc: esc, toast: showToast }); }
         loadStocks();
         loadStats();
         if (currentProfil.role === 'pharmacien') chargerAlertesPharmacie();
@@ -704,6 +722,7 @@ var ProApp = (function() {
         if (tabName === 'alerts') loadAlerts();
         if (tabName === 'classification') loadClassification();
         if (tabName === 'console' && currentProfil && currentProfil.role === 'admin') window.AdminAlertes.ouvrir();
+        if (tabName === 'demandes' && currentProfil && currentProfil.role === 'admin') window.AdminDemandes.ouvrir();
     }
 
     // ── Classification du catalogue (admin) ──

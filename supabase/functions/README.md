@@ -193,3 +193,22 @@ rejouable (même empreinte d'état), qui conserve contacts, liste blanche et cla
 - Bot Telegram public : `@ngola_pharma_Bot` (`telegramBot` dans `public/alerte-config.js`, secret `TELEGRAM_BOT_USERNAME=ngola_pharma_Bot`). Le jeton n'est jamais dans le dépôt.
 - Validation de la classification : validateur = Admin (n° d'Ordre saisi dans le formulaire « Classification du catalogue », jamais dans le dépôt) ; relecture à chaque ajout au catalogue + chaque trimestre. `supabase/seed/demo_classification.csv` est commité par le propriétaire après validation.
 - Archivage des 20 anciennes fiches de test : `supabase/ops/archiver_anciennes_fiches_test.sql` (simulation par défaut, `COMMIT` à la main, après sauvegarde) et `..._retour.sql` pour revenir en arrière. Testé en local (simulation sans écriture, archivage, retour).
+
+## Onboarding des officines — étape 1 : pré-inscription, vérification, décisions, activation (SPEC 1 §3–5)
+
+Migration `20261011000000_onboarding_demandes.sql` (à exécuter à la main, après `20261010000000`) ; 5 Edge Functions ; pages `devenir-partenaire.html`, `activer.html`, `complements.html` ; onglet admin « Demandes ».
+
+| Élément | Rôle |
+|---|---|
+| `creer-demande` (public) | multipart : champ `donnees` (JSON) + justificatifs `ordre_attestation`, `autorisation_exploitation` (PDF/JPG/PNG, 5 Mo, type vérifié sur les octets). Captcha, liste blanche de champs, **3 demandes/jour/IP** (empreinte HMAC, verrou en base), doublons marqués `doublon_suspect` (téléphone, n° d'Ordre, nom normalisé dans le quartier, GPS < 30 m). Accusé de réception `onboarding_recu` par email (outbox). |
+| `decider-demande` (admin) | `approve` (checklist de **5 cases obligatoire** ; crée la pharmacie `verifie`, **non publiée**, + invitation 72 h), `reject` / `request_info` (motif obligatoire), `resend_invite`. Jeton de session vérifié côté serveur **et** rôle contrôlé en base. |
+| `url-document` (admin) | URL signée de 5 min d'un justificatif (bucket privé `documents-demandes`) ; chaque consultation est journalisée. |
+| `activer-compte` (public) | jeton d'invitation (72 h, usage unique, haché en base, dans le fragment `#t=` de l'URL) -> crée le compte Auth, lie le profil `pharmacien`, renvoie un lien de connexion court. Refuse d'écraser un admin ou le compte d'une autre pharmacie. Le jeton n'est consommé que par un clic sur la page (les scanners d'email ne l'« usent » pas). |
+| `repondre-complements` (public) | réponse (message + document) via le lien signé de 14 jours, sans compte ; la demande repasse en revue. |
+
+À configurer par le propriétaire (aucune valeur dans le dépôt) :
+- Supabase Auth → URL Configuration → **Redirect URLs** : `<APP_BASE_URL>/pro.html` (sinon le lien de connexion court est refusé).
+- Secrets déjà utilisés : `ENCRYPTION_KEY`, `SIGNING_SECRET`, `CAPTCHA_PROVIDER`/`CAPTCHA_SECRET`, `ALLOWED_ORIGINS`, `APP_BASE_URL`.
+- En **mode démo**, les emails du candidat ne partent pas en vrai (destinataire hors liste blanche : « aurait été envoyé ») ; la console renvoie alors à l'admin le lien d'activation / de compléments pour rejouer le parcours. En production, jamais.
+
+Limites connues de cette étape : pas de repère déplaçable sur carte (bouton « Utiliser ma position » seulement) ; SLA calculé en heures calendaires ; pas de SMS (adaptateur SMS reporté) ; pièce d'identité du titulaire non demandée (point ouvert SPEC 1 §11) ; pas de rappels J+1/J+3/J+7 (étape suivante).

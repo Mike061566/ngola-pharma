@@ -70,3 +70,30 @@ entrypoint = "./functions/repondre-lien/index.js"
 enabled = true
 verify_jwt = false
 entrypoint = "./functions/tester-contact/index.js"
+
+# Onboarding des officines (SPEC 1) : pré-inscription et compléments publics (captcha / jeton signé) ;
+# décisions et URL de justificatif réservées à l'admin (jeton vérifié dans le code) ; activation par jeton à usage unique.
+[functions.creer-demande]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/creer-demande/index.js"
+
+[functions.decider-demande]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/decider-demande/index.js"
+
+[functions.url-document]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/url-document/index.js"
+
+[functions.activer-compte]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/activer-compte/index.js"
+
+[functions.repondre-complements]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/repondre-complements/index.js"

@@ -107,6 +107,44 @@ export const MODELES = {
       },
     },
   },
+  // ── Onboarding (SPEC 1 §8) : email d'abord (le bot Telegram ne peut pas écrire en premier). Pas de délai promis,
+  //    aucune donnée personnelle hors nom d'officine. ──
+  onboarding_recu: {
+    canaux: {
+      email: (v) => {
+        exiger(v, ['nom_officine']);
+        return { format: 'texte', sujet: 'N\'Gola Pharma : demande reçue',
+          texte: `Bonjour,\n\nnous avons bien reçu la demande de partenariat de « ${v.nom_officine} ». Notre équipe l'examine ; nous reviendrons vers vous par email.\n\nL'équipe N'Gola Pharma` };
+      },
+    },
+  },
+  onboarding_complements: {
+    canaux: {
+      email: (v) => {
+        exiger(v, ['nom_officine', 'motif', 'lien']);
+        return { format: 'texte', sujet: 'N\'Gola Pharma : informations complémentaires',
+          texte: `Bonjour,\n\npour poursuivre l'examen de la demande de « ${v.nom_officine} », nous avons besoin d'un complément :\n\n${v.motif}\n\nRépondez ici (aucun compte nécessaire) : ${v.lien}\n\nL'équipe N'Gola Pharma` };
+      },
+    },
+  },
+  onboarding_approuve: {
+    canaux: {
+      email: (v) => {
+        exiger(v, ['nom_officine', 'lien']);
+        return { format: 'texte', sujet: 'N\'Gola Pharma : votre demande est approuvée',
+          texte: `Bonjour,\n\nla demande de « ${v.nom_officine} » est approuvée. Activez votre compte avec ce lien personnel (valable ${v.validite_h || 72} h, usage unique) :\n\n${v.lien}\n\nVous pourrez ensuite compléter votre fiche, activer Telegram et importer vos stocks.\n\nL'équipe N'Gola Pharma` };
+      },
+    },
+  },
+  onboarding_refuse: {
+    canaux: {
+      email: (v) => {
+        exiger(v, ['nom_officine', 'motif']);
+        return { format: 'texte', sujet: 'N\'Gola Pharma : réponse à votre demande',
+          texte: `Bonjour,\n\nnous ne pouvons pas donner suite à la demande de « ${v.nom_officine} » pour le motif suivant :\n\n${v.motif}\n\nVous pouvez nous écrire pour toute précision.\n\nL'équipe N'Gola Pharma` };
+      },
+    },
+  },
   rappel_confirmation_stock: {
     canaux: {
       telegram: (v) => {
