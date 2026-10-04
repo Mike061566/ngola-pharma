@@ -185,3 +185,11 @@ rejouable (même empreinte d'état), qui conserve contacts, liste blanche et cla
 - Activation (par le propriétaire, jamais en CI) : secrets `TELEGRAM_PROVIDER=telegram`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET`, `TELEGRAM_BOT_USERNAME` ; puis `WEBHOOK_URL=… node scripts/telegram-set-webhook.js --confirmer` (sans `--confirmer` : simulation).
 - SMS et email : `SMS_PROVIDER` / `EMAIL_PROVIDER` n'acceptent que `mock` tant que les fournisseurs ne sont pas choisis (valeur inconnue = erreur explicite).
 - Bascule en production : `ALERT_AUTO_ROUTING` seulement après validation de la classification par un pharmacien (SPEC 2) ; en mode démo, envois réels limités aux contacts `est_contact_demo`.
+
+### PR 7 — email (ZeptoMail) et décisions du propriétaire
+
+- Email réel : `EMAIL_PROVIDER=zeptomail` + secrets `ZEPTOMAIL_TOKEN`, `EMAIL_FROM_ADDRESS` (domaine vérifié chez ZeptoMail), `EMAIL_FROM_NAME`, `ZEPTOMAIL_HOST` (région du compte, défaut `api.zeptomail.com`). Adaptateur : `_shared/fournisseur-zeptomail.js` (tests sans réseau). **À vérifier sur votre compte** avant l'activation : codes d'erreur réels (la doc ZeptoMail n'était pas consultable ici) ; les erreurs 4xx sont traitées « permanentes sans blocage du contact », les rebonds définitifs viendront d'un webhook de rebond (non fait).
+- SMS (Orange API) : **non branché** tant que la couverture MTN/Orange n'est pas confirmée par le propriétaire ; budget fixé à 50 SMS/jour (réglage existant de la console admin). `SMS_PROVIDER` n'accepte que `mock` d'ici là.
+- Bot Telegram public : `@ngola_pharma_Bot` (`telegramBot` dans `public/alerte-config.js`, secret `TELEGRAM_BOT_USERNAME=ngola_pharma_Bot`). Le jeton n'est jamais dans le dépôt.
+- Validation de la classification : validateur = Admin (n° d'Ordre saisi dans le formulaire « Classification du catalogue », jamais dans le dépôt) ; relecture à chaque ajout au catalogue + chaque trimestre. `supabase/seed/demo_classification.csv` est commité par le propriétaire après validation.
+- Archivage des 20 anciennes fiches de test : `supabase/ops/archiver_anciennes_fiches_test.sql` (simulation par défaut, `COMMIT` à la main, après sauvegarde) et `..._retour.sql` pour revenir en arrière. Testé en local (simulation sans écriture, archivage, retour).

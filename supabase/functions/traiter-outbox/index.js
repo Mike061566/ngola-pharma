@@ -24,7 +24,7 @@ Deno.serve(async (req) => {
       fournisseurs: creerFournisseurs({
         TELEGRAM_PROVIDER: Deno.env.get('TELEGRAM_PROVIDER'), TELEGRAM_BOT_TOKEN: Deno.env.get('TELEGRAM_BOT_TOKEN'),
         SMS_PROVIDER: Deno.env.get('SMS_PROVIDER'),
-        EMAIL_PROVIDER: Deno.env.get('EMAIL_PROVIDER'),
+        EMAIL_PROVIDER: Deno.env.get('EMAIL_PROVIDER'), ZEPTOMAIL_TOKEN: Deno.env.get('ZEPTOMAIL_TOKEN'), EMAIL_FROM_ADDRESS: Deno.env.get('EMAIL_FROM_ADDRESS'), EMAIL_FROM_NAME: Deno.env.get('EMAIL_FROM_NAME'), ZEPTOMAIL_HOST: Deno.env.get('ZEPTOMAIL_HOST'),
       }, { journal: (e) => console.log(JSON.stringify(e)) }),
       cle: await cleDepuisBase64(Deno.env.get('ENCRYPTION_KEY')),
       journal: (e) => console.log(JSON.stringify(e)),
