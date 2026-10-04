@@ -60,6 +60,14 @@ describe('doublons de médicament', () => {
     expect(medIdentityKey(doliprane)).not.toBe(medIdentityKey(efferalgan));
   });
 
+  test('le conditionnement fait partie de l\'identité : deux présentations = deux produits ; espaces et casse ignorés', () => {
+    const b8 = { ...doliprane, id: 'm5', conditionnement: 'Boîte de 8' }, b16 = { ...doliprane, id: 'm6', conditionnement: 'Boîte de 16' };
+    expect(medIdentityKey(b8)).not.toBe(medIdentityKey(b16));
+    expect(medIdentityKey(b8)).not.toBe(medIdentityKey(doliprane));
+    expect(medIdentityKey({ ...b8, conditionnement: 'boîte  de 8' })).toBe(medIdentityKey(b8));
+    expect(findOwnedStock([{ id: 's5', medicament_id: 'm5', medicaments: b8 }], b16)).toBeNull();   // la boîte de 16 peut être ajoutée à côté de la boîte de 8
+  });
+
   test('même fiche ou fiche équivalente : déjà dans le stock', () => {
     expect(findOwnedStock(stocks, coartem1).id).toBe('s1');
     expect(findOwnedStock(stocks, coartem2).id).toBe('s1');

@@ -32,6 +32,7 @@ ce tableau fait foi pour le code. Les clés de `config_routage` sont traduites a
 | `restricted` | `medicaments.restreint` (défaut `true`) |
 | `requires_prescription` | `medicaments.ordonnance` |
 | `classification_validated_at` | `medicaments.classification_validee_le` |
+| `pack_size` | `medicaments.conditionnement` (exposé en `pack_size` par la vue `drug_catalog`) |
 | `is_demo` | `est_demo` (medicaments, pharmacies) |
 | `is_published` | `pharmacies.est_publiee` (+ `publiee_le`) ; CHECK : seulement si `statut = 'verifie'` |
 | `status` (catalogue) | `statut_catalogue` (`actif`/`archive`) |

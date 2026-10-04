@@ -185,12 +185,13 @@
   var PROBLEMES = {
     nom_absent: 'Nom du médicament absent.', prix_invalide: 'Prix absent, non numérique, nul ou supérieur à 500 000 FCFA.',
     en_stock_invalide: 'Valeur « en stock » illisible (attendu : oui/non).', ambigu: 'Plusieurs fiches possibles : choisissez la bonne.',
-    doublon_fichier: 'Doublon dans le fichier : la dernière ligne de ce médicament est retenue.', prix_ecart_median: 'Prix très éloigné de celui des autres pharmacies.'
+    doublon_fichier: 'Doublon dans le fichier : la dernière ligne de ce médicament est retenue.', prix_ecart_median: 'Prix très éloigné de celui des autres pharmacies.',
+    conditionnement_non_verifie: 'Conditionnement non vérifié : la fiche du catalogue n\'en indique pas.', conditionnement_different: 'Conditionnement différent de celui de la fiche du catalogue.'
   };
   function libelleEtat(e) { return ETATS[e] || { libelle: e, icone: '', classe: '' }; }
   function libelleProbleme(p) {
     var base = PROBLEMES[p && p.code] || (p && p.code) || '';
-    return p && p.code === 'prix_ecart_median' && p.detail ? base + ' (' + p.detail + ')' : base;
+    return p && p.detail && (p.code === 'prix_ecart_median' || p.code === 'conditionnement_different' || p.code === 'conditionnement_non_verifie') ? base + ' (' + p.detail + ')' : base;
   }
   function erreurLecture(r) {
     if (r.erreur === 'fichier_vide') return 'Le fichier ne contient aucune ligne de médicament.';

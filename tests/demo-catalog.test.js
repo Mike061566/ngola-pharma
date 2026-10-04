@@ -98,6 +98,35 @@ describe('chargerCatalogueDemo', () => {
   });
 });
 
+describe('pack_size -> conditionnement', () => {
+  test('lu depuis la colonne pack_size, vide = null ; fait partie de l\'identité (deux conditionnements = deux fiches)', () => {
+    const r = analyserCatalogueDemo(`${ENTETE}\nParacétamol,Doliprane,500mg,comprimé,Boîte de 8,false,false\nParacétamol,Doliprane,500mg,comprimé,Boîte de 16,false,false\nParacétamol,Doliprane,500mg,comprimé,,false,false\nParacétamol,Doliprane,500 mg,comprimé,boîte  de 8,false,false\n`);
+    expect(r.medicaments.map((m) => m.conditionnement)).toEqual(['Boîte de 8', 'Boîte de 16', null]);
+    expect(r.avertissements.join(' ')).toMatch(/doublon/);               // la 4e ligne = même nom, dosage et conditionnement que la 1re
+  });
+  const med = (conditionnement, extra = {}) => ({ nom: 'Doliprane', dosage: '500mg', conditionnement, restreint: true, ordonnance: false, est_demo: true, ...extra });
+  test('une fiche sans conditionnement l\'adopte (aucun doublon) ; seule la colonne conditionnement est écrite', async () => {
+    const sb = faux({ existants: [{ id: 'e1', nom: 'Doliprane', dosage: '500mg', conditionnement: null, ordonnance: false, restreint: true }] });
+    const bilan = await chargerCatalogueDemo(sb, [med('Boîte de 16')]);
+    expect(bilan).toMatchObject({ inseres: 0, conditionnements_renseignes: 1 });
+    expect(sb.appels.filter((a) => a[0] === 'update')).toEqual([['update', 'medicaments', { conditionnement: 'Boîte de 16' }, 'e1']]);
+    expect(sb.appels.some((a) => a[0] === 'insert')).toBe(false);
+  });
+  test('deuxième conditionnement du même produit : nouvelle fiche ; la classification de la fiche existante n\'est pas modifiée', async () => {
+    const sb = faux({ existants: [{ id: 'e1', nom: 'Doliprane', dosage: '500mg', conditionnement: null, ordonnance: false, restreint: true }] });
+    const bilan = await chargerCatalogueDemo(sb, [med('Boîte de 8'), med('Boîte de 16')]);
+    expect(bilan).toMatchObject({ inseres: 1, conditionnements_renseignes: 1 });
+    const maj = sb.appels.filter((a) => a[0] === 'update');
+    expect(maj).toHaveLength(1);
+    expect(Object.keys(maj[0][2])).toEqual(['conditionnement']);          // ni restreint ni ordonnance
+    expect(sb.appels.find((a) => a[0] === 'insert')[2].conditionnement).toBe('Boîte de 16');
+  });
+  test('idempotent avec conditionnement', async () => {
+    const sb = faux({ existants: [{ id: 'e1', nom: 'Doliprane', dosage: '500mg', conditionnement: 'boîte de 16', ordonnance: false, restreint: true }] });
+    expect(await chargerCatalogueDemo(sb, [med('Boîte de 16')])).toMatchObject({ inseres: 0, mis_a_jour: 0, inchanges: 1 });
+  });
+});
+
 describe('reinitialiserDemo et script', () => {
   test('refuse hors mode démo, sinon appelle la fonction SQL avec le nombre de pharmacies', async () => {
     const prod = faux({ mode: 'production' });

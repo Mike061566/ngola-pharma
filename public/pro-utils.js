@@ -55,14 +55,14 @@
   function norm(s) { return String(s == null ? '' : s).trim().toLowerCase(); }
 
   /**
-   * Identité d'un produit du catalogue : DCI + nom commercial + dosage + forme (minuscules, dosage sans
-   * espaces) — la même clé que supabase/diagnostics/doublons_stocks.sql. Deux fiches distinctes pour le
+   * Identité d'un produit du catalogue : DCI + nom commercial + dosage + forme + conditionnement (minuscules, sans
+   * espaces pour dosage et conditionnement) — la même clé que supabase/diagnostics/doublons_stocks.sql. Deux fiches distinctes pour le
    * même produit (ex. « Coartem » et « Artemether-Lumefantrine ») ont la même clé.
    */
   function medIdentityKey(med) {
     if (!med) return '';
     var dci = norm(med.dci), marque = norm(med.nom_commercial);
-    var parts = [dci, marque, norm(med.dosage).replace(/\s+/g, ''), norm(med.forme)];
+    var parts = [dci, marque, norm(med.dosage).replace(/\s+/g, ''), norm(med.forme), norm(med.conditionnement).replace(/\s+/g, '')];
     // Sans DCI ni marque la clé serait trop pauvre : on s'appuie alors sur le nom.
     if (!dci && !marque) parts.push(norm(med.nom));
     return parts.join('|');

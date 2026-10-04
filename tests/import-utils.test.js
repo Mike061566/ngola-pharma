@@ -99,6 +99,8 @@ test('libellés d\'aperçu et résumé', () => {
   expect(U.libelleEtat('inconnu').libelle).toBe('inconnu');
   expect(U.libelleProbleme({ code: 'prix_ecart_median', detail: 'médiane : 5000 FCFA' })).toMatch(/5000/);
   expect(U.libelleProbleme({ code: 'ambigu' })).toMatch(/Plusieurs fiches/);
+  expect(U.libelleProbleme({ code: 'conditionnement_non_verifie', detail: 'Boîte de 20' })).toMatch(/non vérifié.*Boîte de 20/);
+  expect(U.libelleProbleme({ code: 'conditionnement_different', detail: 'fichier : 8 ; catalogue : 16' })).toMatch(/différent.*catalogue : 16/);
   expect(U.resume({ total: 10, reconnu: 5, suggestion: 1, a_confirmer: 2, non_reconnu: 1, erreur: 1 })).toBe('10 ligne(s) : 6 reconnue(s), 2 à confirmer, 1 non reconnue(s), 1 en erreur.');
   expect(U.peutValider({ a_ecrire: 0 })).toBe(false);
   expect(U.peutValider({ a_ecrire: 3 })).toBe(true);

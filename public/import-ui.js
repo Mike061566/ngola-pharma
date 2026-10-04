@@ -210,7 +210,8 @@ window.ImportUI = (function () {
         if (!window.confirm('Annuler cet import ? Les stocks reviendront à leur état d\'avant (les lignes modifiées depuis ne sont pas écrasées).')) return;
         rpc('import_annuler_lot', { p_lot: lot }).then(function (r) {
             if (!r) return;
-            toast('Import annulé : ' + r.supprimes + ' supprimé(s), ' + r.restaures + ' restauré(s)' + (r.modifies_depuis ? ', ' + r.modifies_depuis + ' modifié(s) depuis (conservés)' : '') + '.');
+            toast('Import annulé : ' + r.supprimes + ' supprimé(s), ' + r.restaures + ' restauré(s)' + (r.modifies_depuis ? ', ' + r.modifies_depuis + ' modifié(s) depuis (conservés)' : '') + '.' +
+                (r.depubliee ? ' Votre pharmacie n\'est plus publiée : la mise en route doit être complétée (voir la checklist).' : ''));
             apres(r); vueDepart();
         });
     }

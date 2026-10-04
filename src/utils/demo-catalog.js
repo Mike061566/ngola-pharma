@@ -5,7 +5,9 @@
  * RÈGLE : `restricted` est une DÉCISION DU PROPRIÉTAIRE. Ce module ne la déduit jamais : `false` n'est accepté que s'il est écrit
  * explicitement ; une valeur absente ou illisible donne `true` (restreint) avec un avertissement. La fiche fictive
  * « Exemple restreint (démo) » est toujours restreinte. Le chargement n'a lieu qu'en mode démo.
- * `pack_size` n'a pas de colonne dans `medicaments` : il est lu mais ignoré. `category` (facultative) alimente `categorie`.
+ * `pack_size` alimente `medicaments.conditionnement` (nom français de la colonne) ; il fait partie de l'identité de la fiche (nom + dosage +
+ * conditionnement, comme l'index unique). Ce module n'écrit JAMAIS restricted/requires_prescription autrement que d'après le fichier (inchangé).
+ * `category` (facultative) alimente `categorie`.
  * Les avertissements répétitifs sont regroupés (les 5 premiers sont détaillés, puis un total).
  */
 const COLONNES = ['dci', 'brand_name', 'strength', 'form', 'pack_size', 'requires_prescription', 'restricted'];   // + `category` facultative
@@ -25,7 +27,9 @@ function decouper(ligne) {   // découpe une ligne CSV (guillemets, "" échappé
 
 const bool = (v) => { const t = String(v ?? '').trim().toLowerCase(); return t === 'true' ? true : t === 'false' ? false : null; };
 const norm = (s) => String(s ?? '').trim().toLowerCase();
-const cleNomDosage = (m) => `${norm(m.nom)}|${norm(m.dosage).replace(/\s+/g, '')}`;
+const sansEspaces = (v) => norm(v).replace(/\s+/g, '');
+const cleNomDosage = (m) => `${norm(m.nom)}|${sansEspaces(m.dosage)}|${sansEspaces(m.conditionnement)}`;   // même clé que l'index unique
+const cleSansConditionnement = (m) => `${norm(m.nom)}|${sansEspaces(m.dosage)}`;
 
 /** @returns {{ medicaments: object[], erreurs: string[], avertissements: string[] }} */
 function analyserCatalogueDemo(texte) {
@@ -50,7 +54,7 @@ function analyserCatalogueDemo(texte) {
     let restreint = bool(r.restricted);
     if (restreint === null) { restreint = true; brut.restricted.push(`Ligne ${n} (${nom}) : restricted absent ou illisible, restreint retenu (défaut sûr)`); }
     if (norm(nom) === FICTIF && restreint !== true) { erreurs.push(`Ligne ${n} : « Exemple restreint (démo) » doit rester restricted=true`); return; }
-    const med = { nom, nom_commercial: r.brand_name || null, dci: r.dci || null, forme: r.form || null, dosage: r.strength || null,
+    const med = { nom, nom_commercial: r.brand_name || null, dci: r.dci || null, forme: r.form || null, dosage: r.strength || null, conditionnement: (r.pack_size || '').trim() || null,
       categorie: r.category || 'démonstration', ordonnance: ordo === true, restreint, est_demo: true };
     const cle = cleNomDosage(med);
     if (vus.has(cle)) { brut.doublon.push(`Ligne ${n} (${nom}) : doublon dans le fichier, ignoré`); return; }
@@ -73,13 +77,28 @@ async function chargerCatalogueDemo(sb, medicaments) {
   const mode = await sb.rpc('mode_public');
   if (mode.error) throw new Error(`Mode illisible : ${mode.error.code || 'erreur'}`);
   if (mode.data !== 'demo') throw new Error('Chargement refusé : l\'application n\'est pas en mode démo');
-  const { data: existants, error } = await sb.from('medicaments').select('id, nom, dosage, ordonnance, restreint');
+  const { data: existants, error } = await sb.from('medicaments').select('id, nom, dosage, conditionnement, ordonnance, restreint');
   if (error) throw new Error(`Lecture du catalogue : ${error.code || 'erreur'}`);
   const index = new Map((existants || []).map((m) => [cleNomDosage(m), m]));
+  // Fiches existantes SANS conditionnement : si le fichier en indique un pour le même nom et dosage, la fiche l'adopte (pas de doublon).
+  const sansPack = new Map();
+  (existants || []).filter((m) => !norm(m.conditionnement)).forEach((m) => { if (!sansPack.has(cleSansConditionnement(m))) sansPack.set(cleSansConditionnement(m), m); });
+  const adoptees = new Set();
   const bilan = { inseres: 0, mis_a_jour: 0, inchanges: 0, restreints: 0, non_restreints: 0 };
   for (const m of medicaments) {
     m.restreint ? bilan.restreints++ : bilan.non_restreints++;
-    const ex = index.get(cleNomDosage(m));
+    let ex = index.get(cleNomDosage(m));
+    if (!ex && m.conditionnement) {
+      const candidate = sansPack.get(cleSansConditionnement(m));
+      if (candidate && !adoptees.has(candidate.id)) {
+        adoptees.add(candidate.id);
+        const r = await sb.from('medicaments').update({ conditionnement: m.conditionnement }).eq('id', candidate.id);   // seulement le conditionnement
+        if (r.error) throw new Error(`Mise à jour du conditionnement de « ${m.nom} » : ${r.error.code || 'erreur'}`);
+        bilan.conditionnements_renseignes = (bilan.conditionnements_renseignes || 0) + 1;
+        ex = { ...candidate, conditionnement: m.conditionnement };
+        index.set(cleNomDosage(m), ex);
+      }
+    }
     if (!ex) {
       const r = await sb.from('medicaments').insert(m);
       if (r.error) throw new Error(`Insertion de « ${m.nom} » : ${r.error.code || 'erreur'}`);

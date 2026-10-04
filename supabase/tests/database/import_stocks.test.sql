@@ -165,7 +165,7 @@ SET LOCAL ROLE authenticated;
 SELECT set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000b1","role":"authenticated"}', true);
 SELECT is((import_historique() -> 0 ->> 'annulable')::boolean, true, 'historique : import annulable');
 SELECT is(jsonb_array_length(import_historique()), 1, 'historique : un import');
-SELECT is(import_annuler_lot((SELECT valeur::uuid FROM ctx WHERE cle = 'lot')), '{"supprimes": 3, "restaures": 2, "modifies_depuis": 0, "archives_restaures": 0}'::jsonb, 'annulation : 3 créés supprimés, 2 restaurés');
+SELECT is(import_annuler_lot((SELECT valeur::uuid FROM ctx WHERE cle = 'lot')), '{"supprimes": 3, "restaures": 2, "modifies_depuis": 0, "archives_restaures": 0, "depubliee": false}'::jsonb, 'annulation : 3 créés supprimés, 2 restaurés');
 RESET ROLE;
 SELECT is((SELECT prix_fcfa || '/' || statut_stock || '/' || en_stock::text FROM stocks WHERE pharmacie_id = '00000000-0000-0000-0000-0000000000d1' AND medicament_id = '00000000-0000-0000-0000-00000000e003'), '1500/rupture/false', 'Ibuprofène : prix, statut et disponibilité restaurés');
 SELECT is((SELECT date_maj::text FROM stocks WHERE medicament_id = '00000000-0000-0000-0000-00000000e003' AND pharmacie_id = '00000000-0000-0000-0000-0000000000d1'), (SELECT valeur FROM ctx WHERE cle = 'ibu_date_maj'), 'Ibuprofène : date de mise à jour restaurée à l''identique');
@@ -202,7 +202,7 @@ RESET ROLE;
 UPDATE stocks SET prix_fcfa = 2600, date_maj = now() + interval '1 second' WHERE pharmacie_id = '00000000-0000-0000-0000-0000000000d1' AND medicament_id = '00000000-0000-0000-0000-00000000e003';
 SET LOCAL ROLE authenticated;
 SELECT set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000b1","role":"authenticated"}', true);
-SELECT is(import_annuler_lot((SELECT valeur::uuid FROM ctx WHERE cle = 'lot_conflit')), '{"supprimes": 1, "restaures": 0, "modifies_depuis": 1, "archives_restaures": 0}'::jsonb, 'annulation : la ligne modifiée depuis est signalée, jamais écrasée');
+SELECT is(import_annuler_lot((SELECT valeur::uuid FROM ctx WHERE cle = 'lot_conflit')), '{"supprimes": 1, "restaures": 0, "modifies_depuis": 1, "archives_restaures": 0, "depubliee": false}'::jsonb, 'annulation : la ligne modifiée depuis est signalée, jamais écrasée');
 RESET ROLE;
 SELECT is((SELECT prix_fcfa FROM stocks WHERE pharmacie_id = '00000000-0000-0000-0000-0000000000d1' AND medicament_id = '00000000-0000-0000-0000-00000000e003'), 2600, 'la modification manuelle ultérieure est conservée');
 
