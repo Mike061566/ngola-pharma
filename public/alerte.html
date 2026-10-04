@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alerte de disponibilité — N'Gola Pharma</title>
+    <style>
+        :root { --primary:#003366; --primary-light:#0a4d8c; --bg:#f4f6f9; --text:#1c2733; --muted:#5d6b7a; --border:#d9e0e8; --danger:#b3261e; --ok:#1b7a3d; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+        header { background: var(--primary); color: #fff; padding: 14px 16px; }
+        header a { color: #fff; text-decoration: none; font-weight: 700; }
+        main { max-width: 560px; margin: 0 auto; padding: 16px; }
+        .carte { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 16px; }
+        h1 { font-size: 20px; margin-bottom: 6px; }
+        h2 { font-size: 16px; margin-bottom: 8px; }
+        p.aide { color: var(--muted); font-size: 13px; margin-bottom: 12px; }
+        label { display: block; font-weight: 600; font-size: 14px; margin: 14px 0 4px; }
+        input[type=text], input[type=tel], select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 16px; background: #fff; }
+        input:focus, select:focus { outline: 2px solid var(--primary-light); outline-offset: 1px; }
+        .choix { display: flex; gap: 8px; flex-wrap: wrap; }
+        .choix label { display: flex; align-items: center; gap: 8px; font-weight: 500; margin: 0; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; flex: 1 1 140px; }
+        .liste { border: 1px solid var(--border); border-radius: 8px; margin-top: 4px; max-height: 240px; overflow-y: auto; }
+        .liste button { display: block; width: 100%; text-align: left; padding: 10px 12px; background: #fff; border: 0; border-bottom: 1px solid var(--border); font-size: 15px; cursor: pointer; }
+        .liste button:hover, .liste button:focus { background: #eef4fb; }
+        .choisi { margin-top: 6px; padding: 8px 12px; background: #eef4fb; border-radius: 8px; font-size: 14px; }
+        .ordo { margin-top: 8px; padding: 8px 12px; background: #fff8e1; border: 1px solid #ffe08a; border-radius: 8px; font-size: 13px; }
+        .erreur { color: var(--danger); font-size: 13px; margin-top: 4px; }
+        .erreur-globale { background: #fdecea; border: 1px solid #f5c2be; color: var(--danger); padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; font-size: 14px; }
+        button.principal { width: 100%; margin-top: 18px; padding: 14px; background: var(--primary); color: #fff; border: 0; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; }
+        button.principal:disabled { background: #8a97a5; cursor: not-allowed; }
+        a.bouton { display: inline-block; margin-top: 10px; padding: 10px 16px; background: var(--primary); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        .etat { font-size: 18px; font-weight: 700; margin: 6px 0; }
+        .pharma { padding: 10px 0; border-top: 1px solid var(--border); }
+        .pharma strong { display: block; }
+        .masque { display: none; }
+        .note { font-size: 12px; color: var(--muted); margin-top: 10px; }
+    </style>
+</head>
+<body>
+<header><a href="/">N'Gola Pharma</a></header>
+<main>
+    <!-- Formulaire -->
+    <section id="vueFormulaire">
+        <div class="carte">
+            <h1>Chercher un médicament près de vous</h1>
+            <p class="aide">Nous interrogeons les pharmacies de Yaoundé et vous répondons dès qu'une pharmacie confirme. Service gratuit.</p>
+            <div id="erreurGlobale" class="erreur-globale masque" role="alert"></div>
+            <form id="formulaire" novalidate>
+                <label for="champMedicament">Médicament (nom, dosage)</label>
+                <input id="champMedicament" type="text" autocomplete="off" placeholder="Ex. Ibuprofène 400" aria-describedby="erreurMedicament">
+                <div id="listeMedicaments" class="liste masque" role="listbox"></div>
+                <div id="medicamentChoisi" class="choisi masque"></div>
+                <div id="noteOrdonnance" class="ordo masque">📋 Délivré sur ordonnance : à présenter à la pharmacie lors de l'achat ou du retrait. N'envoyez aucune ordonnance ici.</div>
+                <div id="erreurMedicament" class="erreur"></div>
+
+                <label for="champQuartier">Votre quartier</label>
+                <select id="champQuartier"><option value="">Chargement…</option></select>
+                <div id="erreurQuartier" class="erreur"></div>
+
+                <label>Urgence</label>
+                <div class="choix">
+                    <label><input type="radio" name="urgence" value="normal" checked> Normale</label>
+                    <label><input type="radio" name="urgence" value="urgent"> Urgente</label>
+                </div>
+
+                <label>Comment vous répondre ?</label>
+                <div class="choix">
+                    <label><input type="radio" name="canal" value="telegram" checked> Telegram (recommandé)</label>
+                    <label><input type="radio" name="canal" value="sms"> SMS</label>
+                    <label><input type="radio" name="canal" value="none"> Rester sur cette page</label>
+                </div>
+                <div id="blocSms" class="masque">
+                    <label for="champTelephone">Numéro de téléphone</label>
+                    <input id="champTelephone" type="tel" autocomplete="tel" placeholder="6XX XX XX XX">
+                    <div id="erreurTelephone" class="erreur"></div>
+                    <label style="display:flex;gap:8px;align-items:flex-start;font-weight:500">
+                        <input id="champConsentement" type="checkbox" style="margin-top:4px">
+                        <span>J'accepte de recevoir un SMS pour cette demande. Mon numéro est chiffré et n'est jamais communiqué aux pharmacies.</span>
+                    </label>
+                    <div id="erreurConsentement" class="erreur"></div>
+                </div>
+                <p class="note" id="noteTelegram">Après l'envoi, vous pourrez ouvrir Telegram pour recevoir la réponse. La recherche commence tout de suite.</p>
+
+                <div id="zoneCaptcha" style="margin-top:14px"></div>
+                <button id="boutonEnvoyer" class="principal" type="submit">Lancer la recherche</button>
+                <p class="note">Aucun conseil médical n'est donné. Appelez la pharmacie avant de vous déplacer.</p>
+            </form>
+        </div>
+    </section>
+
+    <!-- Suivi -->
+    <section id="vueSuivi" class="masque">
+        <div class="carte" aria-live="polite">
+            <h1>Suivi de votre demande</h1>
+            <div id="suiviMedicament" class="aide"></div>
+            <div id="suiviEtat" class="etat"></div>
+            <div id="suiviOrdonnance" class="ordo masque">📋 Ce médicament est délivré sur ordonnance : présentez-la à la pharmacie lors de l'achat ou du retrait.</div>
+            <div id="suiviPharmacies"></div>
+            <a id="lienTelegram" class="bouton masque" target="_blank" rel="noopener">Recevoir la réponse sur Telegram</a>
+            <p class="note" id="suiviNote">Cette page se met à jour toute seule.</p>
+            <p class="note"><a href="/garde">Pharmacies de garde</a> · <a href="/alerte.html">Nouvelle recherche</a></p>
+        </div>
+    </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/alerte-config.js"></script>
+<script src="/demo-banner.js"></script>
+<script src="/alerte-utils.js"></script>
+<script>
+var AlertePage = (function () {
+    var U = window.AlerteUtils, C = window.NGOLA_ALERTE;
+    var sb = window.supabase.createClient(C.apiBase, C.anonKey);
+    var etat = { medicament: null, jetonCaptcha: null, minuteur: null, suivi: null };
+    var $ = function (id) { return document.getElementById(id); };
+
+    function montrer(id, oui) { $(id).classList.toggle('masque', !oui); }
+    function valeurRadio(nom) { var r = document.querySelector('input[name=' + nom + ']:checked'); return r ? r.value : null; }
+
+    // ── Médicaments (autocomplétion) ──
+    var timerRecherche = null;
+    function chercher() {
+        var terme = U.termeRecherche($('champMedicament').value);
+        etat.medicament = null; montrer('medicamentChoisi', false); montrer('noteOrdonnance', false);
+        if (terme.length < 2) { montrer('listeMedicaments', false); return; }
+        sb.from('medicaments').select('id, nom, dosage, forme, ordonnance').eq('statut_catalogue', 'actif')
+            .ilike('nom', '%' + terme + '%').order('nom').limit(8)
+            .then(function (res) {
+                var liste = $('listeMedicaments');
+                liste.textContent = '';
+                var lignes = res.data || [];
+                if (res.error || lignes.length === 0) { montrer('listeMedicaments', false); return; }
+                lignes.forEach(function (m) {
+                    var b = document.createElement('button');
+                    b.type = 'button'; b.setAttribute('role', 'option');
+                    b.textContent = m.nom + (m.dosage ? ' ' + m.dosage : '') + (m.forme ? ' — ' + m.forme : '');
+                    b.addEventListener('click', function () { choisir(m); });
+                    liste.appendChild(b);
+                });
+                montrer('listeMedicaments', true);
+            });
+    }
+    function choisir(m) {
+        etat.medicament = m;
+        $('champMedicament').value = m.nom + (m.dosage ? ' ' + m.dosage : '');
+        $('medicamentChoisi').textContent = '✔ ' + m.nom + (m.dosage ? ' ' + m.dosage : '') + (m.forme ? ' — ' + m.forme : '');
+        montrer('medicamentChoisi', true); montrer('listeMedicaments', false);
+        montrer('noteOrdonnance', m.ordonnance === true);
+        $('erreurMedicament').textContent = '';
+    }
+
+    function chargerQuartiers() {
+        sb.from('quartiers').select('id, nom').order('nom').then(function (res) {
+            var s = $('champQuartier'); s.textContent = '';
+            var o0 = document.createElement('option'); o0.value = ''; o0.textContent = 'Choisissez…'; s.appendChild(o0);
+            (res.data || []).forEach(function (q) { var o = document.createElement('option'); o.value = q.id; o.textContent = q.nom; s.appendChild(o); });
+        });
+    }
+
+    // ── Captcha : Turnstile si une clé de site est configurée, sinon jeton simulé (accepté en démo seulement) ──
+    function initCaptcha() {
+        if (!C.turnstileSiteKey) { etat.jetonCaptcha = 'mock-ok'; $('zoneCaptcha').textContent = ''; return; }
+        var s = document.createElement('script');
+        s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'; s.async = true;
+        s.onload = function () {
+            window.turnstile.render('#zoneCaptcha', { sitekey: C.turnstileSiteKey, callback: function (t) { etat.jetonCaptcha = t; },
+                'expired-callback': function () { etat.jetonCaptcha = null; } });
+        };
+        document.head.appendChild(s);
+    }
+
+    // ── Envoi ──
+    function erreurGlobale(msg) { var e = $('erreurGlobale'); e.textContent = msg || ''; montrer('erreurGlobale', !!msg); }
+    function afficherErreurs(erreurs) {
+        $('erreurMedicament').textContent = erreurs.medicament || ''; $('erreurQuartier').textContent = erreurs.quartier || '';
+        $('erreurTelephone').textContent = erreurs.telephone || ''; $('erreurConsentement').textContent = erreurs.consentement || '';
+    }
+    function envoyer(ev) {
+        ev.preventDefault();
+        erreurGlobale('');
+        var v = { medicament_id: etat.medicament ? etat.medicament.id : null, quartier_id: $('champQuartier').value, urgence: valeurRadio('urgence'),
+            canal: valeurRadio('canal'), telephone: $('champTelephone').value, consentement: $('champConsentement').checked };
+        var r = U.validerFormulaire(v);
+        afficherErreurs(r.erreurs);
+        if (!r.ok) return;
+        if (!etat.jetonCaptcha) { erreurGlobale(U.messageErreur('captcha_invalide')); return; }
+        var corps = U.construireCorps(v, etat.jetonCaptcha);
+        var bouton = $('boutonEnvoyer'); bouton.disabled = true; bouton.textContent = 'Envoi…';
+        fetch(C.apiBase + '/functions/v1/creer-alerte', { method: 'POST', headers: { 'content-type': 'application/json', apikey: C.anonKey }, body: JSON.stringify(corps) })
+            .then(function (rep) { return rep.json().catch(function () { return {}; }).then(function (json) { return { ok: rep.ok, json: json }; }); })
+            .then(function (res) {
+                bouton.disabled = false; bouton.textContent = 'Lancer la recherche';
+                if (!res.ok) { erreurGlobale(U.messageErreur(res.json.erreur)); if (window.turnstile) window.turnstile.reset(); etat.jetonCaptcha = C.turnstileSiteKey ? null : 'mock-ok'; return; }
+                etat.suivi = res.json;
+                history.pushState({}, '', '/alerte/' + res.json.id_public);
+                afficherSuivi(res.json.id_public);
+            })
+            .catch(function () { bouton.disabled = false; bouton.textContent = 'Lancer la recherche'; erreurGlobale('Connexion impossible. Vérifiez votre réseau et réessayez.'); });
+    }
+
+    // ── Suivi (rafraîchi toutes les 15 s) ──
+    function afficherSuivi(id) {
+        montrer('vueFormulaire', false); montrer('vueSuivi', true);
+        if (etat.suivi && etat.suivi.lien_telegram) { var a = $('lienTelegram'); a.href = etat.suivi.lien_telegram; montrer('lienTelegram', true); }
+        var tick = function () {
+            fetch(C.apiBase + '/functions/v1/suivi-alerte?id=' + encodeURIComponent(id), { headers: { apikey: C.anonKey } })
+                .then(function (rep) { if (rep.status === 404) { $('suiviEtat').textContent = 'Demande introuvable.'; arreter(); return null; } return rep.json(); })
+                .then(function (s) { if (s) rendreSuivi(s); })
+                .catch(function () { /* réseau instable : on réessaie au prochain tour */ });
+        };
+        tick(); etat.minuteur = setInterval(tick, 15000);
+    }
+    function arreter() { if (etat.minuteur) { clearInterval(etat.minuteur); etat.minuteur = null; } }
+    function rendreSuivi(s) {
+        $('suiviMedicament').textContent = (s.medicament || 'Médicament à identifier') + (s.quartier ? ' — ' + s.quartier : '');
+        $('suiviEtat').textContent = U.libelleStatut(s.statut) || s.libelle || '';
+        montrer('suiviOrdonnance', s.sur_ordonnance === true);
+        var zone = $('suiviPharmacies'); zone.textContent = '';
+        (s.pharmacies || []).forEach(function (p) {
+            var d = document.createElement('div'); d.className = 'pharma';
+            var n = document.createElement('strong'); n.textContent = p.nom || 'Pharmacie';
+            var l = document.createElement('span'); l.textContent = (p.prix_fcfa ? p.prix_fcfa + ' FCFA' : '') + (p.quartier ? ' — ' + p.quartier : '') + (p.telephone ? ' — Tél ' + p.telephone : '');
+            d.appendChild(n); d.appendChild(l); zone.appendChild(d);
+        });
+        if (s.pharmacies && s.pharmacies.length) { var note = document.createElement('p'); note.className = 'note'; note.textContent = 'Prix confirmés par les pharmacies. Appelez avant de vous déplacer.'; zone.appendChild(note); }
+        if (U.suiviTermine(s.statut)) { arreter(); $('suiviNote').textContent = ''; }
+    }
+
+    // ── Init ──
+    $('champMedicament').addEventListener('input', function () { clearTimeout(timerRecherche); timerRecherche = setTimeout(chercher, 250); });
+    Array.prototype.forEach.call(document.querySelectorAll('input[name=canal]'), function (r) {
+        r.addEventListener('change', function () { var c = valeurRadio('canal'); montrer('blocSms', c === 'sms'); montrer('noteTelegram', c === 'telegram'); });
+    });
+    $('formulaire').addEventListener('submit', envoyer);
+    chargerQuartiers(); initCaptcha();
+    var idUrl = U.idDepuisChemin(location.pathname);
+    if (idUrl) afficherSuivi(idUrl);
+    return { _etat: etat };
+})();
+</script>
+</body>
+</html>
