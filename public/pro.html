@@ -169,6 +169,15 @@
         @keyframes spin { to { transform: rotate(360deg); } }
 
         /* Toast */
+        .onb-carte { background:#fff; border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:16px; }
+        .onb-barre { height:8px; background:#eef0f2; border-radius:4px; overflow:hidden; margin:8px 0 12px; }
+        .onb-barre > div { height:100%; background:#1b7a3d; transition:width .3s; }
+        .onb-tache { display:flex; gap:10px; align-items:flex-start; padding:8px 0; border-top:1px solid #f0f0f0; font-size:14px; }
+        .onb-tache .pastille { flex:none; width:22px; height:22px; border-radius:50%; border:2px solid var(--border); text-align:center; line-height:18px; font-size:13px; }
+        .onb-tache.fait .pastille { background:#1b7a3d; border-color:#1b7a3d; color:#fff; }
+        .onb-tache .corps { flex:1; } .onb-tache .aide { color:var(--text-muted); font-size:12px; }
+        .onb-tache .actions { margin-top:6px; display:flex; gap:6px; flex-wrap:wrap; }
+        .onb-mdp input { padding:8px 10px; border:1px solid var(--border); border-radius:8px; margin:4px 6px 4px 0; }
         .console-pastille { display: inline-block; padding: 4px 12px; border-radius: 14px; background: #eef0f2; font-size: 12px; font-weight: 600; margin: 0 6px 6px 0; }
         #consoleIndicateurs { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
         .console-carte { border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 13px; }
@@ -250,6 +259,9 @@
 <!-- ===== DASHBOARD ===== -->
 <div id="dashboardSection" class="dashboard">
     <div class="dash-container">
+        <!-- Checklist d'onboarding (pharmacie non publiée) -->
+        <div class="onb-carte" id="onboardingCard" style="display:none" role="region" aria-label="Checklist d'onboarding"></div>
+
         <!-- Stats Row -->
         <div class="stats-row" id="statsRow">
             <div class="stat-card">
@@ -298,8 +310,12 @@
             <div class="section-card">
                 <div class="section-header">
                     <h3>📦 Gestion des Stocks</h3>
-                    <button class="btn btn-add" onclick="ProApp.openAddStock()">+ Ajouter un médicament</button>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap">
+                        <button class="btn btn-import" id="btnConfirmerStocks" onclick="ProApp.confirmerStocks()">✅ Je confirme mes stocks aujourd'hui</button>
+                        <button class="btn btn-add" onclick="ProApp.openAddStock()">+ Ajouter un médicament</button>
+                    </div>
                 </div>
+                <p class="console-note">Dernière mise à jour : <span style="color:#1b7a3d;font-weight:600">verte</span> ≤ 3 jours, <span style="color:#b26a00;font-weight:600">orange</span> ≤ 7 jours, <span style="color:#b42318;font-weight:600">rouge</span> au-delà. Un clic sur « Je confirme mes stocks » confirme les lignes sans rien modifier.</p>
                 <div class="stock-search">
                     <input type="text" id="stockSearchInput" placeholder="Rechercher dans mes stocks..." oninput="ProApp.filterStocks()">
                 </div>
@@ -570,6 +586,7 @@
 <script src="/demo-banner.js"></script>
 <script src="/pro-utils.js"></script>
 <script src="/admin-utils.js"></script>
+<script src="/onboarding-utils.js"></script>
 <script src="/admin-alertes.js"></script>
 <script src="/admin-demandes-utils.js"></script>
 <script src="/admin-demandes.js"></script>
@@ -707,7 +724,8 @@ var ProApp = (function() {
         if (currentProfil.role === 'admin') { window.AdminAlertes.init({ sb: _sb, esc: esc, toast: showToast }); window.AdminDemandes.init({ sb: _sb, esc: esc, toast: showToast }); }
         loadStocks();
         loadStats();
-        if (currentProfil.role === 'pharmacien') chargerAlertesPharmacie();
+        document.getElementById('btnConfirmerStocks').style.display = currentProfil.role === 'pharmacien' ? '' : 'none';
+        if (currentProfil.role === 'pharmacien') { chargerAlertesPharmacie(); chargerOnboarding(); }
     }
 
     function switchTab(tabName) {
@@ -718,11 +736,102 @@ var ProApp = (function() {
         document.querySelectorAll('.tab-panel').forEach(function(p) {
             p.classList.toggle('active', p.id === 'tab-' + tabName);
         });
+        if (currentProfil && currentProfil.role === 'pharmacien') chargerOnboarding();
         if (tabName === 'pharmacy') loadPharmacyInfo();
         if (tabName === 'alerts') loadAlerts();
         if (tabName === 'classification') loadClassification();
         if (tabName === 'console' && currentProfil && currentProfil.role === 'admin') window.AdminAlertes.ouvrir();
         if (tabName === 'demandes' && currentProfil && currentProfil.role === 'admin') window.AdminDemandes.ouvrir();
+    }
+
+
+    // ── Checklist d'onboarding (SPEC 1 §5) : l'état vient de la base (etat_onboarding_mien) ──
+    var etatOnboarding = null;
+    function chargerOnboarding() {
+        if (!currentProfil || currentProfil.role !== 'pharmacien') return;
+        _sb.rpc('etat_onboarding_mien').then(function(res) {
+            if (res.error || !res.data) { document.getElementById('onboardingCard').style.display = 'none'; return; }
+            afficherOnboarding(res.data);
+        });
+    }
+    function afficherOnboarding(etat) {
+        etatOnboarding = etat;
+        var carte = document.getElementById('onboardingCard');
+        if (!OnboardingUtils.checklistVisible(etat)) { carte.style.display = 'none'; return; }
+        var taches = OnboardingUtils.tachesAffichables(etat);
+        var actions = {
+            mot_de_passe: '<div class="onb-mdp"><input type="password" id="onbMdp" placeholder="Nouveau mot de passe (10 caractères min.)" autocomplete="new-password" aria-label="Nouveau mot de passe">' +
+                '<input type="password" id="onbMdp2" placeholder="Confirmer" autocomplete="new-password" aria-label="Confirmer le mot de passe"><button class="btn btn-add" onclick="ProApp.definirMotDePasse()">Enregistrer</button></div>',
+            ma_pharmacie: '<button class="btn btn-secondary" onclick="ProApp.switchTab(\'pharmacy\')">Ouvrir Ma Pharmacie</button>' +
+                '<button class="btn btn-add" onclick="ProApp.confirmerPosition()">📍 Je confirme la position de mon officine</button>',
+            telegram: '<button class="btn btn-add" onclick="ProApp.switchTab(\'alerts\')">Activer Telegram</button>' +
+                '<button class="btn btn-secondary" onclick="ProApp.sansTelegram()">Je n\'utilise pas Telegram</button>',
+            import: '<button class="btn btn-secondary" onclick="ProApp.switchTab(\'import\')">Importer un fichier</button><button class="btn btn-secondary" onclick="ProApp.switchTab(\'stocks\')">Ajouter à la main</button>',
+            confirmation: '<button class="btn btn-import" onclick="ProApp.confirmerStocks()">✅ Je confirme mes stocks</button>',
+            seuil: '<button class="btn btn-secondary" onclick="ProApp.switchTab(\'stocks\')">Voir mes stocks</button>'
+        };
+        var prochaine = OnboardingUtils.prochaineTache(etat);
+        var pct = OnboardingUtils.progression(etat);
+        var msg = OnboardingUtils.messagePublication(etat);
+        carte.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px"><strong>🚀 Mise en route de votre pharmacie</strong>' +
+            '<span style="font-size:13px;color:var(--text-muted)">' + esc(etat.faits) + ' / ' + esc(etat.total) + ' étapes</span></div>' +
+            '<div class="onb-barre" role="progressbar" aria-valuenow="' + pct + '" aria-valuemin="0" aria-valuemax="100"><div style="width:' + pct + '%"></div></div>' +
+            (msg ? '<div style="background:#eef4fb;border-radius:8px;padding:8px 12px;font-size:13px;margin-bottom:8px">' + esc(msg) + '</div>' : '') +
+            taches.map(function(t) {
+                var montrer = prochaine && prochaine.cle === t.cle;
+                return '<div class="onb-tache' + (t.fait ? ' fait' : '') + '"><div class="pastille">' + (t.fait ? '✓' : '') + '</div><div class="corps">' +
+                    '<strong>' + esc(t.titre) + '</strong>' + (t.detail ? ' <span style="font-size:12px">— ' + esc(t.detail) + '</span>' : '') +
+                    '<div class="aide">' + esc(t.aide) + '</div>' +
+                    ((montrer || (!t.fait && t.cle === 'telegram')) && !t.fait ? '<div class="actions">' + (actions[t.cle] || '') + '</div>' : '') +
+                    (t.fait && t.cle === 'telegram' && etat.items[2] && etat.items[2].sans_telegram ? '<div class="actions"><button class="btn btn-secondary" onclick="ProApp.avecTelegram()">Finalement, activer Telegram</button></div>' : '') +
+                    '</div></div>';
+            }).join('');
+        carte.style.display = '';
+    }
+    function marquerOnboarding(cle, valeur, messageOk) {
+        return _sb.rpc('onboarding_marquer', { p_cle: cle, p_valeur: valeur }).then(function(res) {
+            if (res.error) { showToast(res.error.message, 'error'); return null; }
+            if (messageOk) showToast(messageOk);
+            afficherOnboarding(res.data); return res.data;
+        });
+    }
+    function definirMotDePasse() {
+        var mdp = document.getElementById('onbMdp').value, conf = document.getElementById('onbMdp2').value;
+        var err = OnboardingUtils.erreurMotDePasse(mdp, conf);
+        if (err) { showToast(err, 'error'); return; }
+        _sb.auth.updateUser({ password: mdp }).then(function(res) {
+            if (res.error) { showToast('Mot de passe refusé : ' + res.error.message, 'error'); return; }
+            marquerOnboarding('mot_de_passe_defini', true, 'Mot de passe enregistré ✅');
+        });
+    }
+    function confirmerPosition() {
+        if (!window.confirm('Confirmez-vous que la position enregistrée correspond bien à votre officine ?')) return;
+        marquerOnboarding('gps_confirme', true, 'Position confirmée ✅');
+    }
+    function sansTelegram() {
+        if (!window.confirm('Sans Telegram, vous recevrez les demandes par SMS et dans l\'Espace Pro, avec une réactivité moindre. Continuer ?')) return;
+        marquerOnboarding('sans_telegram', true);
+    }
+    function avecTelegram() { marquerOnboarding('sans_telegram', false).then(function() { switchTab('alerts'); }); }
+    function confirmerStocks() {
+        var bouton = document.getElementById('btnConfirmerStocks');
+        if (bouton) bouton.disabled = true;
+        _sb.rpc('confirmer_mes_stocks').then(function(res) {
+            if (bouton) bouton.disabled = false;
+            if (res.error) { showToast(res.error.message, 'error'); return; }
+            var r = res.data || {};
+            if (!r.confirmes) { showToast('Aucun stock à confirmer : ajoutez d\'abord vos médicaments.', 'error'); return; }
+            showToast(r.confirmes + ' stock(s) confirmé(s) ✅' + (r.publiee ? ' — votre pharmacie est maintenant publiée 🎉' : ''));
+            afficherOnboarding(r.etat); loadStocks();
+        });
+    }
+    function reevaluerPublication() {
+        if (!currentProfil || currentProfil.role !== 'pharmacien') return;
+        _sb.rpc('reevaluer_ma_publication').then(function(res) {
+            if (res.error || !res.data) return;
+            if (res.data.publiee) showToast('Votre pharmacie est maintenant publiée 🎉');
+            afficherOnboarding(res.data.etat);
+        });
     }
 
     // ── Classification du catalogue (admin) ──
@@ -896,7 +1005,7 @@ var ProApp = (function() {
                 '<td style="font-weight:600">' + fmtPrice(s.prix_fcfa) + '</td>' +
                 '<td><span class="stock-badge ' + (s.en_stock ? 'in-stock' : 'out-stock') + '">' +
                     (s.en_stock ? '✅ En stock' : '❌ Rupture') + '</span></td>' +
-                '<td style="font-size:12px;color:var(--text-muted)">' + timeAgo(s.date_maj) + '</td>' +
+                '<td style="font-size:12px;font-weight:600;color:' + OnboardingUtils.couleurCss(OnboardingUtils.couleurFraicheur(s.confirme_le || s.date_maj)) + '">' + timeAgo(s.confirme_le || s.date_maj) + '</td>' +
                 '<td><div class="stock-actions">' +
                     '<button class="btn btn-edit" onclick="ProApp.editStock(\'' + s.id + '\')">✏️</button>' +
                     '<button class="btn btn-delete" onclick="ProApp.deleteStock(\'' + s.id + '\', \'' + esc(med.nom || '') + '\')">🗑️</button>' +
@@ -1030,6 +1139,7 @@ var ProApp = (function() {
             closeModal();
             loadStocks();
             loadStats();
+            reevaluerPublication();
         });
     }
 
@@ -1407,6 +1517,7 @@ var ProApp = (function() {
                     cancelImport();
                     loadStocks();
                     loadStats();
+                    reevaluerPublication();
                 });
         });
     }
@@ -1461,6 +1572,11 @@ var ProApp = (function() {
         validerClassification: validerClassification,
         passerEnProduction: passerEnProduction,
         loadStocks: loadStocks,
+        definirMotDePasse: definirMotDePasse,
+        confirmerPosition: confirmerPosition,
+        sansTelegram: sansTelegram,
+        avecTelegram: avecTelegram,
+        confirmerStocks: confirmerStocks,
         filterStocks: filterStocks,
         openAddStock: openAddStock,
         editStock: editStock,

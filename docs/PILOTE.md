@@ -16,7 +16,8 @@ Ce document fait le point avant le test avec les pharmaciens (sans SMS : l'adapt
 | Classification des 20 DCI | **décision du propriétaire / pharmacien validateur** (`demo_classification.csv`) |
 | Archivage des anciennes fiches de test | script prêt (`supabase/ops/archiver_anciennes_fiches_test*.sql`), à exécuter par le propriétaire |
 | Pré-inscription publique, justificatifs, doublons, file de vérification + checklist, décisions, invitation 72 h, compléments (SPEC 1 §3–4, activation §5) | livré (étape 1 d'onboarding), non encore joué en production |
-| Checklist d'onboarding dans l'Espace Pro, import CSV guidé avec annulation 24 h, « Je confirme mes stocks », règle de publication, rappels (SPEC 1 §5–5.3) | **à venir** (étapes suivantes) : en attendant, l'admin publie à la main et l'ancien écran d'import reste en service |
+| Checklist d'onboarding dans l'Espace Pro, « Je confirme mes stocks », code couleur de fraîcheur, règle de publication automatique (SPEC 1 §5, §5.2, §1) | livré (étape 2), non encore joué en production |
+| Import CSV guidé avec rapprochement et annulation 24 h, rappels J+1/J+3/J+7, création en masse des 52 pharmacies (SPEC 1 §5.1, §5.3, §4) | **à venir** : en attendant, l'ancien écran d'import reste en service |
 
 Conséquence pour le pilote : pas de parcours d'inscription autonome des pharmacies. Seule une pharmacie `verifie` est éligible au routage.
 

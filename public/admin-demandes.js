@@ -66,6 +66,8 @@ window.AdminDemandes = (function () {
                 '<tr><th>N° d\'Ordre</th><td>' + esc(dem.numero_ordre) + '</td></tr>' +
                 '<tr><th>Position</th><td>' + (dem.latitude !== null && dem.longitude !== null ? '<a target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps?q=' + esc(dem.latitude) + ',' + esc(dem.longitude) + '">' + esc(dem.latitude) + ', ' + esc(dem.longitude) + '</a>' : 'non renseignée') + '</td></tr>' +
                 '<tr><th>Garde</th><td>' + (dem.participe_garde ? 'oui' : 'non') + '</td></tr></tbody></table>' +
+                (d.onboarding ? '<h5 style="margin:12px 0 6px">Mise en route de la pharmacie (' + esc(d.onboarding.faits) + ' / ' + esc(d.onboarding.total) + ') — ' + (d.onboarding.est_publiee ? 'publiée' : 'non publiée') + '</h5>' +
+                    '<div class="console-note">' + window.OnboardingUtils.tachesAffichables(d.onboarding).map(function (t) { return (t.fait ? '✅ ' : '⬜ ') + esc(t.titre) + (t.detail ? ' — ' + esc(t.detail) : ''); }).join('<br>') + '</div>' : '') +
                 '<h5 style="margin:12px 0 6px">Justificatifs</h5>' +
                 (d.documents.length ? d.documents.map(function (x) {
                     return '<div><button class="btn btn-secondary" onclick="AdminDemandes.voirDocument(\'' + esc(x.id) + '\')">📄 ' + esc(U.libelleNature(x.nature)) + '</button> <span class="console-note">' + Math.round(x.taille_octets / 1024) + ' Ko</span></div>';

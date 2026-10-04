@@ -452,7 +452,8 @@ function|admin_basculer_checklist(p_id uuid, p_element text, p_coche boolean)|re
 function|admin_bloquer_patient(p_alerte_id uuid, p_motif text)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=29098b54a961a4103f4c754e0eef7e55
 function|admin_cloturer_alerte(p_alerte_id uuid)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=5d0936a1ce91a7588cb2344e684763ec
 function|admin_demarrer_revue(p_id uuid)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=b54939a162ac5635263e38030466380c
-function|admin_detail_demande(p_id uuid)|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=6c3d47066a3f929650226fc8771bc87f
+function|admin_detail_demande(p_id uuid)|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=d5e20f616d4f78b069e11aedc4d870fd
+function|admin_etat_onboarding(p_pharmacie uuid)|returns=jsonb lang=plpgsql security=definer volatility=s config=search_path=public body=688484009cbae71a4212366b806a4d96
 function|admin_liste_contacts(p_limite integer)|returns=TABLE(contact_id uuid, pharmacie_id uuid, pharmacie_nom text, pharmacie_est_demo boolean, canal text, adresse_masquee text, est_contact_demo boolean, verifie boolean, desabonne boolean, bloque boolean) lang=plpgsql security=definer volatility=s config=search_path=public body=c21a3d9493539213846d5d91643be6f2
 function|admin_lister_demandes(p_statut text, p_doublons boolean)|returns=TABLE(id uuid, statut text, nom_pharmacie text, quartier text, nom_titulaire text, doublon_suspect boolean, est_demo boolean, cree_le timestamp with time zone, age_heures integer, en_retard boolean, cases_cochees integer, nb_documents integer) lang=plpgsql security=definer volatility=s config=search_path=public body=5a0962c176c644a2e4ccc2e6b2b4d17a
 function|admin_marquer_contact_demo(p_contact_id uuid, p_demo boolean)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=9b4193722111df1771deff4a1c7c2f23
@@ -466,6 +467,7 @@ function|alertes_stock_avant_insertion()|returns=trigger lang=plpgsql security=d
 function|annuler_alerte_interne(p_alerte_id uuid)|returns=void lang=sql security=definer volatility=v config=search_path=public body=4748c36bc74a2a5c5b853341a7f7ff28
 function|auth_pharmacie_id()|returns=uuid lang=sql security=definer volatility=s config=search_path=public body=b66d1a570fd45eb7602cadb4ed4add95
 function|auth_role()|returns=text lang=sql security=definer volatility=s config=search_path=public body=595b2f0025ac8ab39e052499fb9a94bd
+function|calculer_onboarding(p_pharmacie uuid)|returns=jsonb lang=plpgsql security=definer volatility=s config=search_path=public body=bc98f63bb48995a62651ef8f954024c3
 function|changer_abonnement_contact(p_contact_id uuid, p_abonne boolean)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=bdd6dfc891a0274ee913f0385b0d7c28
 function|chiffres_telephone(p text)|returns=text lang=sql security=invoker volatility=i config=- body=48661a45902799720adb3e4e441c4f3f
 function|chronologie_alerte(p_alerte_id uuid)|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=2923b4e629afcaba1c0585832202298c
@@ -475,6 +477,7 @@ function|config_routage_interdit_suppression_mode()|returns=trigger lang=plpgsql
 function|config_routage_journal()|returns=trigger lang=plpgsql security=definer volatility=v config=search_path=public body=f11e904f97a480693cd7d3c2a9f1367e
 function|config_routage_valider()|returns=trigger lang=plpgsql security=invoker volatility=v config=search_path=public body=6e4b2d481045c4dc626fe644809473e7
 function|config_routage_verrou()|returns=trigger lang=plpgsql security=definer volatility=v config=search_path=public body=88c8c4e14d738e17bd39a820d50686ab
+function|confirmer_mes_stocks()|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=c340455c39d718830decf090f03f7b71
 function|consommer_jeton_activation_interne(p_hash text)|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=2ad5534e7af66134673453819257da1d
 function|consommer_jeton_telegram(p_hash text)|returns=TABLE(objet text, ref_id uuid) lang=sql security=definer volatility=v config=search_path=public body=3fe77b3f33283e2e9ddd7fedb4a0cea0
 function|creer_alerte_routage(p_id_public text, p_medicament_id uuid, p_requete_brute text, p_quartier_id uuid, p_lat numeric, p_lng numeric, p_urgence text, p_canal_patient text, p_contact_chiffre bytea, p_empreinte_patient text, p_empreinte_ip text, p_consentement boolean, p_expire_le timestamp with time zone)|returns=TABLE(alerte_id uuid, id_public text, statut text, raison_revue text, fusionnee boolean, refus text) lang=plpgsql security=definer volatility=v config=search_path=public body=5652bacce8c8224d01cd73729fc93a43
@@ -485,9 +488,12 @@ function|deposer_complements_interne(p_hash text, p_message text, p_documents js
 function|desabonner_telegram(p_chat_id text)|returns=integer lang=sql security=definer volatility=v config=search_path=public body=c56ea7f564f80a36ace9bb83eb3d184e
 function|donnees_routage_pharmacies(p_medicament_id uuid)|returns=jsonb lang=sql security=definer volatility=s config=search_path=public body=efc05d768c4ce76b92d094d8588ac9bb
 function|enregistrer_reponse_alerte(p_envoi_id uuid, p_reponse text, p_prix integer, p_canal text, p_utilisateur uuid)|returns=TABLE(resultat text, alerte_id uuid, pharmacie_id uuid, medicament_id uuid, reponse text, prix_fcfa integer, repondu_le timestamp with time zone, stock_mis_a_jour boolean) lang=plpgsql security=definer volatility=v config=search_path=public body=62b003da25bb42b6b9bc7e8cc9a10f4a
-function|erreur_valeur_config(p_cle text, p_val jsonb)|returns=text lang=plpgsql security=invoker volatility=i config=- body=0b7882b56133144bff6918c55126d4ec
+function|erreur_valeur_config(p_cle text, p_val jsonb)|returns=text lang=plpgsql security=invoker volatility=i config=- body=b75c1b24cb825fc063af27142aa9702b
 function|etat_budget_messages()|returns=jsonb lang=plpgsql security=definer volatility=s config=search_path=public body=0c1eda00fd0c3c092681dec636e6e69e
+function|etat_onboarding_mien()|returns=jsonb lang=plpgsql security=definer volatility=s config=search_path=public body=47a8a06d7e8843069e6e6cafde428836
+function|evaluer_publication_interne(p_pharmacie uuid)|returns=boolean lang=plpgsql security=definer volatility=v config=search_path=public body=39daa766e79dcda48bd5944cc62e05c0
 function|exiger_admin()|returns=void lang=plpgsql security=definer volatility=s config=search_path=public body=74124668a87f9cf295660de3a39936ec
+function|exiger_pharmacien_interne()|returns=uuid lang=plpgsql security=definer volatility=s config=search_path=public body=2d5000b0c810e01a71fad19225e3aa09
 function|file_alertes_admin(p_statuts text[], p_limite integer)|returns=TABLE(id uuid, id_public text, statut text, raison_revue text, urgence text, medicament text, quartier text, cree_le timestamp with time zone, expire_le timestamp with time zone, vague integer, routage_manuel boolean, nb_envois integer, nb_reponses integer, nb_positives integer, premiere_reponse_positive_le timestamp with time zone, canal_patient text) lang=plpgsql security=definer volatility=s config=search_path=public body=249b85793fff1dbfd5c09814d47f3ebc
 function|file_messages_demo(p_limite integer)|returns=TABLE(cree_le timestamp with time zone, type_destinataire text, canal text, modele text, alerte_id uuid) lang=plpgsql security=definer volatility=s config=search_path=public body=510ff2f7d79a7d611683d52cb3cc1f72
 function|indicateurs_alertes(p_jours integer)|returns=jsonb lang=plpgsql security=definer volatility=s config=search_path=public body=c6c453460a5c844d7abd76535de751ba
@@ -501,10 +507,12 @@ function|medicaments_reset_validation()|returns=trigger lang=plpgsql security=in
 function|mode_application()|returns=text lang=sql security=definer volatility=s config=search_path=public body=f32182f71ed461de860d17fce85de9b0
 function|mode_public()|returns=text lang=sql security=definer volatility=s config=search_path=public body=0211bafd5ab9c39de32f63dc2cf6ee58
 function|normaliser_nom_pharmacie(p text)|returns=text lang=sql security=invoker volatility=i config=- body=4ae7ce60825b1e4b8c95708918ea6b22
+function|onboarding_marquer(p_cle text, p_valeur boolean)|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=25c81401277cc19414a555e143681324
 function|pharmacie_eligible_routage(p_pharmacie_id uuid)|returns=boolean lang=sql security=definer volatility=s config=search_path=public body=e9634314593cb59f87d1ff7a6fa50a0a
 function|pharmacies_proches(lat double precision, lng double precision, rayon_m integer)|returns=TABLE(id uuid, nom text, adresse text, latitude double precision, longitude double precision, distance_m double precision, est_de_garde boolean, statut statut_pharmacie, quartier_nom text) lang=sql security=invoker volatility=s config=- body=2a2c3f57ce6bec7c25f98daa6073e092
 function|protect_pharmacies_columns()|returns=trigger lang=plpgsql security=invoker volatility=v config=search_path=public body=9899877fc7960a268c09502f059f2970
 function|reclamer_notifications(p_limite integer, p_bail_s integer)|returns=SETOF notifications_outbox lang=sql security=definer volatility=v config=search_path=public body=44bebc010e5887dbd0e8078b5bd97cd0
+function|reevaluer_ma_publication()|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=068e2bbdf6a9a870c3234ba7a6826dd6
 function|reinitialiser_demo(p_nb_pharmacies integer)|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=cbc1e89a60c5ef8d26bbb75186cf680e
 function|repondre_alerte(p_envoi_id uuid, p_reponse text, p_prix integer)|returns=TABLE(resultat text, reponse text, prix_fcfa integer, repondu_le timestamp with time zone) lang=plpgsql security=definer volatility=v config=search_path=public body=780569b736b12b41937c024b9f3eb34f
 function|soumettre_demande_interne(p jsonb, p_empreinte_ip text)|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=dba5cb9e946d9ff85b7cef418600676d

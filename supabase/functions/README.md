@@ -212,3 +212,23 @@ Migration `20261011000000_onboarding_demandes.sql` (à exécuter à la main, apr
 - En **mode démo**, les emails du candidat ne partent pas en vrai (destinataire hors liste blanche : « aurait été envoyé ») ; la console renvoie alors à l'admin le lien d'activation / de compléments pour rejouer le parcours. En production, jamais.
 
 Limites connues de cette étape : pas de repère déplaçable sur carte (bouton « Utiliser ma position » seulement) ; SLA calculé en heures calendaires ; pas de SMS (adaptateur SMS reporté) ; pièce d'identité du titulaire non demandée (point ouvert SPEC 1 §11) ; pas de rappels J+1/J+3/J+7 (étape suivante).
+
+## Onboarding des officines — étape 2 : checklist de l'Espace Pro et règle de publication (SPEC 1 §1, §5, §5.2)
+
+Migration `20261012000000_onboarding_checklist.sql` (à exécuter à la main, après `20261011000000`). Aucune Edge Function : tout passe par des fonctions SQL qui vérifient le rôle.
+
+| Fonction | Rôle |
+|---|---|
+| `etat_onboarding_mien()` | état calculé en base (6 tâches) de MA pharmacie ; refusé à tout autre rôle |
+| `onboarding_marquer(cle, valeur)` | marqueurs déclaratifs : `mot_de_passe_defini`, `gps_confirme` (confirme la position, ne la modifie jamais : le GPS reste réservé à l'admin), `sans_telegram` (annulable) |
+| `confirmer_mes_stocks()` | « Je confirme mes stocks » : `confirme_le = now()` sur les lignes non archivées de MA pharmacie, sans toucher aux prix ni aux statuts |
+| `reevaluer_ma_publication()` | appelée après un ajout ou un import de stock |
+| `admin_etat_onboarding(id)` | état de n'importe quelle pharmacie ; affiché dans le détail d'une demande approuvée |
+
+**Règle de publication** (une seule fonction, `evaluer_publication_interne`, la seule à écrire `est_publiee`) : publiée si `statut = 'verifie'` **et** les 6 tâches faites **et** au moins `publication_min_items_frais` (10) stocks confirmés depuis moins de `publication_fraicheur_jours` (7). Les deux réglages sont modifiables dans la console (validés par `erreur_valeur_config`). Une pharmacie non vérifiée n'est jamais publiée, même avec 6/6. Un pharmacien ne peut pas se publier lui-même (colonne protégée, testé).
+
+Choix à connaître :
+- Tâche « Importer mes stocks » : critère **provisoire** = au moins un stock enregistré (import ou ajout manuel). Elle passera à « au moins un import validé » avec l'import guidé (étape suivante).
+- Pas de dépublication automatique quand les stocks vieillissent : les rappels et le statut `dormante` (SPEC 1 §5.3) arrivent plus tard ; en attendant, l'admin dépublie à la main.
+- La date de dernière mise à jour des stocks est colorée (vert ≤ 3 j, orange ≤ 7 j, rouge au-delà).
+- Le mot de passe est défini par `supabase.auth.updateUser` (10 caractères au moins, contrôle côté navigateur ; la politique de Supabase Auth s'applique en plus). Le marqueur n'est qu'un repère d'avancement.
