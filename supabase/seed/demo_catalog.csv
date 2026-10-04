@@ -1,2 +1,238 @@
-dci,brand_name,strength,form,pack_size,requires_prescription,restricted
-,Exemple restreint (démo),,fictif,,false,true
+dci,brand_name,strength,form,pack_size,requires_prescription,restricted,category
+Artéméther + Luméfantrine,Artéméther + Luméfantrine Brand1 capsule,250 mg,capsule,,,,Antipaludéens
+Artéméther + Luméfantrine,Artéméther + Luméfantrine Brand2 comprimé,500 mg,comprimé,,,,Antipaludéens
+Artéméther + Luméfantrine,Artéméther + Luméfantrine Brand3 capsule,750 mg,capsule,,,,Antipaludéens
+Artéméther + Luméfantrine,Artéméther + Luméfantrine Brand1 comprimé,250 mg,comprimé,,,,Antipaludéens
+Artéméther + Luméfantrine,Artéméther + Luméfantrine Brand2 suspension,500 mg,suspension,,,,Antipaludéens
+Artéméther + Luméfantrine,Artéméther + Luméfantrine Brand3 comprimé,750 mg,comprimé,,,,Antipaludéens
+Artéméther + Luméfantrine,Artéméther + Luméfantrine Brand1 suspension,250 mg,suspension,,,,Antipaludéens
+Artéméther + Luméfantrine,Artéméther + Luméfantrine Brand2 capsule,500 mg,capsule,,,,Antipaludéens
+Artéméther + Luméfantrine,Artéméther + Luméfantrine Brand3 sirop,750 mg,sirop,,,,Antipaludéens
+Artéméther + Luméfantrine,Artéméther + Luméfantrine Brand2 sirop,500 mg,sirop,,,,Antipaludéens
+Artéméther + Luméfantrine,Artéméther + Luméfantrine Brand1 sirop,250 mg,sirop,,,,Antipaludéens
+Artéméther + Luméfantrine,Artéméther + Luméfantrine Brand3 suspension,750 mg,suspension,,,,Antipaludéens
+Paracétamol,Paracétamol Brand1 capsule,250 mg,capsule,,,,Analgésiques
+Paracétamol,Paracétamol Brand2 comprimé,500 mg,comprimé,,,,Analgésiques
+Paracétamol,Paracétamol Brand3 sirop,750 mg,sirop,,,,Analgésiques
+Paracétamol,Paracétamol Brand1 sirop,250 mg,sirop,,,,Analgésiques
+Paracétamol,Paracétamol Brand2 sirop,500 mg,sirop,,,,Analgésiques
+Paracétamol,Paracétamol Brand3 capsule,750 mg,capsule,,,,Analgésiques
+Paracétamol,Paracétamol Brand2 suspension,500 mg,suspension,,,,Analgésiques
+Paracétamol,Paracétamol Brand1 comprimé,250 mg,comprimé,,,,Analgésiques
+Paracétamol,Paracétamol Brand1 suspension,250 mg,suspension,,,,Analgésiques
+Paracétamol,Paracétamol Brand2 capsule,500 mg,capsule,,,,Analgésiques
+Paracétamol,Paracétamol Brand3 comprimé,750 mg,comprimé,,,,Analgésiques
+Paracétamol,Paracétamol Brand3 suspension,750 mg,suspension,,,,Analgésiques
+Ibuprofène,Ibuprofène Brand1 sirop,250 mg,sirop,,,,Analgésiques
+Ibuprofène,Ibuprofène Brand2 sirop,500 mg,sirop,,,,Analgésiques
+Ibuprofène,Ibuprofène Brand3 sirop,750 mg,sirop,,,,Analgésiques
+Ibuprofène,Ibuprofène Brand1 comprimé,250 mg,comprimé,,,,Analgésiques
+Ibuprofène,Ibuprofène Brand2 comprimé,500 mg,comprimé,,,,Analgésiques
+Ibuprofène,Ibuprofène Brand3 comprimé,750 mg,comprimé,,,,Analgésiques
+Ibuprofène,Ibuprofène Brand1 suspension,250 mg,suspension,,,,Analgésiques
+Ibuprofène,Ibuprofène Brand2 suspension,500 mg,suspension,,,,Analgésiques
+Ibuprofène,Ibuprofène Brand3 suspension,750 mg,suspension,,,,Analgésiques
+Ibuprofène,Ibuprofène Brand3 capsule,750 mg,capsule,,,,Analgésiques
+Ibuprofène,Ibuprofène Brand1 capsule,250 mg,capsule,,,,Analgésiques
+Ibuprofène,Ibuprofène Brand2 capsule,500 mg,capsule,,,,Analgésiques
+Amoxicilline,Amoxicilline Brand1 suspension,250 mg,suspension,,,,Antibiotiques
+Amoxicilline,Amoxicilline Brand2 comprimé,500 mg,comprimé,,,,Antibiotiques
+Amoxicilline,Amoxicilline Brand3 suspension,750 mg,suspension,,,,Antibiotiques
+Amoxicilline,Amoxicilline Brand1 sirop,250 mg,sirop,,,,Antibiotiques
+Amoxicilline,Amoxicilline Brand2 sirop,500 mg,sirop,,,,Antibiotiques
+Amoxicilline,Amoxicilline Brand3 capsule,750 mg,capsule,,,,Antibiotiques
+Amoxicilline,Amoxicilline Brand2 suspension,500 mg,suspension,,,,Antibiotiques
+Amoxicilline,Amoxicilline Brand3 sirop,750 mg,sirop,,,,Antibiotiques
+Amoxicilline,Amoxicilline Brand1 comprimé,250 mg,comprimé,,,,Antibiotiques
+Amoxicilline,Amoxicilline Brand1 capsule,250 mg,capsule,,,,Antibiotiques
+Amoxicilline,Amoxicilline Brand2 capsule,500 mg,capsule,,,,Antibiotiques
+Amoxicilline,Amoxicilline Brand3 comprimé,750 mg,comprimé,,,,Antibiotiques
+Fer + Acide Folique,Fer + Acide Folique Brand1 capsule,250 mg,capsule,,,,Anti-anémiques
+Fer + Acide Folique,Fer + Acide Folique Brand2 comprimé,500 mg,comprimé,,,,Anti-anémiques
+Fer + Acide Folique,Fer + Acide Folique Brand3 suspension,750 mg,suspension,,,,Anti-anémiques
+Fer + Acide Folique,Fer + Acide Folique Brand1 comprimé,250 mg,comprimé,,,,Anti-anémiques
+Fer + Acide Folique,Fer + Acide Folique Brand2 suspension,500 mg,suspension,,,,Anti-anémiques
+Fer + Acide Folique,Fer + Acide Folique Brand3 sirop,750 mg,sirop,,,,Anti-anémiques
+Fer + Acide Folique,Fer + Acide Folique Brand1 suspension,250 mg,suspension,,,,Anti-anémiques
+Fer + Acide Folique,Fer + Acide Folique Brand3 capsule,750 mg,capsule,,,,Anti-anémiques
+Fer + Acide Folique,Fer + Acide Folique Brand3 comprimé,750 mg,comprimé,,,,Anti-anémiques
+Fer + Acide Folique,Fer + Acide Folique Brand1 sirop,250 mg,sirop,,,,Anti-anémiques
+Fer + Acide Folique,Fer + Acide Folique Brand2 capsule,500 mg,capsule,,,,Anti-anémiques
+Fer + Acide Folique,Fer + Acide Folique Brand2 sirop,500 mg,sirop,,,,Anti-anémiques
+Artésunate + Amodiaquine,Artésunate + Amodiaquine Brand1 sirop,250 mg,sirop,,,,Antipaludéens
+Artésunate + Amodiaquine,Artésunate + Amodiaquine Brand2 comprimé,500 mg,comprimé,,,,Antipaludéens
+Artésunate + Amodiaquine,Artésunate + Amodiaquine Brand3 suspension,750 mg,suspension,,,,Antipaludéens
+Artésunate + Amodiaquine,Artésunate + Amodiaquine Brand1 suspension,250 mg,suspension,,,,Antipaludéens
+Artésunate + Amodiaquine,Artésunate + Amodiaquine Brand3 sirop,750 mg,sirop,,,,Antipaludéens
+Artésunate + Amodiaquine,Artésunate + Amodiaquine Brand2 capsule,500 mg,capsule,,,,Antipaludéens
+Artésunate + Amodiaquine,Artésunate + Amodiaquine Brand3 capsule,750 mg,capsule,,,,Antipaludéens
+Artésunate + Amodiaquine,Artésunate + Amodiaquine Brand1 capsule,250 mg,capsule,,,,Antipaludéens
+Artésunate + Amodiaquine,Artésunate + Amodiaquine Brand1 comprimé,250 mg,comprimé,,,,Antipaludéens
+Artésunate + Amodiaquine,Artésunate + Amodiaquine Brand3 comprimé,750 mg,comprimé,,,,Antipaludéens
+Artésunate + Amodiaquine,Artésunate + Amodiaquine Brand2 sirop,500 mg,sirop,,,,Antipaludéens
+Artésunate + Amodiaquine,Artésunate + Amodiaquine Brand2 suspension,500 mg,suspension,,,,Antipaludéens
+Augmentin (Amoxicilline + Ac. Clavulanique),Augmentin (Amoxicilline + Ac. Clavulanique) Brand1 suspension,250 mg,suspension,,,,Antibiotiques
+Augmentin (Amoxicilline + Ac. Clavulanique),Augmentin (Amoxicilline + Ac. Clavulanique) Brand2 suspension,500 mg,suspension,,,,Antibiotiques
+Augmentin (Amoxicilline + Ac. Clavulanique),Augmentin (Amoxicilline + Ac. Clavulanique) Brand3 sirop,750 mg,sirop,,,,Antibiotiques
+Augmentin (Amoxicilline + Ac. Clavulanique),Augmentin (Amoxicilline + Ac. Clavulanique) Brand2 capsule,500 mg,capsule,,,,Antibiotiques
+Augmentin (Amoxicilline + Ac. Clavulanique),Augmentin (Amoxicilline + Ac. Clavulanique) Brand1 capsule,250 mg,capsule,,,,Antibiotiques
+Augmentin (Amoxicilline + Ac. Clavulanique),Augmentin (Amoxicilline + Ac. Clavulanique) Brand3 comprimé,750 mg,comprimé,,,,Antibiotiques
+Augmentin (Amoxicilline + Ac. Clavulanique),Augmentin (Amoxicilline + Ac. Clavulanique) Brand1 sirop,250 mg,sirop,,,,Antibiotiques
+Augmentin (Amoxicilline + Ac. Clavulanique),Augmentin (Amoxicilline + Ac. Clavulanique) Brand2 sirop,500 mg,sirop,,,,Antibiotiques
+Augmentin (Amoxicilline + Ac. Clavulanique),Augmentin (Amoxicilline + Ac. Clavulanique) Brand3 suspension,750 mg,suspension,,,,Antibiotiques
+Augmentin (Amoxicilline + Ac. Clavulanique),Augmentin (Amoxicilline + Ac. Clavulanique) Brand1 comprimé,250 mg,comprimé,,,,Antibiotiques
+Augmentin (Amoxicilline + Ac. Clavulanique),Augmentin (Amoxicilline + Ac. Clavulanique) Brand3 capsule,750 mg,capsule,,,,Antibiotiques
+Augmentin (Amoxicilline + Ac. Clavulanique),Augmentin (Amoxicilline + Ac. Clavulanique) Brand2 comprimé,500 mg,comprimé,,,,Antibiotiques
+Azithromycine,Azithromycine Brand1 suspension,250 mg,suspension,,,,Antibiotiques
+Azithromycine,Azithromycine Brand2 comprimé,500 mg,comprimé,,,,Antibiotiques
+Azithromycine,Azithromycine Brand3 sirop,750 mg,sirop,,,,Antibiotiques
+Azithromycine,Azithromycine Brand1 comprimé,250 mg,comprimé,,,,Antibiotiques
+Azithromycine,Azithromycine Brand2 suspension,500 mg,suspension,,,,Antibiotiques
+Azithromycine,Azithromycine Brand3 suspension,750 mg,suspension,,,,Antibiotiques
+Azithromycine,Azithromycine Brand2 capsule,500 mg,capsule,,,,Antibiotiques
+Azithromycine,Azithromycine Brand3 comprimé,750 mg,comprimé,,,,Antibiotiques
+Azithromycine,Azithromycine Brand1 capsule,250 mg,capsule,,,,Antibiotiques
+Azithromycine,Azithromycine Brand2 sirop,500 mg,sirop,,,,Antibiotiques
+Azithromycine,Azithromycine Brand3 capsule,750 mg,capsule,,,,Antibiotiques
+Azithromycine,Azithromycine Brand1 sirop,250 mg,sirop,,,,Antibiotiques
+Captopril,Captopril Brand1 comprimé,250 mg,comprimé,,,,Cardiovasculaire
+Captopril,Captopril Brand2 suspension,500 mg,suspension,,,,Cardiovasculaire
+Captopril,Captopril Brand3 suspension,750 mg,suspension,,,,Cardiovasculaire
+Captopril,Captopril Brand1 capsule,250 mg,capsule,,,,Cardiovasculaire
+Captopril,Captopril Brand2 capsule,500 mg,capsule,,,,Cardiovasculaire
+Captopril,Captopril Brand3 capsule,750 mg,capsule,,,,Cardiovasculaire
+Captopril,Captopril Brand1 suspension,250 mg,suspension,,,,Cardiovasculaire
+Captopril,Captopril Brand2 sirop,500 mg,sirop,,,,Cardiovasculaire
+Captopril,Captopril Brand3 comprimé,750 mg,comprimé,,,,Cardiovasculaire
+Captopril,Captopril Brand2 comprimé,500 mg,comprimé,,,,Cardiovasculaire
+Captopril,Captopril Brand3 sirop,750 mg,sirop,,,,Cardiovasculaire
+Captopril,Captopril Brand1 sirop,250 mg,sirop,,,,Cardiovasculaire
+Nifédipine,Nifédipine Brand1 capsule,250 mg,capsule,,,,Cardiovasculaire
+Nifédipine,Nifédipine Brand2 sirop,500 mg,sirop,,,,Cardiovasculaire
+Nifédipine,Nifédipine Brand3 sirop,750 mg,sirop,,,,Cardiovasculaire
+Nifédipine,Nifédipine Brand1 sirop,250 mg,sirop,,,,Cardiovasculaire
+Nifédipine,Nifédipine Brand1 suspension,250 mg,suspension,,,,Cardiovasculaire
+Nifédipine,Nifédipine Brand2 suspension,500 mg,suspension,,,,Cardiovasculaire
+Nifédipine,Nifédipine Brand3 suspension,750 mg,suspension,,,,Cardiovasculaire
+Nifédipine,Nifédipine Brand3 comprimé,750 mg,comprimé,,,,Cardiovasculaire
+Nifédipine,Nifédipine Brand3 capsule,750 mg,capsule,,,,Cardiovasculaire
+Nifédipine,Nifédipine Brand1 comprimé,250 mg,comprimé,,,,Cardiovasculaire
+Nifédipine,Nifédipine Brand2 comprimé,500 mg,comprimé,,,,Cardiovasculaire
+Amlodipine,Amlodipine Brand1 sirop,250 mg,sirop,,,,Cardiovasculaire
+Amlodipine,Amlodipine Brand2 capsule,500 mg,capsule,,,,Cardiovasculaire
+Amlodipine,Amlodipine Brand3 comprimé,750 mg,comprimé,,,,Cardiovasculaire
+Amlodipine,Amlodipine Brand1 comprimé,250 mg,comprimé,,,,Cardiovasculaire
+Amlodipine,Amlodipine Brand2 suspension,500 mg,suspension,,,,Cardiovasculaire
+Amlodipine,Amlodipine Brand1 capsule,250 mg,capsule,,,,Cardiovasculaire
+Amlodipine,Amlodipine Brand1 suspension,250 mg,suspension,,,,Cardiovasculaire
+Amlodipine,Amlodipine Brand2 sirop,500 mg,sirop,,,,Cardiovasculaire
+Amlodipine,Amlodipine Brand3 suspension,750 mg,suspension,,,,Cardiovasculaire
+Amlodipine,Amlodipine Brand3 capsule,750 mg,capsule,,,,Cardiovasculaire
+Amlodipine,Amlodipine Brand3 sirop,750 mg,sirop,,,,Cardiovasculaire
+Amlodipine,Amlodipine Brand2 comprimé,500 mg,comprimé,,,,Cardiovasculaire
+Hydrochlorothiazide,Hydrochlorothiazide Brand1 capsule,250 mg,capsule,,,,Cardiovasculaire
+Hydrochlorothiazide,Hydrochlorothiazide Brand2 sirop,500 mg,sirop,,,,Cardiovasculaire
+Hydrochlorothiazide,Hydrochlorothiazide Brand3 suspension,750 mg,suspension,,,,Cardiovasculaire
+Hydrochlorothiazide,Hydrochlorothiazide Brand1 suspension,250 mg,suspension,,,,Cardiovasculaire
+Hydrochlorothiazide,Hydrochlorothiazide Brand2 suspension,500 mg,suspension,,,,Cardiovasculaire
+Hydrochlorothiazide,Hydrochlorothiazide Brand3 capsule,750 mg,capsule,,,,Cardiovasculaire
+Hydrochlorothiazide,Hydrochlorothiazide Brand2 capsule,500 mg,capsule,,,,Cardiovasculaire
+Hydrochlorothiazide,Hydrochlorothiazide Brand1 sirop,250 mg,sirop,,,,Cardiovasculaire
+Hydrochlorothiazide,Hydrochlorothiazide Brand3 sirop,750 mg,sirop,,,,Cardiovasculaire
+Hydrochlorothiazide,Hydrochlorothiazide Brand3 comprimé,750 mg,comprimé,,,,Cardiovasculaire
+Hydrochlorothiazide,Hydrochlorothiazide Brand1 comprimé,250 mg,comprimé,,,,Cardiovasculaire
+Hydrochlorothiazide,Hydrochlorothiazide Brand2 comprimé,500 mg,comprimé,,,,Cardiovasculaire
+Metformine,Metformine Brand1 comprimé,250 mg,comprimé,,,,Métabolisme (Diabète)
+Metformine,Metformine Brand2 suspension,500 mg,suspension,,,,Métabolisme (Diabète)
+Metformine,Metformine Brand3 comprimé,750 mg,comprimé,,,,Métabolisme (Diabète)
+Metformine,Metformine Brand1 sirop,250 mg,sirop,,,,Métabolisme (Diabète)
+Metformine,Metformine Brand2 sirop,500 mg,sirop,,,,Métabolisme (Diabète)
+Metformine,Metformine Brand3 suspension,750 mg,suspension,,,,Métabolisme (Diabète)
+Metformine,Metformine Brand1 capsule,250 mg,capsule,,,,Métabolisme (Diabète)
+Metformine,Metformine Brand1 suspension,250 mg,suspension,,,,Métabolisme (Diabète)
+Metformine,Metformine Brand2 comprimé,500 mg,comprimé,,,,Métabolisme (Diabète)
+Metformine,Metformine Brand3 capsule,750 mg,capsule,,,,Métabolisme (Diabète)
+Metformine,Metformine Brand2 capsule,500 mg,capsule,,,,Métabolisme (Diabète)
+Metformine,Metformine Brand3 sirop,750 mg,sirop,,,,Métabolisme (Diabète)
+Glibenclamide,Glibenclamide Brand1 suspension,250 mg,suspension,,,,Métabolisme (Diabète)
+Glibenclamide,Glibenclamide Brand2 sirop,500 mg,sirop,,,,Métabolisme (Diabète)
+Glibenclamide,Glibenclamide Brand3 capsule,750 mg,capsule,,,,Métabolisme (Diabète)
+Glibenclamide,Glibenclamide Brand1 comprimé,250 mg,comprimé,,,,Métabolisme (Diabète)
+Glibenclamide,Glibenclamide Brand2 comprimé,500 mg,comprimé,,,,Métabolisme (Diabète)
+Glibenclamide,Glibenclamide Brand3 comprimé,750 mg,comprimé,,,,Métabolisme (Diabète)
+Glibenclamide,Glibenclamide Brand1 sirop,250 mg,sirop,,,,Métabolisme (Diabète)
+Glibenclamide,Glibenclamide Brand2 suspension,500 mg,suspension,,,,Métabolisme (Diabète)
+Glibenclamide,Glibenclamide Brand1 capsule,250 mg,capsule,,,,Métabolisme (Diabète)
+Glibenclamide,Glibenclamide Brand2 capsule,500 mg,capsule,,,,Métabolisme (Diabète)
+Glibenclamide,Glibenclamide Brand3 sirop,750 mg,sirop,,,,Métabolisme (Diabète)
+Oméprazole,Oméprazole Brand1 suspension,250 mg,suspension,,,,Gastro-entérologie
+Oméprazole,Oméprazole Brand2 capsule,500 mg,capsule,,,,Gastro-entérologie
+Oméprazole,Oméprazole Brand3 sirop,750 mg,sirop,,,,Gastro-entérologie
+Oméprazole,Oméprazole Brand2 comprimé,500 mg,comprimé,,,,Gastro-entérologie
+Oméprazole,Oméprazole Brand1 comprimé,250 mg,comprimé,,,,Gastro-entérologie
+Oméprazole,Oméprazole Brand2 sirop,500 mg,sirop,,,,Gastro-entérologie
+Oméprazole,Oméprazole Brand3 comprimé,750 mg,comprimé,,,,Gastro-entérologie
+Oméprazole,Oméprazole Brand1 capsule,250 mg,capsule,,,,Gastro-entérologie
+Oméprazole,Oméprazole Brand3 suspension,750 mg,suspension,,,,Gastro-entérologie
+Oméprazole,Oméprazole Brand2 suspension,500 mg,suspension,,,,Gastro-entérologie
+Oméprazole,Oméprazole Brand3 capsule,750 mg,capsule,,,,Gastro-entérologie
+Oméprazole,Oméprazole Brand1 sirop,250 mg,sirop,,,,Gastro-entérologie
+SRO (Sels de Réhydratation Orale),SRO (Sels de Réhydratation Orale) Brand1 sirop,250 mg,sirop,,,,Réhydratation
+SRO (Sels de Réhydratation Orale),SRO (Sels de Réhydratation Orale) Brand2 suspension,500 mg,suspension,,,,Réhydratation
+SRO (Sels de Réhydratation Orale),SRO (Sels de Réhydratation Orale) Brand3 capsule,750 mg,capsule,,,,Réhydratation
+SRO (Sels de Réhydratation Orale),SRO (Sels de Réhydratation Orale) Brand1 comprimé,250 mg,comprimé,,,,Réhydratation
+SRO (Sels de Réhydratation Orale),SRO (Sels de Réhydratation Orale) Brand3 comprimé,750 mg,comprimé,,,,Réhydratation
+SRO (Sels de Réhydratation Orale),SRO (Sels de Réhydratation Orale) Brand2 sirop,500 mg,sirop,,,,Réhydratation
+SRO (Sels de Réhydratation Orale),SRO (Sels de Réhydratation Orale) Brand3 sirop,750 mg,sirop,,,,Réhydratation
+SRO (Sels de Réhydratation Orale),SRO (Sels de Réhydratation Orale) Brand1 capsule,250 mg,capsule,,,,Réhydratation
+SRO (Sels de Réhydratation Orale),SRO (Sels de Réhydratation Orale) Brand2 capsule,500 mg,capsule,,,,Réhydratation
+SRO (Sels de Réhydratation Orale),SRO (Sels de Réhydratation Orale) Brand1 suspension,250 mg,suspension,,,,Réhydratation
+SRO (Sels de Réhydratation Orale),SRO (Sels de Réhydratation Orale) Brand2 comprimé,500 mg,comprimé,,,,Réhydratation
+Zinc (Sulfate de zinc),Zinc (Sulfate de zinc) Brand1 comprimé,250 mg,comprimé,,,,Suppléments
+Zinc (Sulfate de zinc),Zinc (Sulfate de zinc) Brand2 capsule,500 mg,capsule,,,,Suppléments
+Zinc (Sulfate de zinc),Zinc (Sulfate de zinc) Brand3 suspension,750 mg,suspension,,,,Suppléments
+Zinc (Sulfate de zinc),Zinc (Sulfate de zinc) Brand1 capsule,250 mg,capsule,,,,Suppléments
+Zinc (Sulfate de zinc),Zinc (Sulfate de zinc) Brand3 comprimé,750 mg,comprimé,,,,Suppléments
+Zinc (Sulfate de zinc),Zinc (Sulfate de zinc) Brand2 sirop,500 mg,sirop,,,,Suppléments
+Zinc (Sulfate de zinc),Zinc (Sulfate de zinc) Brand3 sirop,750 mg,sirop,,,,Suppléments
+Zinc (Sulfate de zinc),Zinc (Sulfate de zinc) Brand2 suspension,500 mg,suspension,,,,Suppléments
+Zinc (Sulfate de zinc),Zinc (Sulfate de zinc) Brand3 capsule,750 mg,capsule,,,,Suppléments
+Zinc (Sulfate de zinc),Zinc (Sulfate de zinc) Brand1 suspension,250 mg,suspension,,,,Suppléments
+Zinc (Sulfate de zinc),Zinc (Sulfate de zinc) Brand1 sirop,250 mg,sirop,,,,Suppléments
+Zinc (Sulfate de zinc),Zinc (Sulfate de zinc) Brand2 comprimé,500 mg,comprimé,,,,Suppléments
+Cotrimoxazole (SMX/TMP),Cotrimoxazole (SMX/TMP) Brand1 sirop,250 mg,sirop,,,,Antibiotiques
+Cotrimoxazole (SMX/TMP),Cotrimoxazole (SMX/TMP) Brand2 comprimé,500 mg,comprimé,,,,Antibiotiques
+Cotrimoxazole (SMX/TMP),Cotrimoxazole (SMX/TMP) Brand3 comprimé,750 mg,comprimé,,,,Antibiotiques
+Cotrimoxazole (SMX/TMP),Cotrimoxazole (SMX/TMP) Brand1 suspension,250 mg,suspension,,,,Antibiotiques
+Cotrimoxazole (SMX/TMP),Cotrimoxazole (SMX/TMP) Brand3 sirop,750 mg,sirop,,,,Antibiotiques
+Cotrimoxazole (SMX/TMP),Cotrimoxazole (SMX/TMP) Brand1 capsule,250 mg,capsule,,,,Antibiotiques
+Cotrimoxazole (SMX/TMP),Cotrimoxazole (SMX/TMP) Brand2 capsule,500 mg,capsule,,,,Antibiotiques
+Cotrimoxazole (SMX/TMP),Cotrimoxazole (SMX/TMP) Brand1 comprimé,250 mg,comprimé,,,,Antibiotiques
+Cotrimoxazole (SMX/TMP),Cotrimoxazole (SMX/TMP) Brand3 capsule,750 mg,capsule,,,,Antibiotiques
+Cotrimoxazole (SMX/TMP),Cotrimoxazole (SMX/TMP) Brand2 suspension,500 mg,suspension,,,,Antibiotiques
+Cotrimoxazole (SMX/TMP),Cotrimoxazole (SMX/TMP) Brand3 suspension,750 mg,suspension,,,,Antibiotiques
+Cotrimoxazole (SMX/TMP),Cotrimoxazole (SMX/TMP) Brand2 sirop,500 mg,sirop,,,,Antibiotiques
+Doxycycline,Doxycycline Brand1 sirop,250 mg,sirop,,,,Antibiotiques
+Doxycycline,Doxycycline Brand2 comprimé,500 mg,comprimé,,,,Antibiotiques
+Doxycycline,Doxycycline Brand3 comprimé,750 mg,comprimé,,,,Antibiotiques
+Doxycycline,Doxycycline Brand1 suspension,250 mg,suspension,,,,Antibiotiques
+Doxycycline,Doxycycline Brand3 capsule,750 mg,capsule,,,,Antibiotiques
+Doxycycline,Doxycycline Brand2 capsule,500 mg,capsule,,,,Antibiotiques
+Doxycycline,Doxycycline Brand3 sirop,750 mg,sirop,,,,Antibiotiques
+Doxycycline,Doxycycline Brand1 comprimé,250 mg,comprimé,,,,Antibiotiques
+Doxycycline,Doxycycline Brand3 suspension,750 mg,suspension,,,,Antibiotiques
+Doxycycline,Doxycycline Brand2 suspension,500 mg,suspension,,,,Antibiotiques
+Doxycycline,Doxycycline Brand2 sirop,500 mg,sirop,,,,Antibiotiques
+Doxycycline,Doxycycline Brand1 capsule,250 mg,capsule,,,,Antibiotiques
+Quinine,Quinine Brand1 sirop,250 mg,sirop,,,,Antipaludéens
+Quinine,Quinine Brand2 suspension,500 mg,suspension,,,,Antipaludéens
+Quinine,Quinine Brand3 comprimé,750 mg,comprimé,,,,Antipaludéens
+Quinine,Quinine Brand3 sirop,750 mg,sirop,,,,Antipaludéens
+Quinine,Quinine Brand1 suspension,250 mg,suspension,,,,Antipaludéens
+Quinine,Quinine Brand2 capsule,500 mg,capsule,,,,Antipaludéens
+Quinine,Quinine Brand3 capsule,750 mg,capsule,,,,Antipaludéens
+Quinine,Quinine Brand2 comprimé,500 mg,comprimé,,,,Antipaludéens
+Quinine,Quinine Brand1 comprimé,250 mg,comprimé,,,,Antipaludéens
+Quinine,Quinine Brand2 sirop,500 mg,sirop,,,,Antipaludéens
+Quinine,Quinine Brand1 capsule,250 mg,capsule,,,,Antipaludéens
+,Exemple restreint (démo),,fictif,,false,true,démonstration

@@ -12,14 +12,22 @@ un médicament restreint reste bloqué, démo ou non. Rien de réel n'est envoy�
 | Messages « aurait été envoyé » | console → « Comptes de test » (statut `suppressed_demo`) et chronologie de chaque alerte |
 | Remise à zéro rejouable | `node scripts/demo-reset.js --confirmer` ou bouton de la console (fonction SQL `reinitialiser_demo`) |
 | Fiche fictive « Exemple restreint (démo) » | recréée à chaque remise à zéro, **restreinte**, jamais routée |
-| Catalogue de démonstration | `supabase/seed/demo_catalog.csv` (voir plus bas) |
+| Catalogue de démonstration | `supabase/seed/demo_catalog.csv` (236 fiches + fiche fictive), décisions : `supabase/seed/demo_classification.csv` |
 
 ## Avant la présentation
 1. **Mode** : la console doit afficher « MODE DÉMO » (réglage `mode_application = demo`, valeur par défaut).
-2. **Catalogue** : le fichier `supabase/seed/demo_catalog.csv` ne contient pour l'instant QUE la fiche fictive. Le catalogue de test réel est à fournir
-   par le propriétaire avec, pour chaque médicament, `restricted` = `true` ou `false` **écrit explicitement** (vide ou illisible = restreint, par sécurité).
-   Chargement : `node scripts/demo-reset.js --confirmer --catalogue supabase/seed/demo_catalog.csv`.
-   La classification d'une fiche existante se règle aussi dans la console → « Classification du catalogue ». Claude ne la décide jamais.
+2. **Catalogue** : le catalogue de test fourni (`supabase/seed/source/drug_variant_catalog.csv`, 1 180 variantes, 20 DCI) est converti en
+   **236 fiches** + la fiche fictive (`supabase/seed/demo_catalog.csv`, régénérable : `node scripts/demo-convert-catalog.js`).
+   - Une fiche par (marque, forme, dosage) ; la forme entre dans le nom (l'index unique de `medicaments` porte sur nom + dosage). Les variantes qui
+     ne diffèrent que par `is_generic`, le prix ou la disponibilité sont regroupées ; `price_xaf`, `availability`, `is_generic` et `atc_code` ne sont pas
+     repris (les stocks par pharmacie sont produits par la remise à zéro).
+   - **Aucune classification n'est inventée.** Le fichier source n'a pas de colonne `restricted` : tant que le propriétaire n'a pas décidé, les 236 fiches sont
+     **restreintes** (jamais routées) et le scénario de routage n'est pas jouable. Les décisions se prennent **par DCI** dans
+     `supabase/seed/demo_classification.csv` (20 lignes ; colonnes `restricted` et `requires_prescription` à remplir par `true` ou `false`,
+     toute autre valeur est ignorée), puis : `node scripts/demo-convert-catalog.js` (vos décisions sont conservées) et
+     `node scripts/demo-reset.js --confirmer --catalogue supabase/seed/demo_catalog.csv`.
+   - `requires_prescription` vide = `false` « à confirmer » (simple mention d'affichage). La classification d'une fiche se règle aussi dans la console →
+     « Classification du catalogue ». Claude ne la décide jamais.
 3. **Comptes de test** : chacun (propriétaire et pharmaciens participants) ouvre le bot Telegram et appuie sur « Démarrer » via un lien d'activation :
    - pharmacien participant : Espace Pro → Alertes → « Activer Telegram » ; puis console → « Comptes de test » → **Ajouter** (liste blanche) ;
    - propriétaire : console → « Créer mon compte de test Telegram » (compte déjà en liste blanche) ; ce compte peut aussi jouer le patient.

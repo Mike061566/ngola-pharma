@@ -77,3 +77,4 @@ Les **valeurs** de statut (`new`, `routing`, `sent`, `queued`, `telegram`...) re
 | `app_mode` lisible par la bannière | fonction publique `mode_public()` |
 | `is_demo_contact` géré par l'admin | `admin_marquer_contact_demo`, `admin_activer_telegram_demo`, `admin_liste_contacts` |
 | messages `suppressed_demo` visibles | `file_messages_demo` |
+| `drug_variant_catalog.csv` (catalogue de test fourni) | `supabase/seed/source/drug_variant_catalog.csv` -> `scripts/demo-convert-catalog.js` -> `demo_catalog.csv` ; décisions par DCI : `demo_classification.csv` |

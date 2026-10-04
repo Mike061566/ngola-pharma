@@ -43,10 +43,24 @@ describe('analyserCatalogueDemo : « restricted » est la décision du propriét
     expect(d.medicaments[0].nom).toBe('Bru "fen"');
     expect(d.avertissements.join(' ')).toMatch(/doublon/);
   });
-  test('le CSV livré ne contient que la fiche fictive, restreinte (aucune classification inventée)', () => {
+  test('avertissements répétitifs regroupés ; colonne facultative « category » reprise', () => {
+    const lignes = Array.from({ length: 12 }, (_, i) => `D${i},M${i},${i}mg,cp,,,,Analgésiques`).join('\n');
+    const r = analyserCatalogueDemo(`${ENTETE},category\n${lignes}\n`);
+    expect(r.medicaments).toHaveLength(12);
+    expect(r.medicaments[0].categorie).toBe('Analgésiques');
+    expect(r.avertissements.filter((a) => /^Ligne/.test(a))).toHaveLength(10);        // 5 + 5 détaillés
+    expect(r.avertissements.join(' ')).toMatch(/12 fiche\(s\) sans décision « restricted »/);
+    expect(analyserCatalogueDemo(`${ENTETE}\nX,Y,1mg,cp,,false,false\n`).medicaments[0].categorie).toBe('démonstration');
+  });
+  test('catalogue livré (issu de drug_variant_catalog.csv) : valide, fiche fictive restreinte, AUCUNE classification inventée', () => {
     const r = analyserCatalogueDemo(require('fs').readFileSync(require('path').join(__dirname, '../supabase/seed/demo_catalog.csv'), 'utf-8'));
     expect(r.erreurs).toEqual([]);
-    expect(r.medicaments.map((m) => [m.nom, m.restreint])).toEqual([['Exemple restreint (démo)', true]]);
+    expect(r.medicaments).toHaveLength(237);
+    expect(r.medicaments.filter((m) => !m.restreint)).toEqual([]);                         // aucune décision du propriétaire : tout reste restreint
+    expect(r.medicaments.find((m) => m.nom === 'Exemple restreint (démo)').restreint).toBe(true);
+    expect(new Set(r.medicaments.map((m) => m.categorie)).size).toBeGreaterThan(5);
+    const cles = r.medicaments.map((m) => `${m.nom.toLowerCase()}|${(m.dosage || '').replace(/\s+/g, '')}`);
+    expect(new Set(cles).size).toBe(cles.length);                                           // compatible avec l'index unique nom + dosage
   });
 });
 

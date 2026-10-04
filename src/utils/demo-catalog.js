@@ -5,12 +5,13 @@
  * RÈGLE : `restricted` est une DÉCISION DU PROPRIÉTAIRE. Ce module ne la déduit jamais : `false` n'est accepté que s'il est écrit
  * explicitement ; une valeur absente ou illisible donne `true` (restreint) avec un avertissement. La fiche fictive
  * « Exemple restreint (démo) » est toujours restreinte. Le chargement n'a lieu qu'en mode démo.
- * `pack_size` n'a pas de colonne dans `medicaments` : il est lu mais ignoré.
+ * `pack_size` n'a pas de colonne dans `medicaments` : il est lu mais ignoré. `category` (facultative) alimente `categorie`.
+ * Les avertissements répétitifs sont regroupés (les 5 premiers sont détaillés, puis un total).
  */
-const COLONNES = ['dci', 'brand_name', 'strength', 'form', 'pack_size', 'requires_prescription', 'restricted'];
+const COLONNES = ['dci', 'brand_name', 'strength', 'form', 'pack_size', 'requires_prescription', 'restricted'];   // + `category` facultative
 const FICTIF = 'exemple restreint (démo)';
 
-function decouper(ligne) {
+function decouper(ligne) {   // découpe une ligne CSV (guillemets, "" échappé)
   const sortie = []; let cur = ''; let q = false;
   for (let i = 0; i < ligne.length; i++) {
     const c = ligne[i];
@@ -28,7 +29,9 @@ const cleNomDosage = (m) => `${norm(m.nom)}|${norm(m.dosage).replace(/\s+/g, '')
 
 /** @returns {{ medicaments: object[], erreurs: string[], avertissements: string[] }} */
 function analyserCatalogueDemo(texte) {
-  const erreurs = [], avertissements = [], medicaments = [];
+  const erreurs = [], medicaments = [];
+  const brut = { restricted: [], ordonnance: [], doublon: [] };
+  const avertissements = [];
   const lignes = String(texte || '').replace(/^\uFEFF/, '').split(/\r?\n/).filter((l) => l.trim() !== '');
   if (lignes.length === 0) return { medicaments, erreurs: ['Fichier vide'], avertissements };
   const entete = decouper(lignes[0]).map((c) => c.toLowerCase());
@@ -43,17 +46,22 @@ function analyserCatalogueDemo(texte) {
     if (!nom) { erreurs.push(`Ligne ${n} : ni brand_name ni dci`); return; }
     const ordo = bool(r.requires_prescription);
     if (r.requires_prescription !== '' && ordo === null) { erreurs.push(`Ligne ${n} : requires_prescription doit valoir true ou false`); return; }
-    if (ordo === null) avertissements.push(`Ligne ${n} (${nom}) : requires_prescription vide, false retenu (à confirmer)`);
+    if (ordo === null) brut.ordonnance.push(`Ligne ${n} (${nom}) : requires_prescription vide, false retenu (à confirmer)`);
     let restreint = bool(r.restricted);
-    if (restreint === null) { restreint = true; avertissements.push(`Ligne ${n} (${nom}) : restricted absent ou illisible, restreint retenu (défaut sûr)`); }
+    if (restreint === null) { restreint = true; brut.restricted.push(`Ligne ${n} (${nom}) : restricted absent ou illisible, restreint retenu (défaut sûr)`); }
     if (norm(nom) === FICTIF && restreint !== true) { erreurs.push(`Ligne ${n} : « Exemple restreint (démo) » doit rester restricted=true`); return; }
     const med = { nom, nom_commercial: r.brand_name || null, dci: r.dci || null, forme: r.form || null, dosage: r.strength || null,
-      categorie: 'démonstration', ordonnance: ordo === true, restreint, est_demo: true };
+      categorie: r.category || 'démonstration', ordonnance: ordo === true, restreint, est_demo: true };
     const cle = cleNomDosage(med);
-    if (vus.has(cle)) { avertissements.push(`Ligne ${n} (${nom}) : doublon dans le fichier, ignoré`); return; }
+    if (vus.has(cle)) { brut.doublon.push(`Ligne ${n} (${nom}) : doublon dans le fichier, ignoré`); return; }
     vus.add(cle);
     medicaments.push(med);
   });
+  const libelles = { restricted: 'fiche(s) sans décision « restricted » : restreint(es) par défaut', ordonnance: 'fiche(s) sans requires_prescription : false retenu (à confirmer)', doublon: 'doublon(s) ignoré(s)' };
+  for (const k of Object.keys(brut)) {
+    avertissements.push(...brut[k].slice(0, 5));
+    if (brut[k].length > 5) avertissements.push(`… ${brut[k].length} ${libelles[k]} au total`);
+  }
   return { medicaments, erreurs, avertissements };
 }
 
@@ -85,4 +93,4 @@ async function chargerCatalogueDemo(sb, medicaments) {
   return bilan;
 }
 
-module.exports = { analyserCatalogueDemo, chargerCatalogueDemo };
+module.exports = { analyserCatalogueDemo, chargerCatalogueDemo, decouper };
