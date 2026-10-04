@@ -247,3 +247,15 @@ Flux : `import_creer_lot` -> `import_ajouter_lignes` (paquets de 200 côté navi
 - **Tâche d'onboarding « Importer mes stocks »** : désormais « au moins un import validé et non annulé » (le critère provisoire « un stock existe » disparaît).
 - **Conditionnement** : lu et affiché, mais le catalogue n'a pas de colonne de conditionnement : il n'intervient pas dans le rapprochement et n'est pas enregistré.
 - **Performance** : environ 4 s pour 500 lignes contre un catalogue synthétique de 2 000 fiches aux noms très proches (cas défavorable) ; d'où des paquets de 200. À remesurer sur Supabase avec le vrai catalogue.
+
+## Onboarding des officines — étape 4 : rappels J+1 / J+3 / J+7 et « dormante » (SPEC 1 §5.3)
+
+Migration `20261014000000_rappels_onboarding.sql` (à exécuter à la main, après `20261013000000`) ; Edge Function `rappels-onboarding` (`x-cron-secret`) ; planification quotidienne `supabase/ops/planifier_rappels_onboarding.sql` (07:00 UTC = 08:00 à Yaoundé, URL et secret dans Vault, rien dans le dépôt).
+
+- **Qui est relancé** : les pharmacies **approuvées par la procédure d'onboarding** (demande approuvée), vérifiées et **non publiées**. Les pharmacies créées autrement (les 52 existantes) ne reçoivent rien. Une pharmacie publiée n'est plus relancée.
+- **Quand** : J+1, J+3, J+7 après l'approbation. En cas d'exécution tardive, seul le dernier jalon échu est envoyé (les précédents sont enregistrés comme « sautés », jamais envoyés en rafale).
+- **Contenu** : une seule étape (la première non faite), avec un lien direct : compte pas encore activé -> **nouveau lien d'activation** (72 h, usage unique, par email seulement, jamais sur Telegram) ; sinon `/pro.html?etape=<étape>` qui ouvre l'onglet concerné. Canaux : **email** au titulaire + **Telegram** aux contacts activés (non bloqués, non désabonnés). SMS : pas encore (adaptateur reporté).
+- **Idempotence** : clé `rappel:<pharmacie>:<jalon>:<canal>…` dans l'outbox + table `rappels_onboarding` : relancer l'exécution n'envoie jamais deux fois.
+- **Dormante** : approuvée depuis plus de 30 jours et toujours non publiée. Valeur **calculée** (rien n'est stocké ni supprimé) ; à J+30 les rappels s'arrêtent et l'admin reçoit **une seule** alerte email (`ADMIN_ALERT_EMAIL`). Sans cette variable, rien n'est enregistré et l'alerte partira dès qu'elle sera configurée. La console (onglet Demandes) liste les pharmacies en cours de mise en route, dormantes en tête.
+- **Mode démo** : les rappels passent par l'outbox ; seuls les contacts de la liste blanche reçoivent un vrai message (le titulaire d'une demande fictive : « aurait été envoyé »).
+- Variables : `CRON_SECRET`, `ENCRYPTION_KEY`, `APP_BASE_URL`, `ADMIN_ALERT_EMAIL`.

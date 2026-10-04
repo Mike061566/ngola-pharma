@@ -97,3 +97,9 @@ entrypoint = "./functions/activer-compte/index.js"
 enabled = true
 verify_jwt = false
 entrypoint = "./functions/repondre-complements/index.js"
+
+# Rappels d'onboarding (J+1 / J+3 / J+7, alerte dormante) : appelée une fois par jour par pg_cron avec x-cron-secret.
+[functions.rappels-onboarding]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/rappels-onboarding/index.js"

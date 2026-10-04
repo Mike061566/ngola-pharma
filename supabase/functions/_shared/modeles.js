@@ -145,6 +145,32 @@ export const MODELES = {
       },
     },
   },
+  // Rappel d'onboarding (J+1 / J+3 / J+7) : une seule étape à la fois, sans promesse ni pression ; email et, si le contact est activé, Telegram.
+  onboarding_rappel: {
+    canaux: {
+      email: (v) => {
+        exiger(v, ['nom_officine', 'etape_libelle', 'lien']);
+        return { format: 'texte', sujet: 'N\'Gola Pharma : finalisez la mise en route de votre pharmacie',
+          texte: `Bonjour,\n\nla mise en route de « ${v.nom_officine} » n'est pas terminée. Prochaine étape : ${v.etape_libelle}.\n\n${v.lien}\n\nL'équipe N'Gola Pharma` };
+      },
+      telegram: (v) => {
+        exiger(v, ['nom_officine', 'etape_libelle', 'lien']);
+        return { format: 'html',
+          texte: `La mise en route de <b>${echapperHtml(v.nom_officine)}</b> n'est pas terminée.\nProchaine étape : ${echapperHtml(v.etape_libelle)}.`,
+          boutons: [[{ texte: 'Continuer', url: v.lien }]] };
+      },
+    },
+  },
+  onboarding_dormante_admin: {
+    canaux: {
+      email: (v) => {
+        exiger(v, ['nom_officine', 'jours']);
+        return { format: 'texte', sujet: `Pharmacie dormante : ${v.nom_officine}`,
+          texte: `« ${v.nom_officine} » est approuvée depuis ${v.jours} jours et n'est toujours pas publiée (étape en attente : ${v.etape_libelle || 'inconnue'}). Aucune donnée n'est supprimée.` +
+            (v.lien ? `\n${v.lien}` : '') };
+      },
+    },
+  },
   rappel_confirmation_stock: {
     canaux: {
       telegram: (v) => {

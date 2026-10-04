@@ -58,3 +58,18 @@ test('mot de passe : 10 caractères et confirmation', () => {
   expect(U.erreurMotDePasse('assezlongmdp', 'autrechose1')).toMatch(/identiques/);
   expect(U.erreurMotDePasse('assezlongmdp', 'assezlongmdp')).toBeNull();
 });
+
+test('liens des rappels : étape -> onglet, URL ?etape= validée', () => {
+  expect(U.ongletPourEtape('telegram')).toBe('alerts');
+  expect(U.ongletPourEtape('import')).toBe('import');
+  expect(U.ongletPourEtape('ma_pharmacie')).toBe('pharmacy');
+  expect(U.ongletPourEtape('inconnue')).toBeNull();
+  expect(U.ongletPourEtape('__proto__')).toBeNull();
+  expect(U.etapeDeLUrl('?etape=import')).toBe('import');
+  expect(U.etapeDeLUrl('?a=1&etape=telegram&b=2')).toBe('telegram');
+  expect(U.etapeDeLUrl('?etape=<script>')).toBeNull();
+  expect(U.etapeDeLUrl('?etape=admin')).toBeNull();
+  expect(U.etapeDeLUrl('')).toBeNull();
+  expect(U.libelleEtape('activation')).toBe('Activation du compte');
+  expect(U.libelleEtape('import')).toMatch(/Importer/);
+});

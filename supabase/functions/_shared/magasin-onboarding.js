@@ -1,5 +1,5 @@
 // Accès base / stockage de l'onboarding via un client Supabase SERVICE ROLE injecté (Edge Functions uniquement).
-import { creerMagasinSupabase } from './magasin-supabase.js';
+import { creerMagasinAlertes } from './magasin-alertes.js';
 
 const BUCKET = 'documents-demandes';
 function ok({ data, error }, contexte) {
@@ -13,7 +13,7 @@ function ok({ data, error }, contexte) {
 
 export function creerMagasinOnboarding(sb) {
   return {
-    ...creerMagasinSupabase(sb),
+    ...creerMagasinAlertes(sb),
     async mode() { return ok(await sb.rpc('mode_application'), 'mode'); },
     async deposer(chemin, octets, mime) {
       const { error } = await sb.storage.from(BUCKET).upload(chemin, octets, { contentType: mime, upsert: false });
@@ -50,6 +50,10 @@ export function creerMagasinOnboarding(sb) {
     },
     async marquerInvitation(id, compte, invitation) {
       ok(await sb.rpc('marquer_invitation_interne', { p_demande: id, p_compte: compte, p_invitation: invitation }), 'marquerInvitation');
+    },
+    async candidatsRappels() { return ok(await sb.rpc('candidats_rappels_interne'), 'candidatsRappels') || []; },
+    async enregistrerRappel(pharmacieId, jalon, canaux) {
+      return ok(await sb.rpc('enregistrer_rappel_interne', { p_pharmacie: pharmacieId, p_jalon: jalon, p_canaux: canaux }), 'enregistrerRappel');
     },
     async utilisateurParEmail(email) { return ok(await sb.rpc('utilisateur_par_email_interne', { p_email: email }), 'utilisateurParEmail'); },
     async creerUtilisateur(email) {

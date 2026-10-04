@@ -80,7 +80,18 @@
     return null;
   }
 
-  return { TACHES: TACHES, ORDRE: ORDRE, tachesAffichables: tachesAffichables, progression: progression, prochaineTache: prochaineTache,
+  // Étape -> onglet de l'Espace Pro (liens des rappels : /pro.html?etape=telegram)
+  var ONGLETS = { mot_de_passe: 'stocks', ma_pharmacie: 'pharmacy', telegram: 'alerts', import: 'import', confirmation: 'stocks', seuil: 'stocks' };
+  function ongletPourEtape(cle) { return Object.prototype.hasOwnProperty.call(ONGLETS, cle) ? ONGLETS[cle] : null; }
+  /** Étape demandée par l'URL (?etape=...), seulement si elle est connue ; sinon null. */
+  function etapeDeLUrl(recherche) {
+    var m = /[?&]etape=([a-z_]+)(?:&|$)/.exec(recherche || '');
+    return m && ongletPourEtape(m[1]) ? m[1] : null;
+  }
+  /** Libellé d'une étape bloquante, y compris « activation » (compte pas encore activé). */
+  function libelleEtape(cle) { return cle === 'activation' ? 'Activation du compte' : (TACHES[cle] ? TACHES[cle].titre : cle); }
+
+  return { ongletPourEtape: ongletPourEtape, etapeDeLUrl: etapeDeLUrl, libelleEtape: libelleEtape, TACHES: TACHES, ORDRE: ORDRE, tachesAffichables: tachesAffichables, progression: progression, prochaineTache: prochaineTache,
     checklistVisible: checklistVisible, messagePublication: messagePublication, couleurFraicheur: couleurFraicheur, couleurCss: couleurCss,
     erreurMotDePasse: erreurMotDePasse };
 }));

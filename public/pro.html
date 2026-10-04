@@ -410,6 +410,11 @@
                 <div id="demandesFile"><div class="spinner"></div></div>
             </div>
             <div class="section-card" style="margin-top:16px">
+                <div class="section-header"><h3>⏳ Pharmacies en cours de mise en route</h3><button class="btn btn-secondary" onclick="AdminDemandes.chargerEnRetard()">↻</button></div>
+                <p class="console-note">Approuvées mais pas encore publiées. Rappels automatiques à J+1, J+3 et J+7 ; au-delà de 30 jours la pharmacie est « dormante » (vous êtes alerté une fois ; aucune suppression).</p>
+                <div id="demandesRetard"><div class="spinner"></div></div>
+            </div>
+            <div class="section-card" style="margin-top:16px">
                 <div class="section-header"><h3>🔎 Dossier</h3></div>
                 <div id="demandesDetail"><p class="console-note">Choisissez une demande dans la liste.</p></div>
             </div>
@@ -704,7 +709,12 @@ var ProApp = (function() {
         document.getElementById('btnConfirmerStocks').style.display = currentProfil.role === 'pharmacien' ? '' : 'none';
         document.getElementById('tabBtnImport').style.display = currentProfil.role === 'pharmacien' ? '' : 'none';
         if (currentProfil.role === 'pharmacien') window.ImportUI.init({ sb: _sb, esc: esc, toast: showToast, apres: function() { loadStocks(); loadStats(); chargerOnboarding(); } });
-        if (currentProfil.role === 'pharmacien') { chargerAlertesPharmacie(); chargerOnboarding(); }
+        if (currentProfil.role === 'pharmacien') {
+            chargerAlertesPharmacie(); chargerOnboarding();
+            // Lien d'un rappel (/pro.html?etape=telegram) : ouvre directement l'onglet de l'étape bloquante, une seule fois.
+            var etapeUrl = OnboardingUtils.etapeDeLUrl(window.location.search);
+            if (etapeUrl) { switchTab(OnboardingUtils.ongletPourEtape(etapeUrl)); try { window.history.replaceState(null, '', window.location.pathname); } catch (e) { /* sans importance */ } }
+        }
     }
 
     function switchTab(tabName) {

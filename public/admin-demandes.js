@@ -10,7 +10,7 @@ window.AdminDemandes = (function () {
     var $ = function (id) { return document.getElementById(id); };
 
     function init(o) { sb = o.sb; esc = o.esc; toast = o.toast; config = window.NGOLA_ALERTE; }
-    function ouvrir() { chargerFile(); }
+    function ouvrir() { chargerFile(); chargerEnRetard(); }
 
     function rpc(nom, args, ok) {
         return sb.rpc(nom, args || {}).then(function (res) {
@@ -46,6 +46,19 @@ window.AdminDemandes = (function () {
                         '<td>' + esc(d.cases_cochees) + ' / 5 · ' + esc(d.nb_documents) + ' doc.</td>' +
                         '<td><button class="btn btn-secondary" onclick="AdminDemandes.ouvrirDetail(\'' + esc(d.id) + '\')">Ouvrir</button></td></tr>';
                 }).join('') + '</tbody></table>';
+        });
+    }
+
+    function chargerEnRetard() {
+        rpc('admin_pharmacies_en_retard').then(function (l) {
+            var zone = $('demandesRetard');
+            if (l === null) { zone.innerHTML = '<div class="empty-state"><p>Liste indisponible.</p></div>'; return; }
+            if (l === true || !l.length) { zone.innerHTML = '<div class="empty-state"><div class="icon">✅</div><p>Aucune pharmacie en attente de publication</p></div>'; return; }
+            zone.innerHTML = '<table class="stock-table"><thead><tr><th>Pharmacie</th><th>Depuis</th><th>Avancement</th><th>Étape en attente</th><th>Rappels</th></tr></thead><tbody>' + l.map(function (p) {
+                return '<tr><td><strong>' + esc(p.nom) + '</strong>' + (p.est_demo ? ' <span class="console-pastille">démo</span>' : '') + (p.dormante ? ' <span class="console-pastille" style="background:#fde8e8">Dormante</span>' : '') + '</td>' +
+                    '<td>' + esc(p.jours) + ' j</td><td>' + esc(p.faits) + ' / 6</td><td>' + esc(window.OnboardingUtils.libelleEtape(p.compte_actif ? p.etape : 'activation')) + '</td>' +
+                    '<td>' + (p.rappels.length ? p.rappels.map(function (j) { return 'J+' + esc(j); }).join(', ') : '—') + '</td></tr>';
+            }).join('') + '</tbody></table>';
         });
     }
 
@@ -124,6 +137,6 @@ window.AdminDemandes = (function () {
         });
     }
 
-    return { init: init, ouvrir: ouvrir, chargerFile: chargerFile, ouvrirDetail: ouvrirDetail, voirDocument: voirDocument, basculer: basculer,
+    return { init: init, ouvrir: ouvrir, chargerFile: chargerFile, chargerEnRetard: chargerEnRetard, ouvrirDetail: ouvrirDetail, voirDocument: voirDocument, basculer: basculer,
         demarrer: demarrer, decider: decider, renvoyer: renvoyer };
 })();

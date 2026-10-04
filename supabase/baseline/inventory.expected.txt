@@ -265,6 +265,10 @@ column|quartiers.description|text
 column|quartiers.id|uuid NOT NULL DEFAULT gen_random_uuid()
 column|quartiers.nom|text NOT NULL
 column|quartiers.slug|text NOT NULL
+column|rappels_onboarding.canaux|jsonb NOT NULL DEFAULT '[]'::jsonb
+column|rappels_onboarding.envoye_le|timestamp with time zone NOT NULL DEFAULT now()
+column|rappels_onboarding.jalon|smallint NOT NULL
+column|rappels_onboarding.pharmacie_id|uuid NOT NULL
 column|recherches.created_at|timestamp with time zone NOT NULL DEFAULT now()
 column|recherches.id|uuid NOT NULL DEFAULT gen_random_uuid()
 column|recherches.resultats|integer DEFAULT 0
@@ -464,6 +468,9 @@ constraint|profils.profils_role_check|CHECK ((role = ANY (ARRAY['patient'::text,
 constraint|quartiers.quartiers_nom_key|UNIQUE (nom)
 constraint|quartiers.quartiers_pkey|PRIMARY KEY (id)
 constraint|quartiers.quartiers_slug_key|UNIQUE (slug)
+constraint|rappels_onboarding.rappels_onboarding_jalon_check|CHECK ((jalon = ANY (ARRAY[1, 3, 7, 30])))
+constraint|rappels_onboarding.rappels_onboarding_pharmacie_id_fkey|FOREIGN KEY (pharmacie_id) REFERENCES pharmacies(id) ON DELETE CASCADE
+constraint|rappels_onboarding.rappels_onboarding_pkey|PRIMARY KEY (pharmacie_id, jalon)
 constraint|recherches.recherches_pkey|PRIMARY KEY (id)
 constraint|recherches.recherches_user_id_fkey|FOREIGN KEY (user_id) REFERENCES auth.users(id)
 constraint|reponses_alerte.reponses_alerte_canal_check|CHECK ((canal = ANY (ARRAY['telegram'::text, 'link'::text, 'dashboard'::text, 'admin'::text])))
@@ -500,6 +507,7 @@ function|admin_etat_onboarding(p_pharmacie uuid)|returns=jsonb lang=plpgsql secu
 function|admin_liste_contacts(p_limite integer)|returns=TABLE(contact_id uuid, pharmacie_id uuid, pharmacie_nom text, pharmacie_est_demo boolean, canal text, adresse_masquee text, est_contact_demo boolean, verifie boolean, desabonne boolean, bloque boolean) lang=plpgsql security=definer volatility=s config=search_path=public body=c21a3d9493539213846d5d91643be6f2
 function|admin_lister_demandes(p_statut text, p_doublons boolean)|returns=TABLE(id uuid, statut text, nom_pharmacie text, quartier text, nom_titulaire text, doublon_suspect boolean, est_demo boolean, cree_le timestamp with time zone, age_heures integer, en_retard boolean, cases_cochees integer, nb_documents integer) lang=plpgsql security=definer volatility=s config=search_path=public body=5a0962c176c644a2e4ccc2e6b2b4d17a
 function|admin_marquer_contact_demo(p_contact_id uuid, p_demo boolean)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=9b4193722111df1771deff4a1c7c2f23
+function|admin_pharmacies_en_retard()|returns=jsonb lang=plpgsql security=definer volatility=s config=search_path=public body=567726dff0d468ae67ff3c390ba782a3
 function|admin_rattacher_medicament(p_alerte_id uuid, p_medicament_id uuid)|returns=text lang=plpgsql security=definer volatility=v config=search_path=public body=7754ed9b43f43bda73dfb8c1982c330e
 function|admin_refuser_alerte(p_alerte_id uuid)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=6b9efe93e93048c983076f16775c1601
 function|admin_relancer_vague(p_alerte_id uuid)|returns=integer lang=plpgsql security=definer volatility=v config=search_path=public body=e34e420a739e61658b8f9e9f41efec44
@@ -511,6 +519,7 @@ function|annuler_alerte_interne(p_alerte_id uuid)|returns=void lang=sql security
 function|auth_pharmacie_id()|returns=uuid lang=sql security=definer volatility=s config=search_path=public body=b66d1a570fd45eb7602cadb4ed4add95
 function|auth_role()|returns=text lang=sql security=definer volatility=s config=search_path=public body=595b2f0025ac8ab39e052499fb9a94bd
 function|calculer_onboarding(p_pharmacie uuid)|returns=jsonb lang=plpgsql security=definer volatility=s config=search_path=public body=4c001213abf85f6377d6dc0e2e032fc3
+function|candidats_rappels_interne()|returns=jsonb lang=sql security=definer volatility=s config=search_path=public body=ab04b877d8059727ed1c6674c8861d5f
 function|changer_abonnement_contact(p_contact_id uuid, p_abonne boolean)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=bdd6dfc891a0274ee913f0385b0d7c28
 function|chiffres_telephone(p text)|returns=text lang=sql security=invoker volatility=i config=- body=48661a45902799720adb3e4e441c4f3f
 function|chronologie_alerte(p_alerte_id uuid)|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=2923b4e629afcaba1c0585832202298c
@@ -532,6 +541,7 @@ function|deposer_complements_interne(p_hash text, p_message text, p_documents js
 function|desabonner_telegram(p_chat_id text)|returns=integer lang=sql security=definer volatility=v config=search_path=public body=c56ea7f564f80a36ace9bb83eb3d184e
 function|donnees_routage_pharmacies(p_medicament_id uuid)|returns=jsonb lang=sql security=definer volatility=s config=search_path=public body=efc05d768c4ce76b92d094d8588ac9bb
 function|dosages_compatibles(p_ligne text, p_fiche text)|returns=integer lang=sql security=invoker volatility=i config=- body=d87c973de2d5df87560b5c9e0ae51add
+function|enregistrer_rappel_interne(p_pharmacie uuid, p_jalon integer, p_canaux jsonb)|returns=boolean lang=plpgsql security=definer volatility=v config=search_path=public body=63868486d04f61c191ad61d036f39acf
 function|enregistrer_reponse_alerte(p_envoi_id uuid, p_reponse text, p_prix integer, p_canal text, p_utilisateur uuid)|returns=TABLE(resultat text, alerte_id uuid, pharmacie_id uuid, medicament_id uuid, reponse text, prix_fcfa integer, repondu_le timestamp with time zone, stock_mis_a_jour boolean) lang=plpgsql security=definer volatility=v config=search_path=public body=62b003da25bb42b6b9bc7e8cc9a10f4a
 function|erreur_valeur_config(p_cle text, p_val jsonb)|returns=text lang=plpgsql security=invoker volatility=i config=- body=b75c1b24cb825fc063af27142aa9702b
 function|etat_budget_messages()|returns=jsonb lang=plpgsql security=definer volatility=s config=search_path=public body=0c1eda00fd0c3c092681dec636e6e69e
@@ -611,6 +621,7 @@ grant|profils.anon|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
 grant|profils.authenticated|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
 grant|quartiers.anon|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
 grant|quartiers.authenticated|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
+grant|rappels_onboarding.authenticated|SELECT
 grant|recherches.anon|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
 grant|recherches.authenticated|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
 grant|reponses_alerte.authenticated|SELECT
@@ -691,6 +702,7 @@ index|profils.profils_pkey|CREATE UNIQUE INDEX profils_pkey ON public.profils US
 index|quartiers.quartiers_nom_key|CREATE UNIQUE INDEX quartiers_nom_key ON public.quartiers USING btree (nom)
 index|quartiers.quartiers_pkey|CREATE UNIQUE INDEX quartiers_pkey ON public.quartiers USING btree (id)
 index|quartiers.quartiers_slug_key|CREATE UNIQUE INDEX quartiers_slug_key ON public.quartiers USING btree (slug)
+index|rappels_onboarding.rappels_onboarding_pkey|CREATE UNIQUE INDEX rappels_onboarding_pkey ON public.rappels_onboarding USING btree (pharmacie_id, jalon)
 index|recherches.idx_recherches_date|CREATE INDEX idx_recherches_date ON public.recherches USING btree (created_at DESC)
 index|recherches.idx_recherches_terme|CREATE INDEX idx_recherches_terme ON public.recherches USING btree (terme)
 index|recherches.recherches_pkey|CREATE UNIQUE INDEX recherches_pkey ON public.recherches USING btree (id)
@@ -737,6 +749,7 @@ policy|profils.profils_insert|cmd=INSERT roles=public using=- with_check=((id = 
 policy|profils.profils_select|cmd=SELECT roles=public using=((id = auth.uid()) OR (auth_role() = 'admin'::text)) with_check=-
 policy|profils.profils_update|cmd=UPDATE roles=public using=((id = auth.uid()) OR (auth_role() = 'admin'::text)) with_check=((auth_role() = 'admin'::text) OR ((id = auth.uid()) AND (role = auth_role()) AND (NOT (pharmacie_id IS DISTINCT FROM auth_pharmacie_id()))))
 policy|quartiers.Quartiers lisibles par tous|cmd=SELECT roles=public using=true with_check=-
+policy|rappels_onboarding.Admin lit les rappels d'onboarding|cmd=SELECT roles=public using=(auth_role() = 'admin'::text) with_check=-
 policy|recherches.Recherches lisibles par admin|cmd=SELECT roles=public using=(auth_role() = 'admin'::text) with_check=-
 policy|recherches.Tout le monde peut rechercher|cmd=INSERT roles=public using=- with_check=true
 policy|reponses_alerte.Admin lit les réponses|cmd=SELECT roles=public using=(auth_role() = 'admin'::text) with_check=-
@@ -772,6 +785,7 @@ table|patients_bloques|table rls=true force_rls=false
 table|pharmacies|table rls=true force_rls=false
 table|profils|table rls=true force_rls=false
 table|quartiers|table rls=true force_rls=false
+table|rappels_onboarding|table rls=true force_rls=false
 table|recherches|table rls=true force_rls=false
 table|reponses_alerte|table rls=true force_rls=false
 table|stock_items|vue rls=false force_rls=false
