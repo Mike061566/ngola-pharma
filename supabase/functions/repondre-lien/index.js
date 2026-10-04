@@ -23,7 +23,7 @@ Deno.serve(async (req) => {
     const sb = createClient(Deno.env.get('SUPABASE_URL'), Deno.env.get('SUPABASE_SERVICE_ROLE_KEY'), { auth: { persistSession: false } });
     const magasin = creerMagasinAlertes(sb);
     const journal = (e) => console.log(JSON.stringify(e));
-    const fournisseurs = creerFournisseurs({ TELEGRAM_PROVIDER: Deno.env.get('TELEGRAM_PROVIDER') }, { journal });
+    const fournisseurs = creerFournisseurs({ TELEGRAM_PROVIDER: Deno.env.get('TELEGRAM_PROVIDER'), TELEGRAM_BOT_TOKEN: Deno.env.get('TELEGRAM_BOT_TOKEN') }, { journal });
     const r = await traiterLien(req.method, entree, { magasin, fournisseur: fournisseurs.telegram, config: await magasin.lireConfig(), journal, maintenant: () => new Date() });
     return rep(r.status, r.corps);
   } catch (e) {

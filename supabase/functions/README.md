@@ -178,3 +178,10 @@ Migration `20261010000000`, `public/demo-banner.js`, `scripts/demo-reset.js`, `s
 Le mode démo ne contourne jamais le garde-fou : un médicament restreint reste bloqué. `restricted` du catalogue de démonstration est écrit
 par le propriétaire dans le CSV (jamais déduit ; vide = restreint). La remise à zéro est une fonction SQL refusée hors mode démo,
 rejouable (même empreinte d'état), qui conserve contacts, liste blanche et classification.
+
+## PR 7 — Telegram réel (SMS et email : à brancher)
+
+- `_shared/fournisseur-telegram.js` : Bot API (`sendMessage`, `editMessageText`, `answerCallbackQuery`). 429 → `limite_debit` (`retry_after`) ; 403 / « chat not found » → permanente + contact bloqué ; 5xx/réseau → transitoire. Jeton, adresse et texte ne figurent jamais dans les erreurs. Tests avec `fetch` factice uniquement (aucun réseau).
+- Activation (par le propriétaire, jamais en CI) : secrets `TELEGRAM_PROVIDER=telegram`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET`, `TELEGRAM_BOT_USERNAME` ; puis `WEBHOOK_URL=… node scripts/telegram-set-webhook.js --confirmer` (sans `--confirmer` : simulation).
+- SMS et email : `SMS_PROVIDER` / `EMAIL_PROVIDER` n'acceptent que `mock` tant que les fournisseurs ne sont pas choisis (valeur inconnue = erreur explicite).
+- Bascule en production : `ALERT_AUTO_ROUTING` seulement après validation de la classification par un pharmacien (SPEC 2) ; en mode démo, envois réels limités aux contacts `est_contact_demo`.

@@ -23,7 +23,7 @@ Deno.serve(async (req) => {
     const sb = createClient(Deno.env.get('SUPABASE_URL'), Deno.env.get('SUPABASE_SERVICE_ROLE_KEY'), { auth: { persistSession: false } });
     const magasin = creerMagasinAlertes(sb);
     const journal = (e) => console.log(JSON.stringify(e));
-    const fournisseurs = creerFournisseurs({ TELEGRAM_PROVIDER: Deno.env.get('TELEGRAM_PROVIDER'), SMS_PROVIDER: Deno.env.get('SMS_PROVIDER'), EMAIL_PROVIDER: Deno.env.get('EMAIL_PROVIDER') }, { journal });
+    const fournisseurs = creerFournisseurs({ TELEGRAM_PROVIDER: Deno.env.get('TELEGRAM_PROVIDER'), TELEGRAM_BOT_TOKEN: Deno.env.get('TELEGRAM_BOT_TOKEN'), SMS_PROVIDER: Deno.env.get('SMS_PROVIDER'), EMAIL_PROVIDER: Deno.env.get('EMAIL_PROVIDER') }, { journal });
     await traiterMiseAJour(update, {
       magasin, cle: await cleDepuisBase64(Deno.env.get('ENCRYPTION_KEY')), fournisseur: fournisseurs.telegram,
       env: { SIGNING_SECRET: Deno.env.get('SIGNING_SECRET') }, config: await magasin.lireConfig(), journal,

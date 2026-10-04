@@ -22,7 +22,7 @@ Deno.serve(async (req) => {
     const resume = await traiterOutbox({
       magasin: creerMagasinSupabase(sb),
       fournisseurs: creerFournisseurs({
-        TELEGRAM_PROVIDER: Deno.env.get('TELEGRAM_PROVIDER'),
+        TELEGRAM_PROVIDER: Deno.env.get('TELEGRAM_PROVIDER'), TELEGRAM_BOT_TOKEN: Deno.env.get('TELEGRAM_BOT_TOKEN'),
         SMS_PROVIDER: Deno.env.get('SMS_PROVIDER'),
         EMAIL_PROVIDER: Deno.env.get('EMAIL_PROVIDER'),
       }, { journal: (e) => console.log(JSON.stringify(e)) }),

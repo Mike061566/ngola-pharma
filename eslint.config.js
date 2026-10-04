@@ -32,7 +32,7 @@ module.exports = [
     files: ['supabase/functions/**/*.js', 'tests/functions/**/*.mjs'],
     languageOptions: {
       ecmaVersion: 2022, sourceType: 'module',
-      globals: { ...nodeGlobals, Deno: 'readonly', Response: 'readonly', Request: 'readonly', Headers: 'readonly', URLSearchParams: 'readonly', crypto: 'readonly', atob: 'readonly', btoa: 'readonly',
+      globals: { ...nodeGlobals, Deno: 'readonly', Response: 'readonly', Request: 'readonly', Headers: 'readonly', AbortSignal: 'readonly', URLSearchParams: 'readonly', crypto: 'readonly', atob: 'readonly', btoa: 'readonly',
         TextEncoder: 'readonly', TextDecoder: 'readonly', Uint8Array: 'readonly' },
     },
   },

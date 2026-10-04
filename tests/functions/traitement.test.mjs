@@ -264,11 +264,11 @@ test('enfiler : adresse chiffrée en base, doublon ignoré, modèle ou variables
 });
 
 // ── Fournisseurs ──
-test('fournisseurs : mock par défaut ; toute autre valeur refusée (aucun envoi réel avant la PR 7)', () => {
+test('fournisseurs : mock par défaut ; toute valeur inconnue refusée', () => {
   const f = creerFournisseurs({});
   assert.deepEqual(Object.keys(f), ['telegram', 'sms', 'email']);
   assert.ok(f.telegram.mock && f.sms.mock && f.email.mock);
-  assert.throws(() => creerFournisseurs({ TELEGRAM_PROVIDER: 'telegram' }), /indisponible/);
+  assert.throws(() => creerFournisseurs({ TELEGRAM_PROVIDER: 'inconnu' }), /indisponible/);
   assert.throws(() => creerFournisseurs({ SMS_PROVIDER: 'twilio' }), /indisponible/);
 });
 
