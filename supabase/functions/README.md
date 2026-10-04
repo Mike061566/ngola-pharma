@@ -232,3 +232,18 @@ Choix à connaître :
 - Pas de dépublication automatique quand les stocks vieillissent : les rappels et le statut `dormante` (SPEC 1 §5.3) arrivent plus tard ; en attendant, l'admin dépublie à la main.
 - La date de dernière mise à jour des stocks est colorée (vert ≤ 3 j, orange ≤ 7 j, rouge au-delà).
 - Le mot de passe est défini par `supabase.auth.updateUser` (10 caractères au moins, contrôle côté navigateur ; la politique de Supabase Auth s'applique en plus). Le marqueur n'est qu'un repère d'avancement.
+
+## Onboarding des officines — étape 3 : import guidé des stocks (SPEC 1 §5.1)
+
+Migration `20261013000000_import_stocks.sql` (à exécuter à la main, après `20261012000000`). Aucune Edge Function : lecture du fichier dans le navigateur (`public/import-utils.js`), puis fonctions SQL réservées à MA pharmacie.
+
+Flux : `import_creer_lot` -> `import_ajouter_lignes` (paquets de 200 côté navigateur, 500 maximum côté serveur : limite de durée des requêtes) -> `import_finaliser_lot` -> aperçu (`import_lire_lot`, filtres) et corrections (`import_corriger_ligne` : accepter / mapper / ignorer ; `import_chercher_catalogue` ; `import_demander_ajout`) -> `import_valider_lot` (une seule transaction) -> `import_annuler_lot` (24 h) ; `import_historique`, `import_abandonner_lot`.
+
+- **Lecture tolérante** : séparateur `;` `,` ou tabulation, UTF-8 ou Windows-1252, prix « 5 400 », « 5400 FCFA », « 5.400 », « 1 250,50 », booléens oui/non/yes/no/1/0/vrai/faux. Limites : 5 Mo, 5 000 lignes. Modèle CSV et Excel téléchargeables.
+- **Rapprochement** : alias exact ou nom exact + dosage compatible = 1,0 (« reconnu », pré-accepté) ; similarité trigramme ≥ 0,80 = suggestion pré-acceptée ; 0,50–0,79 = **à confirmer** (jamais écrit sans confirmation) ; < 0,50 = non reconnu (bouton « Demander l'ajout au catalogue », jamais d'ajout automatique). Le dosage corrige le score (« Doliprane 500 » -> fiche 500mg ; un dosage en conflit fait chuter la confiance). **Ambiguïté** : si deux fiches sont à moins de 0,05 l'une de l'autre, la ligne est « à confirmer » même avec un score élevé. Seules les fiches `actif` sont proposées.
+- **Règles** : bloquant (ligne ignorée, le lot continue) : nom absent, prix absent / non numérique / ≤ 0 / > 500 000, valeur en_stock illisible. Avertissements : doublon dans le fichier (la dernière ligne l'emporte), prix à plus de 50 % de la médiane des autres pharmacies (si au moins 5 en ont). Un médicament restreint est importé normalement dans le stock ; le routage, lui, ne l'utilise jamais.
+- **Modes** : « Mettre à jour » (défaut, ne touche pas aux absents) ou « Remplacer tout mon stock » (confirmation explicite ; les absents passent en `archive`, rien n'est supprimé).
+- **Annulation (24 h)** : restaure prix, statut, disponibilité, date de mise à jour et de confirmation à l'identique ; supprime les stocks créés par l'import ; désarchive ceux du mode « Remplacer ». **Une ligne modifiée depuis la validation n'est jamais écrasée** (elle est comptée dans `modifies_depuis`). Si l'import avait déclenché la publication de la pharmacie, l'annulation ne la dépublie pas (pas de dépublication automatique : l'admin dépublie à la main).
+- **Tâche d'onboarding « Importer mes stocks »** : désormais « au moins un import validé et non annulé » (le critère provisoire « un stock existe » disparaît).
+- **Conditionnement** : lu et affiché, mais le catalogue n'a pas de colonne de conditionnement : il n'intervient pas dans le rapprochement et n'est pas enregistré.
+- **Performance** : environ 4 s pour 500 lignes contre un catalogue synthétique de 2 000 fiches aux noms très proches (cas défavorable) ; d'où des paquets de 200. À remesurer sur Supabase avec le vrai catalogue.

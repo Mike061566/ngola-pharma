@@ -297,7 +297,7 @@
         <!-- Tabs -->
         <div class="dash-tabs">
             <button class="dash-tab active" onclick="ProApp.switchTab('stocks')">📦 Mes Stocks</button>
-            <button class="dash-tab" onclick="ProApp.switchTab('import')">📥 Import CSV</button>
+            <button class="dash-tab" id="tabBtnImport" onclick="ProApp.switchTab('import')">📥 Import</button>
             <button class="dash-tab" onclick="ProApp.switchTab('pharmacy')">🏥 Ma Pharmacie</button>
             <button class="dash-tab" onclick="ProApp.switchTab('alerts')">🔔 Alertes</button>
             <button class="dash-tab" id="tabBtnConsole" style="display:none" onclick="ProApp.switchTab('console')">🛰️ Console alertes</button>
@@ -341,28 +341,7 @@
 
         <!-- TAB: Import CSV -->
         <div class="tab-panel" id="tab-import">
-            <div class="section-card">
-                <div class="section-header">
-                    <h3>📥 Import CSV / Excel</h3>
-                </div>
-                <p style="color:var(--text-muted);font-size:13px;margin-bottom:16px">
-                    Importez vos stocks depuis un fichier CSV ou Excel. Le fichier doit contenir au minimum les colonnes : <strong>nom</strong> (nom du médicament) et <strong>prix</strong> (prix en FCFA). Colonnes optionnelles : <strong>dosage</strong>, <strong>en_stock</strong> (oui/non).
-                </p>
-                <div class="import-zone" id="importZone" onclick="document.getElementById('csvFileInput').click()">
-                    <div class="icon">📄</div>
-                    <p><strong>Glissez un fichier ici</strong> ou cliquez pour sélectionner</p>
-                    <p style="font-size:12px;margin-top:4px">Formats acceptés : .csv, .xlsx, .xls</p>
-                </div>
-                <input type="file" id="csvFileInput" accept=".csv,.xlsx,.xls" style="display:none" onchange="ProApp.handleFileSelect(event)">
-                <div id="importPreview"></div>
-                <div id="importActions" style="display:none">
-                    <div class="import-stats" id="importStats"></div>
-                    <div style="display:flex;gap:10px">
-                        <button class="btn btn-save" onclick="ProApp.confirmImport()">✅ Importer ces stocks</button>
-                        <button class="btn btn-cancel" onclick="ProApp.cancelImport()">Annuler</button>
-                    </div>
-                </div>
-            </div>
+            <div id="importRoot"></div>
         </div>
 
         <!-- TAB: Pharmacy Info -->
@@ -576,9 +555,6 @@
 <!-- ===== Supabase SDK ===== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
-<!-- ===== Papa Parse for CSV ===== -->
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
-
 <!-- ===== SheetJS for Excel ===== -->
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
@@ -587,6 +563,8 @@
 <script src="/pro-utils.js"></script>
 <script src="/admin-utils.js"></script>
 <script src="/onboarding-utils.js"></script>
+<script src="/import-utils.js"></script>
+<script src="/import-ui.js"></script>
 <script src="/admin-alertes.js"></script>
 <script src="/admin-demandes-utils.js"></script>
 <script src="/admin-demandes.js"></script>
@@ -602,7 +580,6 @@ var ProApp = (function() {
     var allStocks = [];
     var allMeds = [];
     var lastSearchMeds = [];
-    var importData = [];
 
     // ── Helpers ──
     function esc(s) { var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
@@ -725,6 +702,8 @@ var ProApp = (function() {
         loadStocks();
         loadStats();
         document.getElementById('btnConfirmerStocks').style.display = currentProfil.role === 'pharmacien' ? '' : 'none';
+        document.getElementById('tabBtnImport').style.display = currentProfil.role === 'pharmacien' ? '' : 'none';
+        if (currentProfil.role === 'pharmacien') window.ImportUI.init({ sb: _sb, esc: esc, toast: showToast, apres: function() { loadStocks(); loadStats(); chargerOnboarding(); } });
         if (currentProfil.role === 'pharmacien') { chargerAlertesPharmacie(); chargerOnboarding(); }
     }
 
@@ -737,6 +716,7 @@ var ProApp = (function() {
             p.classList.toggle('active', p.id === 'tab-' + tabName);
         });
         if (currentProfil && currentProfil.role === 'pharmacien') chargerOnboarding();
+        if (tabName === 'import' && currentProfil && currentProfil.role === 'pharmacien') window.ImportUI.ouvrir();
         if (tabName === 'pharmacy') loadPharmacyInfo();
         if (tabName === 'alerts') loadAlerts();
         if (tabName === 'classification') loadClassification();
@@ -1381,181 +1361,12 @@ var ProApp = (function() {
         }).catch(function() { showToast('Test impossible', 'error'); });
     }
 
-    // ── CSV Import ──
-    function handleFileSelect(e) {
-        var file = e.target.files[0];
-        if (!file) return;
-        var ext = file.name.split('.').pop().toLowerCase();
-
-        if (ext === 'csv') {
-            Papa.parse(file, {
-                header: true,
-                skipEmptyLines: true,
-                complete: function(results) {
-                    processImportData(results.data, file.name);
-                }
-            });
-        } else if (ext === 'xlsx' || ext === 'xls') {
-            var reader = new FileReader();
-            reader.onload = function(ev) {
-                var wb = XLSX.read(ev.target.result, { type: 'binary' });
-                var sheet = wb.Sheets[wb.SheetNames[0]];
-                var data = XLSX.utils.sheet_to_json(sheet);
-                processImportData(data, file.name);
-            };
-            reader.readAsBinaryString(file);
-        } else {
-            showToast('Format non supporté. Utilisez .csv, .xlsx ou .xls', 'error');
-        }
-    }
-
-    function processImportData(data, fileName) {
-        if (!data || data.length === 0) {
-            showToast('Fichier vide ou illisible', 'error');
-            return;
-        }
-        // Normalize column names
-        importData = data.map(function(row) {
-            var nomKey = findKey(row, ['nom', 'name', 'medicament', 'médicament', 'produit', 'designation', 'désignation']);
-            var prixKey = findKey(row, ['prix', 'price', 'prix_fcfa', 'prix fcfa', 'tarif', 'cout', 'coût', 'montant']);
-            var dosageKey = findKey(row, ['dosage', 'dose', 'concentration']);
-            var stockKey = findKey(row, ['en_stock', 'stock', 'disponible', 'dispo', 'available']);
-
-            var enStockVal = stockKey ? row[stockKey] : true;
-            if (typeof enStockVal === 'string') {
-                enStockVal = ['oui', 'yes', 'true', '1', 'o', 'y', 'disponible', 'en stock'].indexOf(enStockVal.toLowerCase().trim()) >= 0;
-            }
-
-            return {
-                nom: nomKey ? (row[nomKey] || '').toString().trim() : '',
-                prix: prixKey ? parseInt((row[prixKey] || '').toString().replace(/[^\d]/g, '')) || 0 : 0,
-                dosage: dosageKey ? (row[dosageKey] || '').toString().trim() : '',
-                en_stock: !!enStockVal,
-                _raw: row
-            };
-        }).filter(function(r) { return r.nom; });
-
-        if (importData.length === 0) {
-            showToast('Aucune ligne valide trouvée. Vérifiez que la colonne "nom" existe.', 'error');
-            return;
-        }
-
-        // Show preview
-        var preview = '<table><thead><tr><th>Médicament</th><th>Dosage</th><th>Prix (FCFA)</th><th>Stock</th></tr></thead><tbody>';
-        importData.slice(0, 10).forEach(function(r) {
-            preview += '<tr><td>' + esc(r.nom) + '</td><td>' + esc(r.dosage) + '</td><td>' + (r.prix || '—') + '</td><td>' + (r.en_stock ? '✅' : '❌') + '</td></tr>';
-        });
-        if (importData.length > 10) preview += '<tr><td colspan="4" style="text-align:center;color:var(--text-muted)">... et ' + (importData.length - 10) + ' autres lignes</td></tr>';
-        preview += '</tbody></table>';
-
-        document.getElementById('importPreview').innerHTML = '<div class="import-preview">' + preview + '</div>';
-        document.getElementById('importStats').innerHTML =
-            '<span>📄 ' + fileName + '</span>' +
-            '<span>📊 ' + importData.length + ' médicaments</span>' +
-            '<span>💰 ' + importData.filter(function(r) { return r.prix > 0; }).length + ' avec prix</span>';
-        document.getElementById('importActions').style.display = 'block';
-    }
-
-    function findKey(obj, candidates) {
-        var keys = Object.keys(obj);
-        for (var i = 0; i < candidates.length; i++) {
-            for (var j = 0; j < keys.length; j++) {
-                if (keys[j].toLowerCase().trim() === candidates[i]) return keys[j];
-            }
-        }
-        return null;
-    }
-
-    function confirmImport() {
-        if (!currentPharmacy || importData.length === 0) return;
-        showToast('Import en cours...', 'success');
-
-        // First, load all meds to match
-        _sb.from('medicaments').select('id, nom, dosage').then(function(res) {
-            var medDb = res.data || [];
-            var medMap = {};
-            medDb.forEach(function(m) {
-                medMap[m.nom.toLowerCase().trim()] = m;
-                if (m.dosage) medMap[(m.nom + ' ' + m.dosage).toLowerCase().trim()] = m;
-            });
-
-            var upserts = [];
-            var notFound = [];
-            importData.forEach(function(row) {
-                var key = row.nom.toLowerCase().trim();
-                var keyWithDosage = row.dosage ? (row.nom + ' ' + row.dosage).toLowerCase().trim() : '';
-                var match = medMap[keyWithDosage] || medMap[key];
-
-                if (match) {
-                    upserts.push({
-                        pharmacie_id: currentPharmacy.id,
-                        medicament_id: match.id,
-                        prix_fcfa: row.prix || 0,
-                        en_stock: row.en_stock,
-                        date_maj: new Date().toISOString(),
-                        source: 'pharmacien'
-                    });
-                } else {
-                    notFound.push(row.nom);
-                }
-            });
-
-            if (upserts.length === 0) {
-                showToast('Aucun médicament correspondant trouvé dans la base', 'error');
-                return;
-            }
-
-            _sb.from('stocks').upsert(upserts, { onConflict: 'pharmacie_id,medicament_id' })
-                .then(function(upsertRes) {
-                    if (upsertRes.error) {
-                        showToast('Erreur : ' + upsertRes.error.message, 'error');
-                        return;
-                    }
-                    var msg = upserts.length + ' stock(s) importé(s) ✅';
-                    if (notFound.length > 0) msg += ' | ' + notFound.length + ' non trouvé(s)';
-                    showToast(msg);
-                    cancelImport();
-                    loadStocks();
-                    loadStats();
-                    reevaluerPublication();
-                });
-        });
-    }
-
-    function cancelImport() {
-        importData = [];
-        document.getElementById('importPreview').innerHTML = '';
-        document.getElementById('importActions').style.display = 'none';
-        document.getElementById('csvFileInput').value = '';
-    }
-
-    // ── Drag & Drop ──
-    function initDragDrop() {
-        var zone = document.getElementById('importZone');
-        if (!zone) return;
-        ['dragover', 'dragenter'].forEach(function(ev) {
-            zone.addEventListener(ev, function(e) { e.preventDefault(); zone.classList.add('dragover'); });
-        });
-        ['dragleave', 'drop'].forEach(function(ev) {
-            zone.addEventListener(ev, function() { zone.classList.remove('dragover'); });
-        });
-        zone.addEventListener('drop', function(e) {
-            e.preventDefault();
-            var files = e.dataTransfer.files;
-            if (files.length > 0) {
-                document.getElementById('csvFileInput').files = files;
-                handleFileSelect({ target: { files: files } });
-            }
-        });
-    }
-
     // ── Toggle label ──
     document.getElementById('modalEnStock').addEventListener('change', function() {
         document.getElementById('modalStockLabel').textContent = this.checked ? 'En stock' : 'Rupture';
     });
 
     // ── Init ──
-    initDragDrop();
     checkSession();
 
     return {
@@ -1584,10 +1395,7 @@ var ProApp = (function() {
         searchMedsForModal: searchMedsForModal,
         selectMedFromList: selectMedFromList,
         saveStock: saveStock,
-        deleteStock: deleteStock,
-        handleFileSelect: handleFileSelect,
-        confirmImport: confirmImport,
-        cancelImport: cancelImport
+        deleteStock: deleteStock
     };
 })();
 </script>

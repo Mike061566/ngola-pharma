@@ -25,6 +25,10 @@ SELECT '00000000-0000-0000-0000-0000000000d1', ('00000000-0000-0000-0000-0000000
        CASE WHEN g <= 9 THEN now() - interval '1 day' ELSE now() - interval '30 days' END FROM generate_series(1, 12) g;
 INSERT INTO stocks (pharmacie_id, medicament_id, prix_fcfa, en_stock)
 SELECT '00000000-0000-0000-0000-0000000000d2', ('00000000-0000-0000-0000-0000000e' || lpad(g::text, 4, '0'))::uuid, 1000 + g, true FROM generate_series(1, 12) g;
+-- « Importer mes stocks » = au moins un import validé : un lot validé pour A et B
+INSERT INTO lots_import (pharmacie_id, auteur_id, nom_fichier, mode, statut, valide_le) VALUES
+    ('00000000-0000-0000-0000-0000000000d1', '00000000-0000-0000-0000-0000000000b1', 'a.csv', 'merge', 'committed', now()),
+    ('00000000-0000-0000-0000-0000000000d2', '00000000-0000-0000-0000-0000000000b2', 'b.csv', 'merge', 'committed', now());
 INSERT INTO contacts_pharmacie (id, pharmacie_id, canal, adresse, consentement_le, verifie_le) VALUES
     ('00000000-0000-0000-0000-0000000c0001', '00000000-0000-0000-0000-0000000000d1', 'telegram', '555123456', now(), now()),
     ('00000000-0000-0000-0000-0000000c0002', '00000000-0000-0000-0000-0000000000d2', 'telegram', '555123457', now(), now());
@@ -51,7 +55,7 @@ RESET ROLE;
 SET LOCAL ROLE authenticated;
 SELECT set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000b1","role":"authenticated"}', true);
 SELECT throws_ok($$SELECT admin_etat_onboarding('00000000-0000-0000-0000-0000000000d1')$$, '42501', NULL, 'pharmacien : état admin refusé');
-SELECT is((etat_onboarding_mien() ->> 'faits')::int, 2, 'départ : 2 tâches faites (Telegram vérifié, stocks présents)');
+SELECT is((etat_onboarding_mien() ->> 'faits')::int, 2, 'départ : 2 tâches faites (Telegram vérifié, import validé)');
 SELECT is((etat_onboarding_mien() -> 'items' -> 1 ->> 'fait')::boolean, false, '« Ma Pharmacie » : GPS non confirmé -> pas fait');
 SELECT throws_ok($$SELECT onboarding_marquer('est_publiee')$$, '22023', NULL, 'marqueur inconnu refusé');
 SELECT throws_ok($$SELECT onboarding_marquer('mot_de_passe_defini', false)$$, '22023', NULL, 'le mot de passe ne s''annule pas');

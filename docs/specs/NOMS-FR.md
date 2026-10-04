@@ -12,6 +12,8 @@ ce tableau fait foi pour le code. Les clés de `config_routage` sont traduites a
 | `pharmacy_contacts` | `contacts_pharmacie` | écriture côté serveur uniquement |
 | `catalog_classification_validations` | `validations_classification` | pas d'UPDATE ni de DELETE |
 | `drug_aliases` | `alias_medicaments` | |
+| `import_batches` | `lots_import` | lots d'import de stocks (SPEC 1 §5.1) ; `lots_import_archives` : stocks archivés par le mode « Remplacer » |
+| `import_rows` | `lignes_import` | `prev_value` -> `valeur_prec`, `valeur_nouv` ajoutée (détecte les modifications ultérieures à l'annulation) |
 | `catalog_requests` | `demandes_catalogue` | |
 | `routing_config` | `config_routage` | |
 | `alerts` | `alertes_routage` | `alertes_stock` (site public) inchangée |
