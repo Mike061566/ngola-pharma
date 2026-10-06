@@ -16,7 +16,7 @@ export async function activerCompte({ jeton }, { magasin, env, journal }) {
     if (!userId) userId = await magasin.creerUtilisateur(r.email);
     const lien = await magasin.lierProfil(userId, r.pharmacie_id, null);
     if (lien.erreur) return { status: 409, corps: { erreur: 'compte_conflit', message: 'Cette adresse email est déjà utilisée pour un autre compte. Contactez l\'équipe N\'Gola Pharma.' } };
-    await magasin.marquerInvitation(r.demande_id, true, false);
+    if (r.demande_id) await magasin.marquerInvitation(r.demande_id, true, false);   // pharmacie invitée sans demande : rien à marquer
     const action = await magasin.lienConnexion(r.email, `${baseUrl(env)}/pro.html`);
     journal?.({ evt: 'compte_active', demande: r.demande_id });
     return { status: 200, corps: { ok: true, lien_connexion: action } };

@@ -55,6 +55,9 @@ export function creerMagasinOnboarding(sb) {
     async enregistrerRappel(pharmacieId, jalon, canaux) {
       return ok(await sb.rpc('enregistrer_rappel_interne', { p_pharmacie: pharmacieId, p_jalon: jalon, p_canaux: canaux }), 'enregistrerRappel');
     },
+    async inviterPharmacie(pharmacieId, adminId, hash, heures) {
+      return ok(await sb.rpc('inviter_pharmacie_interne', { p_pharmacie: pharmacieId, p_admin: adminId, p_hash: hash, p_heures: heures }), 'inviterPharmacie');
+    },
     async utilisateurParEmail(email) { return ok(await sb.rpc('utilisateur_par_email_interne', { p_email: email }), 'utilisateurParEmail'); },
     async creerUtilisateur(email) {
       const { data, error } = await sb.auth.admin.createUser({ email, email_confirm: true });

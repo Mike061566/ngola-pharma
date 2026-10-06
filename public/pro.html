@@ -301,6 +301,7 @@
             <button class="dash-tab" onclick="ProApp.switchTab('pharmacy')">🏥 Ma Pharmacie</button>
             <button class="dash-tab" onclick="ProApp.switchTab('alerts')">🔔 Alertes</button>
             <button class="dash-tab" id="tabBtnConsole" style="display:none" onclick="ProApp.switchTab('console')">🛰️ Console alertes</button>
+            <button class="dash-tab" id="tabBtnPharmacies" style="display:none" onclick="ProApp.switchTab('pharmacies')">🏥 Pharmacies</button>
             <button class="dash-tab" id="tabBtnDemandes" style="display:none" onclick="ProApp.switchTab('demandes')">📥 Demandes</button>
             <button class="dash-tab" id="tabBtnClassification" style="display:none" onclick="ProApp.switchTab('classification')">🛡️ Classification du catalogue</button>
         </div>
@@ -398,6 +399,28 @@
             <div class="section-card" style="margin-top:16px">
                 <div class="section-header"><h3>⚙️ Réglages du routage</h3></div>
                 <div id="consoleReglages"></div>
+            </div>
+        </div>
+
+        <!-- TAB: Pharmacies : création en masse, vérification, invitation (admin seul) -->
+        <div class="tab-panel" id="tab-pharmacies">
+            <div class="section-card">
+                <div class="section-header"><h3>📄 Créer des pharmacies depuis un fichier</h3></div>
+                <div id="pharmaciesImport"></div>
+            </div>
+            <div class="section-card" style="margin-top:16px">
+                <div class="section-header"><h3>🔍 Pharmacies à vérifier</h3><input type="text" id="pharmaciesRecherche" placeholder="Rechercher…" oninput="AdminPharmacies.chargerAVerifier()" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px"></div>
+                <p class="console-note">Aucune pharmacie ne passe « vérifiée » sans les 5 cases de la checklist : la base de données le refuse, même par écriture directe.</p>
+                <div id="pharmaciesAVerifier"><div class="spinner"></div></div>
+            </div>
+            <div class="section-card" style="margin-top:16px">
+                <div class="section-header"><h3>🔎 Dossier</h3></div>
+                <div id="pharmaciesDetail"><p class="console-note">Choisissez une pharmacie dans la liste.</p></div>
+            </div>
+            <div class="section-card" style="margin-top:16px">
+                <div class="section-header"><h3>✉️ Pharmacies vérifiées à inviter</h3></div>
+                <p class="console-note">Le titulaire reçoit un lien personnel (72 h, usage unique) pour activer son compte, puis suit la mise en route (la pharmacie est publiée automatiquement une fois la checklist terminée).</p>
+                <div id="pharmaciesAInviter"></div><div id="pharmaciesLienInvitation" class="console-note"></div>
             </div>
         </div>
 
@@ -571,6 +594,8 @@
 <script src="/import-utils.js"></script>
 <script src="/import-ui.js"></script>
 <script src="/admin-alertes.js"></script>
+<script src="/pharmacies-masse-utils.js"></script>
+<script src="/admin-pharmacies.js"></script>
 <script src="/admin-demandes-utils.js"></script>
 <script src="/admin-demandes.js"></script>
 <script>
@@ -703,7 +728,8 @@ var ProApp = (function() {
         document.getElementById('tabBtnClassification').style.display = currentProfil.role === 'admin' ? '' : 'none';
         document.getElementById('tabBtnConsole').style.display = currentProfil.role === 'admin' ? '' : 'none';
         document.getElementById('tabBtnDemandes').style.display = currentProfil.role === 'admin' ? '' : 'none';
-        if (currentProfil.role === 'admin') { window.AdminAlertes.init({ sb: _sb, esc: esc, toast: showToast }); window.AdminDemandes.init({ sb: _sb, esc: esc, toast: showToast }); }
+        document.getElementById('tabBtnPharmacies').style.display = currentProfil.role === 'admin' ? '' : 'none';
+        if (currentProfil.role === 'admin') { window.AdminAlertes.init({ sb: _sb, esc: esc, toast: showToast }); window.AdminDemandes.init({ sb: _sb, esc: esc, toast: showToast }); window.AdminPharmacies.init({ sb: _sb, esc: esc, toast: showToast }); }
         loadStocks();
         loadStats();
         document.getElementById('btnConfirmerStocks').style.display = currentProfil.role === 'pharmacien' ? '' : 'none';
@@ -732,6 +758,7 @@ var ProApp = (function() {
         if (tabName === 'classification') loadClassification();
         if (tabName === 'console' && currentProfil && currentProfil.role === 'admin') window.AdminAlertes.ouvrir();
         if (tabName === 'demandes' && currentProfil && currentProfil.role === 'admin') window.AdminDemandes.ouvrir();
+        if (tabName === 'pharmacies' && currentProfil && currentProfil.role === 'admin') window.AdminPharmacies.ouvrir();
     }
 
 

@@ -136,6 +136,16 @@ export const MODELES = {
       },
     },
   },
+  // Invitation d'une pharmacie DÉJÀ référencée et vérifiée par l'équipe (création en masse) : pas de « demande approuvée ».
+  onboarding_invitation: {
+    canaux: {
+      email: (v) => {
+        exiger(v, ['nom_officine', 'lien']);
+        return { format: 'texte', sujet: 'N\'Gola Pharma : activez le compte de votre pharmacie',
+          texte: `Bonjour,\n\n« ${v.nom_officine} » est référencée et vérifiée sur N'Gola Pharma. Activez votre compte avec ce lien personnel (valable ${v.validite_h || 72} h, usage unique) :\n\n${v.lien}\n\nVous pourrez ensuite compléter votre fiche, activer Telegram et importer vos stocks.\n\nL'équipe N'Gola Pharma` };
+      },
+    },
+  },
   onboarding_refuse: {
     canaux: {
       email: (v) => {

@@ -103,3 +103,9 @@ entrypoint = "./functions/repondre-complements/index.js"
 enabled = true
 verify_jwt = false
 entrypoint = "./functions/rappels-onboarding/index.js"
+
+# Invitation d'une pharmacie déjà référencée et vérifiée (création en masse) : admin seul (jeton vérifié dans le code).
+[functions.inviter-pharmacie]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/inviter-pharmacie/index.js"

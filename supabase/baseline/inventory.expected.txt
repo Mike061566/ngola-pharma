@@ -43,6 +43,10 @@ column|checklist_demande.coche_le|timestamp with time zone NOT NULL DEFAULT now(
 column|checklist_demande.coche_par|uuid NOT NULL
 column|checklist_demande.demande_id|uuid NOT NULL
 column|checklist_demande.element|text NOT NULL
+column|checklist_verification_pharmacie.coche_le|timestamp with time zone NOT NULL DEFAULT now()
+column|checklist_verification_pharmacie.coche_par|uuid NOT NULL
+column|checklist_verification_pharmacie.element|text NOT NULL
+column|checklist_verification_pharmacie.pharmacie_id|uuid NOT NULL
 column|config_routage.cle|text NOT NULL
 column|config_routage.mis_a_jour_le|timestamp with time zone NOT NULL DEFAULT now()
 column|config_routage.mis_a_jour_par|uuid
@@ -132,10 +136,17 @@ column|evenements_onboarding.details|jsonb NOT NULL DEFAULT '{}'::jsonb
 column|evenements_onboarding.evenement|text NOT NULL
 column|evenements_onboarding.id|bigint NOT NULL
 column|evenements_onboarding.pharmacie_id|uuid
+column|identites_pharmacies.cree_le|timestamp with time zone NOT NULL DEFAULT now()
+column|identites_pharmacies.email_titulaire|text
+column|identites_pharmacies.nom_titulaire|text
+column|identites_pharmacies.numero_ordre|text
+column|identites_pharmacies.pharmacie_id|uuid NOT NULL
+column|identites_pharmacies.telephone_mobile|text
 column|jetons_activation.cree_le|timestamp with time zone NOT NULL DEFAULT now()
-column|jetons_activation.demande_id|uuid NOT NULL
+column|jetons_activation.demande_id|uuid
 column|jetons_activation.expire_le|timestamp with time zone NOT NULL
 column|jetons_activation.jeton_hash|text NOT NULL
+column|jetons_activation.pharmacie_id|uuid
 column|jetons_activation.utilise_le|timestamp with time zone
 column|jetons_telegram.expire_le|timestamp with time zone NOT NULL
 column|jetons_telegram.jeton_hash|text NOT NULL
@@ -162,6 +173,23 @@ column|lignes_import.problemes|jsonb NOT NULL DEFAULT '[]'::jsonb
 column|lignes_import.resolution|text
 column|lignes_import.valeur_nouv|jsonb
 column|lignes_import.valeur_prec|jsonb
+column|lignes_lots_pharmacies.adresse|text
+column|lignes_lots_pharmacies.brut|jsonb NOT NULL
+column|lignes_lots_pharmacies.email|text
+column|lignes_lots_pharmacies.etat|text NOT NULL
+column|lignes_lots_pharmacies.latitude|numeric(9,6)
+column|lignes_lots_pharmacies.longitude|numeric(9,6)
+column|lignes_lots_pharmacies.lot_id|uuid NOT NULL
+column|lignes_lots_pharmacies.nom|text
+column|lignes_lots_pharmacies.numero_ordre|text
+column|lignes_lots_pharmacies.numero|integer NOT NULL
+column|lignes_lots_pharmacies.pharmacie_id|uuid
+column|lignes_lots_pharmacies.problemes|jsonb NOT NULL DEFAULT '[]'::jsonb
+column|lignes_lots_pharmacies.quartier_id|uuid
+column|lignes_lots_pharmacies.resolution|text NOT NULL DEFAULT 'skip'::text
+column|lignes_lots_pharmacies.telephone_mobile|text
+column|lignes_lots_pharmacies.telephone|text
+column|lignes_lots_pharmacies.titulaire|text
 column|lots_import.annule_le|timestamp with time zone
 column|lots_import.auteur_id|uuid NOT NULL
 column|lots_import.compteurs|jsonb NOT NULL DEFAULT '{}'::jsonb
@@ -175,6 +203,15 @@ column|lots_import.valide_le|timestamp with time zone
 column|lots_import_archives.lot_id|uuid NOT NULL
 column|lots_import_archives.stock_id|uuid NOT NULL
 column|lots_import_archives.valeur_prec|jsonb NOT NULL
+column|lots_pharmacies.annule_le|timestamp with time zone
+column|lots_pharmacies.auteur_id|uuid NOT NULL
+column|lots_pharmacies.compteurs|jsonb NOT NULL DEFAULT '{}'::jsonb
+column|lots_pharmacies.cree_le|timestamp with time zone NOT NULL DEFAULT now()
+column|lots_pharmacies.est_demo|boolean NOT NULL DEFAULT false
+column|lots_pharmacies.id|uuid NOT NULL DEFAULT gen_random_uuid()
+column|lots_pharmacies.nom_fichier|text NOT NULL
+column|lots_pharmacies.statut|text NOT NULL DEFAULT 'parsed'::text
+column|lots_pharmacies.valide_le|timestamp with time zone
 column|medicaments.categorie|text
 column|medicaments.classification_validee_le|timestamp with time zone
 column|medicaments.conditionnement|text
@@ -239,6 +276,7 @@ column|pharmacies.id|uuid NOT NULL DEFAULT gen_random_uuid()
 column|pharmacies.latitude|double precision
 column|pharmacies.logo_url|text
 column|pharmacies.longitude|double precision
+column|pharmacies.lot_creation_id|uuid
 column|pharmacies.nombre_avis|integer DEFAULT 0
 column|pharmacies.nom|text NOT NULL
 column|pharmacies.note_moyenne|numeric(2,1) DEFAULT 0.0
@@ -379,6 +417,10 @@ constraint|checklist_demande.checklist_demande_coche_par_fkey|FOREIGN KEY (coche
 constraint|checklist_demande.checklist_demande_demande_id_fkey|FOREIGN KEY (demande_id) REFERENCES demandes_partenaire(id) ON DELETE CASCADE
 constraint|checklist_demande.checklist_demande_element_check|CHECK ((element = ANY (ARRAY['ordre_ok'::text, 'autorisation_ok'::text, 'rappel_tel_ok'::text, 'adresse_gps_ok'::text, 'pas_doublon'::text])))
 constraint|checklist_demande.checklist_demande_pkey|PRIMARY KEY (demande_id, element)
+constraint|checklist_verification_pharmacie.checklist_verification_pharmacie_coche_par_fkey|FOREIGN KEY (coche_par) REFERENCES auth.users(id)
+constraint|checklist_verification_pharmacie.checklist_verification_pharmacie_element_check|CHECK ((element = ANY (ARRAY['ordre_ok'::text, 'autorisation_ok'::text, 'rappel_tel_ok'::text, 'adresse_gps_ok'::text, 'pas_doublon'::text])))
+constraint|checklist_verification_pharmacie.checklist_verification_pharmacie_pharmacie_id_fkey|FOREIGN KEY (pharmacie_id) REFERENCES pharmacies(id) ON DELETE CASCADE
+constraint|checklist_verification_pharmacie.checklist_verification_pharmacie_pkey|PRIMARY KEY (pharmacie_id, element)
 constraint|config_routage.config_routage_pkey|PRIMARY KEY (cle)
 constraint|contacts_pharmacie.contacts_pharmacie_adresse_check|CHECK ((char_length(btrim(adresse)) > 0))
 constraint|contacts_pharmacie.contacts_pharmacie_adresse_email|CHECK (((canal <> 'email'::text) OR (adresse ~ '^[^@[:space:]]+@[^@[:space:]]+\.[^@[:space:]]+$'::text)))
@@ -420,7 +462,11 @@ constraint|etat_onboarding_pharmacie.etat_onboarding_pharmacie_pharmacie_id_fkey
 constraint|etat_onboarding_pharmacie.etat_onboarding_pharmacie_pkey|PRIMARY KEY (pharmacie_id)
 constraint|evenements_onboarding.evenements_onboarding_acteur_type_check|CHECK ((acteur_type = ANY (ARRAY['pharmacy'::text, 'admin'::text, 'system'::text])))
 constraint|evenements_onboarding.evenements_onboarding_pkey|PRIMARY KEY (id)
+constraint|identites_pharmacies.identites_pharmacies_pharmacie_id_fkey|FOREIGN KEY (pharmacie_id) REFERENCES pharmacies(id) ON DELETE CASCADE
+constraint|identites_pharmacies.identites_pharmacies_pkey|PRIMARY KEY (pharmacie_id)
+constraint|jetons_activation.jetons_activation_cible|CHECK (((demande_id IS NOT NULL) OR (pharmacie_id IS NOT NULL)))
 constraint|jetons_activation.jetons_activation_demande_id_fkey|FOREIGN KEY (demande_id) REFERENCES demandes_partenaire(id) ON DELETE CASCADE
+constraint|jetons_activation.jetons_activation_pharmacie_id_fkey|FOREIGN KEY (pharmacie_id) REFERENCES pharmacies(id) ON DELETE CASCADE
 constraint|jetons_activation.jetons_activation_pkey|PRIMARY KEY (jeton_hash)
 constraint|jetons_telegram.jetons_telegram_objet_check|CHECK ((objet = ANY (ARRAY['pharmacy_contact'::text, 'patient_alert'::text])))
 constraint|jetons_telegram.jetons_telegram_pkey|PRIMARY KEY (jeton_hash)
@@ -433,6 +479,13 @@ constraint|lignes_import.lignes_import_methode_check|CHECK ((methode = ANY (ARRA
 constraint|lignes_import.lignes_import_numero_check|CHECK ((numero > 0))
 constraint|lignes_import.lignes_import_pkey|PRIMARY KEY (lot_id, numero)
 constraint|lignes_import.lignes_import_resolution_check|CHECK ((resolution = ANY (ARRAY['accepted'::text, 'skipped'::text, 'mapped_manually'::text])))
+constraint|lignes_lots_pharmacies.lignes_lots_pharmacies_etat_check|CHECK ((etat = ANY (ARRAY['pret'::text, 'doublon'::text, 'erreur'::text])))
+constraint|lignes_lots_pharmacies.lignes_lots_pharmacies_lot_id_fkey|FOREIGN KEY (lot_id) REFERENCES lots_pharmacies(id) ON DELETE CASCADE
+constraint|lignes_lots_pharmacies.lignes_lots_pharmacies_numero_check|CHECK ((numero > 0))
+constraint|lignes_lots_pharmacies.lignes_lots_pharmacies_pharmacie_id_fkey|FOREIGN KEY (pharmacie_id) REFERENCES pharmacies(id) ON DELETE SET NULL
+constraint|lignes_lots_pharmacies.lignes_lots_pharmacies_pkey|PRIMARY KEY (lot_id, numero)
+constraint|lignes_lots_pharmacies.lignes_lots_pharmacies_quartier_id_fkey|FOREIGN KEY (quartier_id) REFERENCES quartiers(id)
+constraint|lignes_lots_pharmacies.lignes_lots_pharmacies_resolution_check|CHECK ((resolution = ANY (ARRAY['create'::text, 'skip'::text])))
 constraint|lots_import.lots_import_auteur_id_fkey|FOREIGN KEY (auteur_id) REFERENCES auth.users(id)
 constraint|lots_import.lots_import_mode_check|CHECK ((mode = ANY (ARRAY['merge'::text, 'replace'::text])))
 constraint|lots_import.lots_import_nom_fichier_check|CHECK (((char_length(btrim(nom_fichier)) >= 1) AND (char_length(btrim(nom_fichier)) <= 200)))
@@ -442,6 +495,10 @@ constraint|lots_import.lots_import_statut_check|CHECK ((statut = ANY (ARRAY['par
 constraint|lots_import_archives.lots_import_archives_lot_id_fkey|FOREIGN KEY (lot_id) REFERENCES lots_import(id) ON DELETE CASCADE
 constraint|lots_import_archives.lots_import_archives_pkey|PRIMARY KEY (lot_id, stock_id)
 constraint|lots_import_archives.lots_import_archives_stock_id_fkey|FOREIGN KEY (stock_id) REFERENCES stocks(id) ON DELETE CASCADE
+constraint|lots_pharmacies.lots_pharmacies_auteur_id_fkey|FOREIGN KEY (auteur_id) REFERENCES auth.users(id)
+constraint|lots_pharmacies.lots_pharmacies_nom_fichier_check|CHECK (((char_length(btrim(nom_fichier)) >= 1) AND (char_length(btrim(nom_fichier)) <= 200)))
+constraint|lots_pharmacies.lots_pharmacies_pkey|PRIMARY KEY (id)
+constraint|lots_pharmacies.lots_pharmacies_statut_check|CHECK ((statut = ANY (ARRAY['parsed'::text, 'previewed'::text, 'committed'::text, 'rolled_back'::text, 'failed'::text])))
 constraint|medicaments.medicaments_conditionnement_longueur|CHECK (((conditionnement IS NULL) OR ((char_length(conditionnement) >= 1) AND (char_length(conditionnement) <= 100))))
 constraint|medicaments.medicaments_pkey|PRIMARY KEY (id)
 constraint|medicaments.medicaments_statut_catalogue_check|CHECK ((statut_catalogue = ANY (ARRAY['actif'::text, 'archive'::text])))
@@ -456,6 +513,7 @@ constraint|ordres_admin_alertes.ordres_admin_alertes_alerte_id_fkey|FOREIGN KEY 
 constraint|ordres_admin_alertes.ordres_admin_alertes_pkey|PRIMARY KEY (id)
 constraint|ordres_admin_alertes.ordres_admin_alertes_type_check|CHECK ((type = ANY (ARRAY['transmettre'::text, 'refuser'::text])))
 constraint|patients_bloques.patients_bloques_pkey|PRIMARY KEY (empreinte_patient)
+constraint|pharmacies.pharmacies_lot_creation_id_fkey|FOREIGN KEY (lot_creation_id) REFERENCES lots_pharmacies(id) ON DELETE SET NULL
 constraint|pharmacies.pharmacies_note_moyenne_check|CHECK (((note_moyenne >= (0)::numeric) AND (note_moyenne <= (5)::numeric)))
 constraint|pharmacies.pharmacies_pkey|PRIMARY KEY (id)
 constraint|pharmacies.pharmacies_publiee_verifiee|CHECK (((NOT est_publiee) OR (statut = 'verifie'::statut_pharmacie)))
@@ -501,20 +559,25 @@ function|activer_telegram_pharmacie(p_consentement boolean)|returns=TABLE(contac
 function|admin_activer_telegram_demo(p_pharmacie_id uuid)|returns=TABLE(contact_id uuid, jeton text, expire_le timestamp with time zone) lang=plpgsql security=definer volatility=v config=search_path=public body=99ee2afd64b6b84fdcea93f3a64c8763
 function|admin_annuler_alerte(p_alerte_id uuid)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=ad5b8cde3d9880739bab15111c625153
 function|admin_basculer_checklist(p_id uuid, p_element text, p_coche boolean)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=7c41178db9e9595a1095c03304807cc0
+function|admin_basculer_checklist_pharmacie(p_pharmacie uuid, p_element text, p_coche boolean)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=4304dfa203cc85c3193ee0cb746bc709
 function|admin_bloquer_patient(p_alerte_id uuid, p_motif text)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=29098b54a961a4103f4c754e0eef7e55
 function|admin_cloturer_alerte(p_alerte_id uuid)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=5d0936a1ce91a7588cb2344e684763ec
 function|admin_demarrer_revue(p_id uuid)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=b54939a162ac5635263e38030466380c
 function|admin_detail_demande(p_id uuid)|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=d5e20f616d4f78b069e11aedc4d870fd
+function|admin_detail_verification(p_pharmacie uuid)|returns=jsonb lang=plpgsql security=definer volatility=s config=search_path=public body=2c5b241039e473022c96ff73c2eac15e
 function|admin_etat_onboarding(p_pharmacie uuid)|returns=jsonb lang=plpgsql security=definer volatility=s config=search_path=public body=688484009cbae71a4212366b806a4d96
 function|admin_liste_contacts(p_limite integer)|returns=TABLE(contact_id uuid, pharmacie_id uuid, pharmacie_nom text, pharmacie_est_demo boolean, canal text, adresse_masquee text, est_contact_demo boolean, verifie boolean, desabonne boolean, bloque boolean) lang=plpgsql security=definer volatility=s config=search_path=public body=c21a3d9493539213846d5d91643be6f2
 function|admin_lister_demandes(p_statut text, p_doublons boolean)|returns=TABLE(id uuid, statut text, nom_pharmacie text, quartier text, nom_titulaire text, doublon_suspect boolean, est_demo boolean, cree_le timestamp with time zone, age_heures integer, en_retard boolean, cases_cochees integer, nb_documents integer) lang=plpgsql security=definer volatility=s config=search_path=public body=5a0962c176c644a2e4ccc2e6b2b4d17a
 function|admin_marquer_contact_demo(p_contact_id uuid, p_demo boolean)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=9b4193722111df1771deff4a1c7c2f23
+function|admin_pharmacies_a_inviter()|returns=jsonb lang=plpgsql security=definer volatility=s config=search_path=public body=cce3ceb6cfdea7947334faa0731b8b3a
+function|admin_pharmacies_a_verifier(p_recherche text, p_limite integer, p_decalage integer)|returns=jsonb lang=plpgsql security=definer volatility=s config=search_path=public, extensions body=76748280e247f7c6185fb5813346ed00
 function|admin_pharmacies_en_retard()|returns=jsonb lang=plpgsql security=definer volatility=s config=search_path=public body=567726dff0d468ae67ff3c390ba782a3
 function|admin_rattacher_medicament(p_alerte_id uuid, p_medicament_id uuid)|returns=text lang=plpgsql security=definer volatility=v config=search_path=public body=7754ed9b43f43bda73dfb8c1982c330e
 function|admin_refuser_alerte(p_alerte_id uuid)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=6b9efe93e93048c983076f16775c1601
 function|admin_relancer_vague(p_alerte_id uuid)|returns=integer lang=plpgsql security=definer volatility=v config=search_path=public body=e34e420a739e61658b8f9e9f41efec44
 function|admin_retirer_destinataire(p_envoi_id uuid)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=272d39d6ffdf39259e783dc7810cfd56
 function|admin_transmettre(p_alerte_id uuid, p_pharmacie_ids uuid[])|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=c30a2f3a6c7d6bbb710692a809ce7ae0
+function|admin_verifier_pharmacie(p_pharmacie uuid)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=00cc332a06b08adbc87e46901169ae7f
 function|ajouter_contact_sms(p_numero text, p_consentement boolean)|returns=uuid lang=plpgsql security=definer volatility=v config=search_path=public body=9df2474191d8014a8201bb7ac1938160
 function|alertes_stock_avant_insertion()|returns=trigger lang=plpgsql security=definer volatility=v config=search_path=public, pg_temp body=c4916c85ef69ea6f04a84533c0a6e452
 function|annuler_alerte_interne(p_alerte_id uuid)|returns=void lang=sql security=definer volatility=v config=search_path=public body=4748c36bc74a2a5c5b853341a7f7ff28
@@ -534,7 +597,7 @@ function|config_routage_journal()|returns=trigger lang=plpgsql security=definer 
 function|config_routage_valider()|returns=trigger lang=plpgsql security=invoker volatility=v config=search_path=public body=6e4b2d481045c4dc626fe644809473e7
 function|config_routage_verrou()|returns=trigger lang=plpgsql security=definer volatility=v config=search_path=public body=88c8c4e14d738e17bd39a820d50686ab
 function|confirmer_mes_stocks()|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=c340455c39d718830decf090f03f7b71
-function|consommer_jeton_activation_interne(p_hash text)|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=2ad5534e7af66134673453819257da1d
+function|consommer_jeton_activation_interne(p_hash text)|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=7143a15059e778a314531151ad6c9752
 function|consommer_jeton_telegram(p_hash text)|returns=TABLE(objet text, ref_id uuid) lang=sql security=definer volatility=v config=search_path=public body=3fe77b3f33283e2e9ddd7fedb4a0cea0
 function|creer_alerte_routage(p_id_public text, p_medicament_id uuid, p_requete_brute text, p_quartier_id uuid, p_lat numeric, p_lng numeric, p_urgence text, p_canal_patient text, p_contact_chiffre bytea, p_empreinte_patient text, p_empreinte_ip text, p_consentement boolean, p_expire_le timestamp with time zone)|returns=TABLE(alerte_id uuid, id_public text, statut text, raison_revue text, fusionnee boolean, refus text) lang=plpgsql security=definer volatility=v config=search_path=public body=5652bacce8c8224d01cd73729fc93a43
 function|creer_jeton_activation_interne(p_demande uuid, p_hash text, p_heures integer)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=e9acbf0c937c553579f602605551bda1
@@ -556,6 +619,7 @@ function|exiger_admin()|returns=void lang=plpgsql security=definer volatility=s 
 function|exiger_pharmacien_interne()|returns=uuid lang=plpgsql security=definer volatility=s config=search_path=public body=2d5000b0c810e01a71fad19225e3aa09
 function|file_alertes_admin(p_statuts text[], p_limite integer)|returns=TABLE(id uuid, id_public text, statut text, raison_revue text, urgence text, medicament text, quartier text, cree_le timestamp with time zone, expire_le timestamp with time zone, vague integer, routage_manuel boolean, nb_envois integer, nb_reponses integer, nb_positives integer, premiere_reponse_positive_le timestamp with time zone, canal_patient text) lang=plpgsql security=definer volatility=s config=search_path=public body=249b85793fff1dbfd5c09814d47f3ebc
 function|file_messages_demo(p_limite integer)|returns=TABLE(cree_le timestamp with time zone, type_destinataire text, canal text, modele text, alerte_id uuid) lang=plpgsql security=definer volatility=s config=search_path=public body=510ff2f7d79a7d611683d52cb3cc1f72
+function|garde_verification_pharmacie()|returns=trigger lang=plpgsql security=invoker volatility=v config=- body=346d7eb52c630b8377b415fb7e8aa9b3
 function|import_abandonner_lot(p_lot uuid)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=7ba24941a73911f8a31ee3eeae97d7d0
 function|import_ajouter_lignes(p_lot uuid, p_lignes jsonb)|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public, extensions body=0fff43fa8eaddf3d558b9e328d564287
 function|import_annuler_lot(p_lot uuid)|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=5da1156ffcff30424988e8f5665eb238
@@ -569,6 +633,7 @@ function|import_historique()|returns=jsonb lang=plpgsql security=definer volatil
 function|import_lire_lot(p_lot uuid, p_filtre text, p_limite integer, p_decalage integer)|returns=jsonb lang=plpgsql security=definer volatility=s config=search_path=public, extensions body=8d6d210432ecc00d7af7e92591939f5b
 function|import_valider_lot(p_lot uuid)|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public, extensions body=e9ad9b4003d63dc8f637c774045bc1d3
 function|indicateurs_alertes(p_jours integer)|returns=jsonb lang=plpgsql security=definer volatility=s config=search_path=public body=c6c453460a5c844d7abd76535de751ba
+function|inviter_pharmacie_interne(p_pharmacie uuid, p_admin uuid, p_hash text, p_heures integer)|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=0a2c1e800cdec4169f51e17c3a3229c7
 function|jeton_dosage(p_norm text)|returns=text lang=sql security=invoker volatility=i config=- body=e5b6b2f3fe524c89d8a6606e9ad34cb4
 function|jetons_nombres(p text)|returns=text lang=sql security=invoker volatility=i config=- body=206dd1c06e61e878d3207ab57f9684fc
 function|journaliser_admin(p_action text, p_alerte uuid, p_details jsonb)|returns=void lang=sql security=definer volatility=v config=search_path=public body=763195bdc37ba3b3b827baa7818df6a9
@@ -577,6 +642,7 @@ function|libelle_fiche(m medicaments)|returns=text lang=sql security=invoker vol
 function|lier_contact_telegram(p_contact_id uuid, p_chat_id text)|returns=TABLE(resultat text, pharmacie_id uuid, pharmacie_nom text, contact_id uuid, est_contact_demo boolean) lang=plpgsql security=definer volatility=v config=search_path=public body=0379ddc541afea560ade5291762d8b5d
 function|lier_profil_pharmacien_interne(p_user uuid, p_pharmacie uuid, p_nom text)|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=b655e272acde51db0c6349b15dd0d191
 function|lot_du_pharmacien(p_lot uuid, p_verrou boolean)|returns=lots_import lang=plpgsql security=definer volatility=v config=search_path=public, extensions body=fd95cac204f1174d5ac0515088d6ff14
+function|lot_pharmacies_admin(p_lot uuid, p_verrou boolean)|returns=lots_pharmacies lang=plpgsql security=definer volatility=v config=search_path=public body=4b2bde4da9a6aa726005255bd167980d
 function|marquer_invitation_interne(p_demande uuid, p_compte boolean, p_invitation boolean)|returns=void lang=sql security=definer volatility=v config=search_path=public body=1c5295cdb8140736ab7eb906fad6126f
 function|medicament_routable(p_medicament_id uuid)|returns=boolean lang=sql security=definer volatility=s config=search_path=public body=f1c2ddf515b3ea552fc113929f67ab2c
 function|medicaments_reset_validation()|returns=trigger lang=plpgsql security=invoker volatility=v config=search_path=public body=739bdce4d4d1bb13505464b67724cf42
@@ -587,10 +653,20 @@ function|normaliser_texte_medicament(p text)|returns=text lang=sql security=invo
 function|onboarding_marquer(p_cle text, p_valeur boolean)|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=25c81401277cc19414a555e143681324
 function|pharmacie_eligible_routage(p_pharmacie_id uuid)|returns=boolean lang=sql security=definer volatility=s config=search_path=public body=e9634314593cb59f87d1ff7a6fa50a0a
 function|pharmacies_proches(lat double precision, lng double precision, rayon_m integer)|returns=TABLE(id uuid, nom text, adresse text, latitude double precision, longitude double precision, distance_m double precision, est_de_garde boolean, statut statut_pharmacie, quartier_nom text) lang=sql security=invoker volatility=s config=- body=2a2c3f57ce6bec7c25f98daa6073e092
+function|pm_abandonner_lot(p_lot uuid)|returns=void lang=plpgsql security=definer volatility=v config=search_path=public body=818ca71d42e4cfcf94c2d1b52b7a0aea
+function|pm_ajouter_lignes(p_lot uuid, p_lignes jsonb)|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public, extensions body=240641492afa0cdc688ee088327a64f9
+function|pm_annuler_lot(p_lot uuid)|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=23eee7f745f9618e2b1567924faf1172
+function|pm_compter_interne(p_lot uuid)|returns=jsonb lang=sql security=definer volatility=s config=search_path=public body=edb8ea98fb8c300d8eec4a9197b4cf4b
+function|pm_corriger_ligne(p_lot uuid, p_numero integer, p_action text)|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=1bd55d409c25c8a3c94e951ee25be008
+function|pm_creer_lot(p_nom_fichier text)|returns=uuid lang=plpgsql security=definer volatility=v config=search_path=public, extensions body=a7ecfa84a6b6307d04dc7f2d68aa8650
+function|pm_finaliser_lot(p_lot uuid)|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public, extensions body=b07fd6457dcbf807be9a53a92cba5028
+function|pm_historique()|returns=jsonb lang=plpgsql security=definer volatility=s config=search_path=public body=59e9e124bd48d0a7a94161c4b39f69e8
+function|pm_lire_lot(p_lot uuid, p_filtre text, p_limite integer, p_decalage integer)|returns=jsonb lang=plpgsql security=definer volatility=s config=search_path=public body=2cd5066747fe20e6a4ec30471a5fdc43
+function|pm_valider_lot(p_lot uuid)|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public, extensions body=a792825b8b99b1a65603fab24c675e76
 function|protect_pharmacies_columns()|returns=trigger lang=plpgsql security=invoker volatility=v config=search_path=public body=9899877fc7960a268c09502f059f2970
 function|reclamer_notifications(p_limite integer, p_bail_s integer)|returns=SETOF notifications_outbox lang=sql security=definer volatility=v config=search_path=public body=44bebc010e5887dbd0e8078b5bd97cd0
 function|reevaluer_ma_publication()|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=068e2bbdf6a9a870c3234ba7a6826dd6
-function|reinitialiser_demo(p_nb_pharmacies integer)|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=cbc1e89a60c5ef8d26bbb75186cf680e
+function|reinitialiser_demo(p_nb_pharmacies integer)|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=bfde8e9b205dbeeedfc266f7ab7e12a0
 function|repondre_alerte(p_envoi_id uuid, p_reponse text, p_prix integer)|returns=TABLE(resultat text, reponse text, prix_fcfa integer, repondu_le timestamp with time zone) lang=plpgsql security=definer volatility=v config=search_path=public body=780569b736b12b41937c024b9f3eb34f
 function|soumettre_demande_interne(p jsonb, p_empreinte_ip text)|returns=jsonb lang=plpgsql security=definer volatility=v config=search_path=public body=dba5cb9e946d9ff85b7cef418600676d
 function|stocks_sync_statut()|returns=trigger lang=plpgsql security=invoker volatility=v config=search_path=public body=b839f8ab8607feff3f86a0eda93a5fe1
@@ -604,6 +680,7 @@ grant|alertes_stock.authenticated|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCA
 grant|alias_medicaments.anon|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
 grant|alias_medicaments.authenticated|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
 grant|checklist_demande.authenticated|SELECT
+grant|checklist_verification_pharmacie.authenticated|SELECT
 grant|config_routage.authenticated|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
 grant|contacts_pharmacie.anon|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
 grant|contacts_pharmacie.authenticated|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
@@ -615,8 +692,11 @@ grant|drug_catalog.authenticated|REFERENCES,SELECT,TRIGGER
 grant|etat_onboarding_pharmacie.anon|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
 grant|etat_onboarding_pharmacie.authenticated|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
 grant|evenements_onboarding.authenticated|SELECT
+grant|identites_pharmacies.authenticated|SELECT
 grant|journal_admin_alertes.authenticated|SELECT
+grant|lignes_lots_pharmacies.authenticated|SELECT
 grant|lots_import.authenticated|SELECT
+grant|lots_pharmacies.authenticated|SELECT
 grant|medicaments.anon|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
 grant|medicaments.authenticated|DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE
 grant|ordres_admin_alertes.authenticated|SELECT
@@ -657,6 +737,7 @@ index|alertes_stock.idx_alertes_stock_phone|CREATE INDEX idx_alertes_stock_phone
 index|alias_medicaments.alias_medicaments_pkey|CREATE UNIQUE INDEX alias_medicaments_pkey ON public.alias_medicaments USING btree (alias_normalise, medicament_id)
 index|alias_medicaments.idx_alias_medicaments_trgm|CREATE INDEX idx_alias_medicaments_trgm ON public.alias_medicaments USING gin (alias_normalise gin_trgm_ops)
 index|checklist_demande.checklist_demande_pkey|CREATE UNIQUE INDEX checklist_demande_pkey ON public.checklist_demande USING btree (demande_id, element)
+index|checklist_verification_pharmacie.checklist_verification_pharmacie_pkey|CREATE UNIQUE INDEX checklist_verification_pharmacie_pkey ON public.checklist_verification_pharmacie USING btree (pharmacie_id, element)
 index|config_routage.config_routage_pkey|CREATE UNIQUE INDEX config_routage_pkey ON public.config_routage USING btree (cle)
 index|contacts_pharmacie.contacts_pharmacie_pharmacie_id_canal_adresse_key|CREATE UNIQUE INDEX contacts_pharmacie_pharmacie_id_canal_adresse_key ON public.contacts_pharmacie USING btree (pharmacie_id, canal, adresse)
 index|contacts_pharmacie.contacts_pharmacie_pkey|CREATE UNIQUE INDEX contacts_pharmacie_pkey ON public.contacts_pharmacie USING btree (id)
@@ -675,15 +756,18 @@ index|envois_alerte.idx_envois_alerte_pharmacie|CREATE INDEX idx_envois_alerte_p
 index|etat_onboarding_pharmacie.etat_onboarding_pharmacie_pkey|CREATE UNIQUE INDEX etat_onboarding_pharmacie_pkey ON public.etat_onboarding_pharmacie USING btree (pharmacie_id)
 index|evenements_onboarding.evenements_onboarding_pkey|CREATE UNIQUE INDEX evenements_onboarding_pkey ON public.evenements_onboarding USING btree (id)
 index|evenements_onboarding.idx_evenements_onboarding_demande|CREATE INDEX idx_evenements_onboarding_demande ON public.evenements_onboarding USING btree (demande_id, cree_le)
+index|identites_pharmacies.identites_pharmacies_pkey|CREATE UNIQUE INDEX identites_pharmacies_pkey ON public.identites_pharmacies USING btree (pharmacie_id)
 index|jetons_activation.jetons_activation_pkey|CREATE UNIQUE INDEX jetons_activation_pkey ON public.jetons_activation USING btree (jeton_hash)
 index|jetons_telegram.jetons_telegram_pkey|CREATE UNIQUE INDEX jetons_telegram_pkey ON public.jetons_telegram USING btree (jeton_hash)
 index|journal_admin_alertes.idx_journal_admin_alertes|CREATE INDEX idx_journal_admin_alertes ON public.journal_admin_alertes USING btree (alerte_id, cree_le)
 index|journal_admin_alertes.journal_admin_alertes_pkey|CREATE UNIQUE INDEX journal_admin_alertes_pkey ON public.journal_admin_alertes USING btree (id)
 index|lignes_import.idx_lignes_import_etat|CREATE INDEX idx_lignes_import_etat ON public.lignes_import USING btree (lot_id, etat)
 index|lignes_import.lignes_import_pkey|CREATE UNIQUE INDEX lignes_import_pkey ON public.lignes_import USING btree (lot_id, numero)
+index|lignes_lots_pharmacies.lignes_lots_pharmacies_pkey|CREATE UNIQUE INDEX lignes_lots_pharmacies_pkey ON public.lignes_lots_pharmacies USING btree (lot_id, numero)
 index|lots_import.idx_lots_import_pharmacie|CREATE INDEX idx_lots_import_pharmacie ON public.lots_import USING btree (pharmacie_id, cree_le DESC)
 index|lots_import.lots_import_pkey|CREATE UNIQUE INDEX lots_import_pkey ON public.lots_import USING btree (id)
 index|lots_import_archives.lots_import_archives_pkey|CREATE UNIQUE INDEX lots_import_archives_pkey ON public.lots_import_archives USING btree (lot_id, stock_id)
+index|lots_pharmacies.lots_pharmacies_pkey|CREATE UNIQUE INDEX lots_pharmacies_pkey ON public.lots_pharmacies USING btree (id)
 index|medicaments.idx_medicaments_categorie|CREATE INDEX idx_medicaments_categorie ON public.medicaments USING btree (categorie)
 index|medicaments.idx_medicaments_dci|CREATE INDEX idx_medicaments_dci ON public.medicaments USING btree (dci)
 index|medicaments.idx_medicaments_nom|CREATE INDEX idx_medicaments_nom ON public.medicaments USING gin (nom gin_trgm_ops)
@@ -697,6 +781,7 @@ index|ordres_admin_alertes.ordres_admin_alertes_pkey|CREATE UNIQUE INDEX ordres_
 index|patients_bloques.patients_bloques_pkey|CREATE UNIQUE INDEX patients_bloques_pkey ON public.patients_bloques USING btree (empreinte_patient)
 index|pharmacies.idx_pharmacies_garde|CREATE INDEX idx_pharmacies_garde ON public.pharmacies USING btree (est_de_garde) WHERE (est_de_garde = true)
 index|pharmacies.idx_pharmacies_geo|CREATE INDEX idx_pharmacies_geo ON public.pharmacies USING gist (coordinates)
+index|pharmacies.idx_pharmacies_lot_creation|CREATE INDEX idx_pharmacies_lot_creation ON public.pharmacies USING btree (lot_creation_id) WHERE (lot_creation_id IS NOT NULL)
 index|pharmacies.idx_pharmacies_nom_trgm|CREATE INDEX idx_pharmacies_nom_trgm ON public.pharmacies USING gin (nom gin_trgm_ops)
 index|pharmacies.idx_pharmacies_quartier|CREATE INDEX idx_pharmacies_quartier ON public.pharmacies USING btree (quartier_id)
 index|pharmacies.idx_pharmacies_statut|CREATE INDEX idx_pharmacies_statut ON public.pharmacies USING btree (statut)
@@ -728,6 +813,7 @@ policy|alertes_stock.Tout le monde peut créer une alerte|cmd=INSERT roles=anon,
 policy|alias_medicaments.Alias lisibles par tous|cmd=SELECT roles=public using=true with_check=-
 policy|alias_medicaments.Alias modifiables par admin|cmd=ALL roles=public using=(auth_role() = 'admin'::text) with_check=(auth_role() = 'admin'::text)
 policy|checklist_demande.Admin lit la checklist|cmd=SELECT roles=public using=(auth_role() = 'admin'::text) with_check=-
+policy|checklist_verification_pharmacie.Admin lit checklist_verification_pharmacie|cmd=SELECT roles=public using=(auth_role() = 'admin'::text) with_check=-
 policy|config_routage.Admin gère la configuration du routage|cmd=ALL roles=public using=(auth_role() = 'admin'::text) with_check=(auth_role() = 'admin'::text)
 policy|contacts_pharmacie.Admin gère les contacts|cmd=ALL roles=public using=(auth_role() = 'admin'::text) with_check=(auth_role() = 'admin'::text)
 policy|contacts_pharmacie.Pharmacien voit ses contacts|cmd=SELECT roles=public using=((auth_role() = 'pharmacien'::text) AND (pharmacie_id = auth_pharmacie_id())) with_check=-
@@ -741,8 +827,11 @@ policy|envois_alerte.Pharmacie voit ses envois|cmd=SELECT roles=public using=((a
 policy|etat_onboarding_pharmacie.Admin gère l'onboarding|cmd=ALL roles=public using=(auth_role() = 'admin'::text) with_check=(auth_role() = 'admin'::text)
 policy|etat_onboarding_pharmacie.Pharmacien voit son onboarding|cmd=SELECT roles=public using=((auth_role() = 'pharmacien'::text) AND (pharmacie_id = auth_pharmacie_id())) with_check=-
 policy|evenements_onboarding.Admin lit le journal d'onboarding|cmd=SELECT roles=public using=(auth_role() = 'admin'::text) with_check=-
+policy|identites_pharmacies.Admin lit identites_pharmacies|cmd=SELECT roles=public using=(auth_role() = 'admin'::text) with_check=-
 policy|journal_admin_alertes.Admin lit le journal des alertes|cmd=SELECT roles=public using=(auth_role() = 'admin'::text) with_check=-
+policy|lignes_lots_pharmacies.Admin lit lignes_lots_pharmacies|cmd=SELECT roles=public using=(auth_role() = 'admin'::text) with_check=-
 policy|lots_import.Admin lit les lots d'import|cmd=SELECT roles=public using=(auth_role() = 'admin'::text) with_check=-
+policy|lots_pharmacies.Admin lit lots_pharmacies|cmd=SELECT roles=public using=(auth_role() = 'admin'::text) with_check=-
 policy|medicaments.Médicaments lisibles par tous|cmd=SELECT roles=public using=true with_check=-
 policy|medicaments.Médicaments modifiables par admin|cmd=ALL roles=public using=(auth_role() = 'admin'::text) with_check=-
 policy|notifications_outbox.Admin lit l'outbox|cmd=SELECT roles=public using=(auth_role() = 'admin'::text) with_check=-
@@ -769,6 +858,7 @@ table|alertes_routage|table rls=true force_rls=false
 table|alertes_stock|table rls=true force_rls=false
 table|alias_medicaments|table rls=true force_rls=false
 table|checklist_demande|table rls=true force_rls=false
+table|checklist_verification_pharmacie|table rls=true force_rls=false
 table|config_routage|table rls=true force_rls=false
 table|contacts_pharmacie|table rls=true force_rls=false
 table|demandes_catalogue|table rls=true force_rls=false
@@ -778,12 +868,15 @@ table|drug_catalog|vue rls=false force_rls=false
 table|envois_alerte|table rls=true force_rls=false
 table|etat_onboarding_pharmacie|table rls=true force_rls=false
 table|evenements_onboarding|table rls=true force_rls=false
+table|identites_pharmacies|table rls=true force_rls=false
 table|jetons_activation|table rls=true force_rls=false
 table|jetons_telegram|table rls=true force_rls=false
 table|journal_admin_alertes|table rls=true force_rls=false
 table|lignes_import|table rls=true force_rls=false
+table|lignes_lots_pharmacies|table rls=true force_rls=false
 table|lots_import_archives|table rls=true force_rls=false
 table|lots_import|table rls=true force_rls=false
+table|lots_pharmacies|table rls=true force_rls=false
 table|medicaments|table rls=true force_rls=false
 table|notifications_outbox|table rls=true force_rls=false
 table|ordres_admin_alertes|table rls=true force_rls=false
@@ -807,6 +900,7 @@ trigger|config_routage.config_routage_valider|CREATE TRIGGER config_routage_vali
 trigger|config_routage.config_routage_verrou|CREATE TRIGGER config_routage_verrou BEFORE INSERT OR UPDATE ON public.config_routage FOR EACH ROW EXECUTE FUNCTION config_routage_verrou()
 trigger|medicaments.trg_medicaments_reset_validation|CREATE TRIGGER trg_medicaments_reset_validation BEFORE UPDATE ON public.medicaments FOR EACH ROW EXECUTE FUNCTION medicaments_reset_validation()
 trigger|medicaments.trg_medicaments_updated|CREATE TRIGGER trg_medicaments_updated BEFORE UPDATE ON public.medicaments FOR EACH ROW EXECUTE FUNCTION update_updated_at()
+trigger|pharmacies.trg_pharmacies_garde_verification|CREATE TRIGGER trg_pharmacies_garde_verification BEFORE UPDATE OF statut ON public.pharmacies FOR EACH ROW EXECUTE FUNCTION garde_verification_pharmacie()
 trigger|pharmacies.trg_pharmacies_geo|CREATE TRIGGER trg_pharmacies_geo BEFORE INSERT OR UPDATE OF latitude, longitude ON public.pharmacies FOR EACH ROW EXECUTE FUNCTION sync_coordinates()
 trigger|pharmacies.trg_pharmacies_protect|CREATE TRIGGER trg_pharmacies_protect BEFORE UPDATE ON public.pharmacies FOR EACH ROW EXECUTE FUNCTION protect_pharmacies_columns()
 trigger|pharmacies.trg_pharmacies_updated|CREATE TRIGGER trg_pharmacies_updated BEFORE UPDATE ON public.pharmacies FOR EACH ROW EXECUTE FUNCTION update_updated_at()

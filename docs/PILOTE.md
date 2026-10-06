@@ -19,7 +19,7 @@ Ce document fait le point avant le test avec les pharmaciens (sans SMS : l'adapt
 | Checklist d'onboarding dans l'Espace Pro, « Je confirme mes stocks », code couleur de fraîcheur, règle de publication automatique (SPEC 1 §5, §5.2, §1) | livré (étape 2), non encore joué en production |
 | Import CSV/Excel guidé : lecture tolérante, rapprochement avec le catalogue, aperçu et corrections, validation atomique, annulation 24 h, historique (SPEC 1 §5.1) | livré (étape 3), remplace l'ancien écran d'import ; non encore joué en production |
 | Rappels J+1/J+3/J+7 (email + Telegram) et alerte « dormante » à J+30 (SPEC 1 §5.3) | livré (étape 4) ; planificateur quotidien à activer par vous (`supabase/ops/planifier_rappels_onboarding.sql`) |
-| Création en masse des 52 pharmacies existantes (SPEC 1 §4) | **à venir** |
+| Création en masse de pharmacies depuis un CSV, vérification une par une (checklist de 5 cases imposée par la base), invitation du titulaire (SPEC 1 §4) | livré (étape 5), non encore joué en production |
 
 Conséquence pour le pilote : pas de parcours d'inscription autonome des pharmacies. Seule une pharmacie `verifie` est éligible au routage.
 

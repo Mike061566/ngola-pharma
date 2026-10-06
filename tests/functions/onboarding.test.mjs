@@ -259,3 +259,73 @@ test('modèles d\'onboarding : email seulement, sans donnée personnelle hors no
   }
   assert.match(rendre('onboarding_approuve', 'email', { nom_officine: nom, lien: 'https://x.test/a' }).texte, /72 h/);
 });
+
+// ── Invitation d'une pharmacie existante (création en masse) ──
+import { inviterPharmacie } from '../../supabase/functions/_shared/invitation-pharmacie.js';
+
+function magasinInvitation({ mode = 'demo', retour = { email: 'titulaire@exemple.test', nom: 'Pharmacie Test', est_demo: true }, erreur = null } = {}) {
+  const m = magasinOnb({ mode });
+  m.e.invitations = [];
+  m.inviterPharmacie = async (ph, admin, hash, heures) => { if (erreur) throw erreur; m.e.invitations.push({ ph, admin, hash, heures }); return retour; };
+  return m;
+}
+const PH = '22222222-2222-4222-8222-222222222222';
+const invite = async (m, corps = { pharmacie_id: PH }, jwt = 'jwt-admin') => inviterPharmacie({ jwt, corps }, { magasin: m, env: { APP_BASE_URL: 'https://app.test' }, cle: await cleTest() });
+
+test('invitation : seul l\'admin ; requête invalide refusée ; aucun email sans autorisation', async () => {
+  const m = magasinInvitation();
+  assert.equal((await invite(m, undefined, null)).status, 403);
+  assert.equal((await invite(m, { pharmacie_id: PH }, 'jwt-pharma')).status, 403);
+  assert.equal((await invite(m, { pharmacie_id: 'x' })).status, 400);
+  assert.equal(m.etat.lignes.length, 0);
+  assert.equal(m.e.invitations.length, 0);
+});
+
+test('invitation : jeton haché 72 h, email au titulaire, lien renvoyé à l\'admin en démo seulement', async () => {
+  let m = magasinInvitation();
+  const r = await invite(m);
+  assert.equal(r.status, 200);
+  assert.match(r.corps.lien_activation, /^https:\/\/app\.test\/activer\.html#t=[A-Za-z0-9_-]{20,}$/);
+  const jeton = r.corps.lien_activation.split('#t=')[1];
+  assert.equal(m.e.invitations[0].hash, await sha256Hex(jeton), 'seul le hachage est transmis à la base');
+  assert.equal(m.e.invitations[0].heures, 72);
+  const l = m.etat.lignes[0];
+  assert.deepEqual([l.canal, l.modele, l.type_destinataire, l.est_destinataire_demo], ['email', 'onboarding_invitation', 'pharmacy', false]);
+  m = magasinInvitation({ mode: 'production', retour: { email: 'titulaire@exemple.test', nom: 'Pharmacie Test', est_demo: false } });
+  assert.equal((await invite(m)).corps.lien_activation, undefined, 'jamais le lien à l\'admin en production');
+});
+
+test('invitation : erreurs métier de la base -> réponses claires, aucun email', async () => {
+  const err = (code, detail) => Object.assign(new Error('x'), { code, detail });
+  for (const [e, status, erreur] of [[err('55000', 'Seule une pharmacie vérifiée peut être invitée'), 409, 'pharmacie_non_verifiee'], [err('55000', 'Email du titulaire inconnu'), 409, 'email_inconnu'],
+    [err('P0002'), 404, 'introuvable'], [err('42501'), 403, 'refuse']]) {
+    const m = magasinInvitation({ erreur: e });
+    const r = await invite(m);
+    assert.deepEqual([r.status, r.corps.erreur], [status, erreur]);
+    assert.equal(m.etat.lignes.length, 0);
+  }
+});
+
+test('invitation : deux invitations = deux emails (clé d\'idempotence propre au jeton)', async () => {
+  const m = magasinInvitation();
+  await invite(m); await invite(m);
+  assert.equal(m.etat.lignes.length, 2);
+});
+
+test('modèle d\'invitation : email seulement, nom et lien obligatoires', () => {
+  const r = rendre('onboarding_invitation', 'email', { nom_officine: 'Pharmacie Test', lien: 'https://app.test/activer.html#t=abc' });
+  assert.match(r.texte, /référencée et vérifiée/);
+  assert.match(r.texte, /72 h/);
+  assert.throws(() => rendre('onboarding_invitation', 'email', { nom_officine: 'x' }), /Variables manquantes/);
+  assert.throws(() => rendre('onboarding_invitation', 'sms', { nom_officine: 'x', lien: 'y' }), /n'existe pas pour le canal/);
+});
+
+test('activation d\'une pharmacie invitée sans demande : compte créé, rien à marquer côté demande', async () => {
+  const m = magasinOnb();
+  m.consommerJetonActivation = async () => ({ email: 'titulaire@exemple.test', pharmacie_id: 'ph-9', demande_id: null });
+  let marque = 0; m.marquerInvitation = async () => { marque += 1; };
+  const a = await activerCompte({ jeton: 'abcdefghijklmnopqrstuvwx' }, { magasin: m, env: { APP_BASE_URL: 'https://app.test' } });
+  assert.equal(a.status, 200);
+  assert.deepEqual(m.e.profils, [{ u: 'u1', ph: 'ph-9' }]);
+  assert.equal(marque, 0);
+});
