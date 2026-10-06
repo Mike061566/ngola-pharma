@@ -1,0 +1,1181 @@
+drug_id,dci,atc_code,category,variant_id,brand,dosage,form,is_generic,price_xaf,availability
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0001,Artéméther + Luméfantrine Brand1,250 mg,capsule,False,1735,unknown
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0002,Artéméther + Luméfantrine Brand2,500 mg,comprimé,True,1093,in_stock
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0003,Artéméther + Luméfantrine Brand3,750 mg,capsule,False,975,low
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0004,Artéméther + Luméfantrine Brand1,250 mg,comprimé,True,1204,unknown
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0005,Artéméther + Luméfantrine Brand2,500 mg,suspension,False,1072,low
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0006,Artéméther + Luméfantrine Brand3,750 mg,comprimé,True,3977,in_stock
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0007,Artéméther + Luméfantrine Brand1,250 mg,comprimé,False,2328,in_stock
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0008,Artéméther + Luméfantrine Brand2,500 mg,suspension,True,906,low
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0009,Artéméther + Luméfantrine Brand3,750 mg,comprimé,False,1590,out
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0010,Artéméther + Luméfantrine Brand1,250 mg,suspension,True,1681,in_stock
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0011,Artéméther + Luméfantrine Brand2,500 mg,capsule,False,1980,in_stock
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0012,Artéméther + Luméfantrine Brand3,750 mg,sirop,True,3550,in_stock
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0013,Artéméther + Luméfantrine Brand1,250 mg,comprimé,False,988,low
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0014,Artéméther + Luméfantrine Brand2,500 mg,suspension,True,4855,unknown
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0015,Artéméther + Luméfantrine Brand3,750 mg,capsule,False,4314,unknown
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0016,Artéméther + Luméfantrine Brand1,250 mg,capsule,True,2955,low
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0017,Artéméther + Luméfantrine Brand2,500 mg,sirop,False,2499,in_stock
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0018,Artéméther + Luméfantrine Brand3,750 mg,capsule,True,4802,unknown
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0019,Artéméther + Luméfantrine Brand1,250 mg,capsule,False,4176,out
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0020,Artéméther + Luméfantrine Brand2,500 mg,comprimé,True,1467,unknown
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0021,Artéméther + Luméfantrine Brand3,750 mg,sirop,False,3302,low
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0022,Artéméther + Luméfantrine Brand1,250 mg,suspension,True,3954,in_stock
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0023,Artéméther + Luméfantrine Brand2,500 mg,comprimé,False,3070,out
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0024,Artéméther + Luméfantrine Brand3,750 mg,capsule,True,4568,unknown
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0025,Artéméther + Luméfantrine Brand1,250 mg,comprimé,False,1266,out
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0026,Artéméther + Luméfantrine Brand2,500 mg,suspension,True,1032,in_stock
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0027,Artéméther + Luméfantrine Brand3,750 mg,capsule,False,4150,out
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0028,Artéméther + Luméfantrine Brand1,250 mg,suspension,True,3342,in_stock
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0029,Artéméther + Luméfantrine Brand2,500 mg,suspension,False,3411,low
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0030,Artéméther + Luméfantrine Brand3,750 mg,comprimé,True,4544,in_stock
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0031,Artéméther + Luméfantrine Brand1,250 mg,sirop,False,2854,low
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0032,Artéméther + Luméfantrine Brand2,500 mg,sirop,True,3759,unknown
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0033,Artéméther + Luméfantrine Brand3,750 mg,suspension,False,1160,low
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0034,Artéméther + Luméfantrine Brand1,250 mg,suspension,True,3790,out
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0035,Artéméther + Luméfantrine Brand2,500 mg,sirop,False,4026,out
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0036,Artéméther + Luméfantrine Brand3,750 mg,suspension,True,3439,unknown
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0037,Artéméther + Luméfantrine Brand1,250 mg,sirop,False,1736,in_stock
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0038,Artéméther + Luméfantrine Brand2,500 mg,sirop,True,1739,low
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0039,Artéméther + Luméfantrine Brand3,750 mg,sirop,False,598,unknown
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0040,Artéméther + Luméfantrine Brand1,250 mg,sirop,True,2652,out
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0041,Artéméther + Luméfantrine Brand2,500 mg,comprimé,False,1693,unknown
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0042,Artéméther + Luméfantrine Brand3,750 mg,capsule,True,3110,low
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0043,Artéméther + Luméfantrine Brand1,250 mg,comprimé,False,4240,unknown
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0044,Artéméther + Luméfantrine Brand2,500 mg,suspension,True,3768,unknown
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0045,Artéméther + Luméfantrine Brand3,750 mg,comprimé,False,4444,unknown
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0046,Artéméther + Luméfantrine Brand1,250 mg,comprimé,True,2061,in_stock
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0047,Artéméther + Luméfantrine Brand2,500 mg,sirop,False,4109,low
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0048,Artéméther + Luméfantrine Brand3,750 mg,comprimé,True,3285,in_stock
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0049,Artéméther + Luméfantrine Brand1,250 mg,comprimé,False,501,low
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0050,Artéméther + Luméfantrine Brand2,500 mg,comprimé,True,3478,in_stock
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0051,Artéméther + Luméfantrine Brand3,750 mg,comprimé,False,2203,unknown
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0052,Artéméther + Luméfantrine Brand1,250 mg,sirop,True,2566,out
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0053,Artéméther + Luméfantrine Brand2,500 mg,capsule,False,4384,in_stock
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0054,Artéméther + Luméfantrine Brand3,750 mg,comprimé,True,4498,unknown
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0055,Artéméther + Luméfantrine Brand1,250 mg,suspension,False,4463,out
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0056,Artéméther + Luméfantrine Brand2,500 mg,comprimé,True,1680,in_stock
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0057,Artéméther + Luméfantrine Brand3,750 mg,capsule,False,2668,unknown
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0058,Artéméther + Luméfantrine Brand1,250 mg,sirop,True,4729,in_stock
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0059,Artéméther + Luméfantrine Brand2,500 mg,sirop,False,4827,out
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0060,Artéméther + Luméfantrine Brand3,750 mg,sirop,True,4949,in_stock
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0061,Artéméther + Luméfantrine Brand1,250 mg,capsule,False,1245,out
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0062,Artéméther + Luméfantrine Brand2,500 mg,capsule,True,1868,out
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0063,Artéméther + Luméfantrine Brand3,750 mg,sirop,False,4862,out
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0064,Artéméther + Luméfantrine Brand1,250 mg,sirop,True,2098,low
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0065,Artéméther + Luméfantrine Brand2,500 mg,suspension,False,2357,low
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0066,Artéméther + Luméfantrine Brand3,750 mg,suspension,True,3412,in_stock
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0067,Artéméther + Luméfantrine Brand1,250 mg,comprimé,False,2788,unknown
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0068,Artéméther + Luméfantrine Brand2,500 mg,capsule,True,2086,out
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0069,Artéméther + Luméfantrine Brand3,750 mg,suspension,False,3363,out
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0070,Artéméther + Luméfantrine Brand1,250 mg,comprimé,True,2306,in_stock
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0071,Artéméther + Luméfantrine Brand2,500 mg,sirop,False,4350,low
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0072,Artéméther + Luméfantrine Brand3,750 mg,capsule,True,2174,unknown
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0073,Artéméther + Luméfantrine Brand1,250 mg,comprimé,False,4427,out
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0074,Artéméther + Luméfantrine Brand2,500 mg,comprimé,True,1482,unknown
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0075,Artéméther + Luméfantrine Brand3,750 mg,sirop,False,4416,low
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0076,Artéméther + Luméfantrine Brand1,250 mg,suspension,True,3223,in_stock
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0077,Artéméther + Luméfantrine Brand2,500 mg,suspension,False,4294,unknown
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0078,Artéméther + Luméfantrine Brand3,750 mg,comprimé,True,1801,low
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0079,Artéméther + Luméfantrine Brand1,250 mg,sirop,False,725,low
+drug-412,Artéméther + Luméfantrine,WHO ATC: P01BF01,Antipaludéens,var-0080,Artéméther + Luméfantrine Brand2,500 mg,suspension,True,1697,unknown
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0081,Paracétamol Brand1,250 mg,capsule,False,1777,low
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0082,Paracétamol Brand2,500 mg,comprimé,True,616,in_stock
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0083,Paracétamol Brand3,750 mg,sirop,False,4053,low
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0084,Paracétamol Brand1,250 mg,sirop,True,729,out
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0085,Paracétamol Brand2,500 mg,sirop,False,2899,low
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0086,Paracétamol Brand3,750 mg,capsule,True,2624,unknown
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0087,Paracétamol Brand1,250 mg,sirop,False,998,out
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0088,Paracétamol Brand2,500 mg,suspension,True,4733,unknown
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0089,Paracétamol Brand3,750 mg,sirop,False,4856,low
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0090,Paracétamol Brand1,250 mg,comprimé,True,4105,low
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0091,Paracétamol Brand2,500 mg,comprimé,False,1727,low
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0092,Paracétamol Brand3,750 mg,sirop,True,4378,in_stock
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0093,Paracétamol Brand1,250 mg,comprimé,False,3170,unknown
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0094,Paracétamol Brand2,500 mg,comprimé,True,965,low
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0095,Paracétamol Brand3,750 mg,sirop,False,2768,in_stock
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0096,Paracétamol Brand1,250 mg,comprimé,True,4659,unknown
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0097,Paracétamol Brand2,500 mg,comprimé,False,1019,unknown
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0098,Paracétamol Brand3,750 mg,capsule,True,4641,low
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0099,Paracétamol Brand1,250 mg,capsule,False,4205,unknown
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0100,Paracétamol Brand2,500 mg,sirop,True,4786,out
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0101,Paracétamol Brand3,750 mg,sirop,False,4166,low
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0102,Paracétamol Brand1,250 mg,suspension,True,1496,unknown
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0103,Paracétamol Brand2,500 mg,suspension,False,3088,in_stock
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0104,Paracétamol Brand3,750 mg,sirop,True,4008,in_stock
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0105,Paracétamol Brand1,250 mg,sirop,False,2980,in_stock
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0106,Paracétamol Brand2,500 mg,sirop,True,3499,low
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0107,Paracétamol Brand3,750 mg,capsule,False,1624,unknown
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0108,Paracétamol Brand1,250 mg,sirop,True,1271,unknown
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0109,Paracétamol Brand2,500 mg,suspension,False,1833,low
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0110,Paracétamol Brand3,750 mg,sirop,True,4035,unknown
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0111,Paracétamol Brand1,250 mg,capsule,False,3951,low
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0112,Paracétamol Brand2,500 mg,capsule,True,3109,in_stock
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0113,Paracétamol Brand3,750 mg,capsule,False,659,out
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0114,Paracétamol Brand1,250 mg,suspension,True,4108,in_stock
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0115,Paracétamol Brand2,500 mg,suspension,False,3215,out
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0116,Paracétamol Brand3,750 mg,comprimé,True,1424,low
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0117,Paracétamol Brand1,250 mg,comprimé,False,1188,out
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0118,Paracétamol Brand2,500 mg,capsule,True,824,low
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0119,Paracétamol Brand3,750 mg,capsule,False,1561,unknown
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0120,Paracétamol Brand1,250 mg,capsule,True,3825,low
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0121,Paracétamol Brand2,500 mg,suspension,False,3179,in_stock
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0122,Paracétamol Brand3,750 mg,capsule,True,971,low
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0123,Paracétamol Brand1,250 mg,suspension,False,1093,out
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0124,Paracétamol Brand2,500 mg,comprimé,True,1225,out
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0125,Paracétamol Brand3,750 mg,comprimé,False,2321,in_stock
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0126,Paracétamol Brand1,250 mg,capsule,True,1496,unknown
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0127,Paracétamol Brand2,500 mg,comprimé,False,3278,unknown
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0128,Paracétamol Brand3,750 mg,capsule,True,1558,in_stock
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0129,Paracétamol Brand1,250 mg,sirop,False,1396,low
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0130,Paracétamol Brand2,500 mg,capsule,True,912,low
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0131,Paracétamol Brand3,750 mg,sirop,False,3055,out
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0132,Paracétamol Brand1,250 mg,sirop,True,2875,unknown
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0133,Paracétamol Brand2,500 mg,sirop,False,2716,out
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0134,Paracétamol Brand3,750 mg,comprimé,True,2551,in_stock
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0135,Paracétamol Brand1,250 mg,comprimé,False,651,low
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0136,Paracétamol Brand2,500 mg,suspension,True,2512,unknown
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0137,Paracétamol Brand3,750 mg,comprimé,False,4040,unknown
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0138,Paracétamol Brand1,250 mg,suspension,True,4650,out
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0139,Paracétamol Brand2,500 mg,sirop,False,2380,out
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0140,Paracétamol Brand3,750 mg,sirop,True,1644,unknown
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0141,Paracétamol Brand1,250 mg,capsule,False,945,low
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0142,Paracétamol Brand2,500 mg,comprimé,True,1079,out
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0143,Paracétamol Brand3,750 mg,suspension,False,1837,in_stock
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0144,Paracétamol Brand1,250 mg,comprimé,True,3620,out
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0145,Paracétamol Brand2,500 mg,sirop,False,2900,in_stock
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0146,Paracétamol Brand3,750 mg,suspension,True,2018,low
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0147,Paracétamol Brand1,250 mg,capsule,False,4152,in_stock
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0148,Paracétamol Brand2,500 mg,capsule,True,3483,out
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0149,Paracétamol Brand3,750 mg,capsule,False,2502,in_stock
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0150,Paracétamol Brand1,250 mg,capsule,True,2284,out
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0151,Paracétamol Brand2,500 mg,sirop,False,508,out
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0152,Paracétamol Brand3,750 mg,suspension,True,1187,unknown
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0153,Paracétamol Brand1,250 mg,capsule,False,4618,low
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0154,Paracétamol Brand2,500 mg,sirop,True,4634,in_stock
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0155,Paracétamol Brand3,750 mg,comprimé,False,2664,in_stock
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0156,Paracétamol Brand1,250 mg,sirop,True,3772,in_stock
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0157,Paracétamol Brand2,500 mg,suspension,False,684,out
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0158,Paracétamol Brand3,750 mg,capsule,True,2407,in_stock
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0159,Paracétamol Brand1,250 mg,sirop,False,3690,out
+drug-703,Paracétamol,WHO ATC: N02BE01,Analgésiques,var-0160,Paracétamol Brand2,500 mg,suspension,True,1724,out
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0161,Ibuprofène Brand1,250 mg,sirop,False,858,unknown
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0162,Ibuprofène Brand2,500 mg,sirop,True,4790,in_stock
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0163,Ibuprofène Brand3,750 mg,sirop,False,1197,in_stock
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0164,Ibuprofène Brand1,250 mg,comprimé,True,1590,out
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0165,Ibuprofène Brand2,500 mg,comprimé,False,3585,unknown
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0166,Ibuprofène Brand3,750 mg,comprimé,True,654,low
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0167,Ibuprofène Brand1,250 mg,suspension,False,2660,in_stock
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0168,Ibuprofène Brand2,500 mg,suspension,True,1074,in_stock
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0169,Ibuprofène Brand3,750 mg,comprimé,False,4381,out
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0170,Ibuprofène Brand1,250 mg,comprimé,True,2675,low
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0171,Ibuprofène Brand2,500 mg,sirop,False,2390,unknown
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0172,Ibuprofène Brand3,750 mg,suspension,True,3633,in_stock
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0173,Ibuprofène Brand1,250 mg,suspension,False,2853,in_stock
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0174,Ibuprofène Brand2,500 mg,sirop,True,1134,low
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0175,Ibuprofène Brand3,750 mg,capsule,False,2580,out
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0176,Ibuprofène Brand1,250 mg,sirop,True,602,unknown
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0177,Ibuprofène Brand2,500 mg,comprimé,False,4479,out
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0178,Ibuprofène Brand3,750 mg,comprimé,True,2283,unknown
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0179,Ibuprofène Brand1,250 mg,capsule,False,4731,out
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0180,Ibuprofène Brand2,500 mg,suspension,True,4316,unknown
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0181,Ibuprofène Brand3,750 mg,comprimé,False,4998,low
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0182,Ibuprofène Brand1,250 mg,capsule,True,1203,unknown
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0183,Ibuprofène Brand2,500 mg,comprimé,False,2872,unknown
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0184,Ibuprofène Brand3,750 mg,comprimé,True,4650,unknown
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0185,Ibuprofène Brand1,250 mg,capsule,False,3669,low
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0186,Ibuprofène Brand2,500 mg,sirop,True,1111,in_stock
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0187,Ibuprofène Brand3,750 mg,sirop,False,4793,out
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0188,Ibuprofène Brand1,250 mg,capsule,True,1586,out
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0189,Ibuprofène Brand2,500 mg,comprimé,False,3491,low
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0190,Ibuprofène Brand3,750 mg,suspension,True,4482,unknown
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0191,Ibuprofène Brand1,250 mg,comprimé,False,1803,in_stock
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0192,Ibuprofène Brand2,500 mg,suspension,True,4192,unknown
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0193,Ibuprofène Brand3,750 mg,capsule,False,1652,unknown
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0194,Ibuprofène Brand1,250 mg,capsule,True,3581,out
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0195,Ibuprofène Brand2,500 mg,comprimé,False,3214,in_stock
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0196,Ibuprofène Brand3,750 mg,capsule,True,3271,unknown
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0197,Ibuprofène Brand1,250 mg,comprimé,False,2103,in_stock
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0198,Ibuprofène Brand2,500 mg,capsule,True,2574,out
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0199,Ibuprofène Brand3,750 mg,comprimé,False,3718,unknown
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0200,Ibuprofène Brand1,250 mg,comprimé,True,3454,unknown
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0201,Ibuprofène Brand2,500 mg,capsule,False,895,out
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0202,Ibuprofène Brand3,750 mg,comprimé,True,922,out
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0203,Ibuprofène Brand1,250 mg,sirop,False,2542,out
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0204,Ibuprofène Brand2,500 mg,suspension,True,4685,out
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0205,Ibuprofène Brand3,750 mg,sirop,False,3558,unknown
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0206,Ibuprofène Brand1,250 mg,comprimé,True,3777,low
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0207,Ibuprofène Brand2,500 mg,comprimé,False,905,unknown
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0208,Ibuprofène Brand3,750 mg,suspension,True,1635,out
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0209,Ibuprofène Brand1,250 mg,suspension,False,901,low
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0210,Ibuprofène Brand2,500 mg,sirop,True,4368,unknown
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0211,Ibuprofène Brand3,750 mg,capsule,False,2808,out
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0212,Ibuprofène Brand1,250 mg,capsule,True,2631,unknown
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0213,Ibuprofène Brand2,500 mg,sirop,False,2964,unknown
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0214,Ibuprofène Brand3,750 mg,suspension,True,1480,low
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0215,Ibuprofène Brand1,250 mg,sirop,False,1115,low
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0216,Ibuprofène Brand2,500 mg,suspension,True,2302,unknown
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0217,Ibuprofène Brand3,750 mg,capsule,False,4186,unknown
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0218,Ibuprofène Brand1,250 mg,sirop,True,4987,low
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0219,Ibuprofène Brand2,500 mg,sirop,False,1243,low
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0220,Ibuprofène Brand3,750 mg,capsule,True,1246,out
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0221,Ibuprofène Brand1,250 mg,sirop,False,3517,out
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0222,Ibuprofène Brand2,500 mg,sirop,True,664,unknown
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0223,Ibuprofène Brand3,750 mg,suspension,False,3890,low
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0224,Ibuprofène Brand1,250 mg,suspension,True,2713,out
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0225,Ibuprofène Brand2,500 mg,comprimé,False,4580,out
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0226,Ibuprofène Brand3,750 mg,capsule,True,1531,low
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0227,Ibuprofène Brand1,250 mg,comprimé,False,2720,low
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0228,Ibuprofène Brand2,500 mg,suspension,True,3774,unknown
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0229,Ibuprofène Brand3,750 mg,suspension,False,3056,in_stock
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0230,Ibuprofène Brand1,250 mg,sirop,True,764,unknown
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0231,Ibuprofène Brand2,500 mg,suspension,False,4512,in_stock
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0232,Ibuprofène Brand3,750 mg,comprimé,True,3707,unknown
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0233,Ibuprofène Brand1,250 mg,suspension,False,2535,in_stock
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0234,Ibuprofène Brand2,500 mg,sirop,True,1764,low
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0235,Ibuprofène Brand3,750 mg,comprimé,False,4246,in_stock
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0236,Ibuprofène Brand1,250 mg,comprimé,True,511,low
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0237,Ibuprofène Brand2,500 mg,sirop,False,807,out
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0238,Ibuprofène Brand3,750 mg,sirop,True,2562,unknown
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0239,Ibuprofène Brand1,250 mg,comprimé,False,1314,in_stock
+drug-876,Ibuprofène,WHO ATC: M01AE01,Analgésiques,var-0240,Ibuprofène Brand2,500 mg,capsule,True,4796,low
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0241,Amoxicilline Brand1,250 mg,suspension,False,2637,low
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0242,Amoxicilline Brand2,500 mg,comprimé,True,585,out
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0243,Amoxicilline Brand3,750 mg,suspension,False,2782,out
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0244,Amoxicilline Brand1,250 mg,sirop,True,4393,low
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0245,Amoxicilline Brand2,500 mg,sirop,False,739,unknown
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0246,Amoxicilline Brand3,750 mg,capsule,True,953,in_stock
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0247,Amoxicilline Brand1,250 mg,sirop,False,4582,unknown
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0248,Amoxicilline Brand2,500 mg,comprimé,True,2607,low
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0249,Amoxicilline Brand3,750 mg,suspension,False,3532,low
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0250,Amoxicilline Brand1,250 mg,suspension,True,779,out
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0251,Amoxicilline Brand2,500 mg,suspension,False,3468,unknown
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0252,Amoxicilline Brand3,750 mg,sirop,True,555,out
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0253,Amoxicilline Brand1,250 mg,comprimé,False,2181,unknown
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0254,Amoxicilline Brand2,500 mg,sirop,True,3053,low
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0255,Amoxicilline Brand3,750 mg,sirop,False,4310,low
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0256,Amoxicilline Brand1,250 mg,capsule,True,2916,in_stock
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0257,Amoxicilline Brand2,500 mg,suspension,False,2034,low
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0258,Amoxicilline Brand3,750 mg,suspension,True,3916,in_stock
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0259,Amoxicilline Brand1,250 mg,sirop,False,3723,in_stock
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0260,Amoxicilline Brand2,500 mg,sirop,True,693,low
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0261,Amoxicilline Brand3,750 mg,suspension,False,924,in_stock
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0262,Amoxicilline Brand1,250 mg,sirop,True,3722,unknown
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0263,Amoxicilline Brand2,500 mg,capsule,False,1427,in_stock
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0264,Amoxicilline Brand3,750 mg,sirop,True,3197,low
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0265,Amoxicilline Brand1,250 mg,sirop,False,4799,unknown
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0266,Amoxicilline Brand2,500 mg,comprimé,True,3054,unknown
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0267,Amoxicilline Brand3,750 mg,capsule,False,3217,unknown
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0268,Amoxicilline Brand1,250 mg,sirop,True,1392,in_stock
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0269,Amoxicilline Brand2,500 mg,comprimé,False,2792,in_stock
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0270,Amoxicilline Brand3,750 mg,capsule,True,3942,in_stock
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0271,Amoxicilline Brand1,250 mg,sirop,False,3614,out
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0272,Amoxicilline Brand2,500 mg,capsule,True,4042,in_stock
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0273,Amoxicilline Brand3,750 mg,comprimé,False,4378,low
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0274,Amoxicilline Brand1,250 mg,capsule,True,4936,unknown
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0275,Amoxicilline Brand2,500 mg,sirop,False,3148,out
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0276,Amoxicilline Brand3,750 mg,suspension,True,748,unknown
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0277,Amoxicilline Brand1,250 mg,sirop,False,3815,in_stock
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0278,Amoxicilline Brand2,500 mg,suspension,True,785,unknown
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0279,Amoxicilline Brand3,750 mg,comprimé,False,1007,out
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0280,Amoxicilline Brand1,250 mg,sirop,True,1014,out
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0281,Amoxicilline Brand2,500 mg,capsule,False,2730,out
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0282,Amoxicilline Brand3,750 mg,comprimé,True,2647,out
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0283,Amoxicilline Brand1,250 mg,capsule,False,2936,in_stock
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0284,Amoxicilline Brand2,500 mg,comprimé,True,698,low
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0285,Amoxicilline Brand3,750 mg,comprimé,False,4392,unknown
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0286,Amoxicilline Brand1,250 mg,suspension,True,2556,unknown
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0287,Amoxicilline Brand2,500 mg,suspension,False,1587,unknown
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0288,Amoxicilline Brand3,750 mg,sirop,True,571,out
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0289,Amoxicilline Brand1,250 mg,sirop,False,2434,out
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0290,Amoxicilline Brand2,500 mg,capsule,True,4274,out
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0291,Amoxicilline Brand3,750 mg,comprimé,False,4693,low
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0292,Amoxicilline Brand1,250 mg,suspension,True,1810,low
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0293,Amoxicilline Brand2,500 mg,suspension,False,1030,in_stock
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0294,Amoxicilline Brand3,750 mg,suspension,True,4961,out
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0295,Amoxicilline Brand1,250 mg,sirop,False,3994,in_stock
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0296,Amoxicilline Brand2,500 mg,comprimé,True,2669,in_stock
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0297,Amoxicilline Brand3,750 mg,sirop,False,1289,unknown
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0298,Amoxicilline Brand1,250 mg,suspension,True,4161,low
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0299,Amoxicilline Brand2,500 mg,sirop,False,1588,unknown
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0300,Amoxicilline Brand3,750 mg,suspension,True,2424,in_stock
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0301,Amoxicilline Brand1,250 mg,capsule,False,2906,out
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0302,Amoxicilline Brand2,500 mg,capsule,True,3555,out
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0303,Amoxicilline Brand3,750 mg,capsule,False,2131,unknown
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0304,Amoxicilline Brand1,250 mg,sirop,True,2021,low
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0305,Amoxicilline Brand2,500 mg,sirop,False,1756,out
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0306,Amoxicilline Brand3,750 mg,sirop,True,3173,in_stock
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0307,Amoxicilline Brand1,250 mg,suspension,False,2561,low
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0308,Amoxicilline Brand2,500 mg,sirop,True,1323,unknown
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0309,Amoxicilline Brand3,750 mg,comprimé,False,1338,in_stock
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0310,Amoxicilline Brand1,250 mg,suspension,True,2393,unknown
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0311,Amoxicilline Brand2,500 mg,capsule,False,830,out
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0312,Amoxicilline Brand3,750 mg,sirop,True,1476,in_stock
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0313,Amoxicilline Brand1,250 mg,sirop,False,2090,in_stock
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0314,Amoxicilline Brand2,500 mg,capsule,True,4699,low
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0315,Amoxicilline Brand3,750 mg,suspension,False,2629,in_stock
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0316,Amoxicilline Brand1,250 mg,comprimé,True,3364,low
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0317,Amoxicilline Brand2,500 mg,comprimé,False,3520,out
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0318,Amoxicilline Brand3,750 mg,sirop,True,861,low
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0319,Amoxicilline Brand1,250 mg,capsule,False,813,low
+drug-258,Amoxicilline,WHO ATC: J01CA04,Antibiotiques,var-0320,Amoxicilline Brand2,500 mg,comprimé,True,3180,unknown
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0321,Fer + Acide Folique Brand1,250 mg,capsule,False,2016,out
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0322,Fer + Acide Folique Brand2,500 mg,comprimé,True,2166,in_stock
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0323,Fer + Acide Folique Brand3,750 mg,suspension,False,4989,unknown
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0324,Fer + Acide Folique Brand1,250 mg,comprimé,True,3843,in_stock
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0325,Fer + Acide Folique Brand2,500 mg,suspension,False,1766,in_stock
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0326,Fer + Acide Folique Brand3,750 mg,sirop,True,3758,out
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0327,Fer + Acide Folique Brand1,250 mg,suspension,False,2820,out
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0328,Fer + Acide Folique Brand2,500 mg,suspension,True,920,out
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0329,Fer + Acide Folique Brand3,750 mg,capsule,False,3892,unknown
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0330,Fer + Acide Folique Brand1,250 mg,comprimé,True,3480,low
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0331,Fer + Acide Folique Brand2,500 mg,suspension,False,3817,low
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0332,Fer + Acide Folique Brand3,750 mg,comprimé,True,4056,low
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0333,Fer + Acide Folique Brand1,250 mg,suspension,False,1430,in_stock
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0334,Fer + Acide Folique Brand2,500 mg,suspension,True,3487,unknown
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0335,Fer + Acide Folique Brand3,750 mg,sirop,False,1564,in_stock
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0336,Fer + Acide Folique Brand1,250 mg,comprimé,True,1667,unknown
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0337,Fer + Acide Folique Brand2,500 mg,comprimé,False,3537,low
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0338,Fer + Acide Folique Brand3,750 mg,sirop,True,3350,out
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0339,Fer + Acide Folique Brand1,250 mg,sirop,False,4769,low
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0340,Fer + Acide Folique Brand2,500 mg,comprimé,True,1391,unknown
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0341,Fer + Acide Folique Brand3,750 mg,suspension,False,2116,out
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0342,Fer + Acide Folique Brand1,250 mg,sirop,True,856,unknown
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0343,Fer + Acide Folique Brand2,500 mg,capsule,False,937,unknown
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0344,Fer + Acide Folique Brand3,750 mg,comprimé,True,1812,low
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0345,Fer + Acide Folique Brand1,250 mg,suspension,False,2106,unknown
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0346,Fer + Acide Folique Brand2,500 mg,sirop,True,2286,in_stock
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0347,Fer + Acide Folique Brand3,750 mg,suspension,False,4742,low
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0348,Fer + Acide Folique Brand1,250 mg,suspension,True,3442,in_stock
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0349,Fer + Acide Folique Brand2,500 mg,sirop,False,2523,low
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0350,Fer + Acide Folique Brand3,750 mg,comprimé,True,812,out
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0351,Fer + Acide Folique Brand1,250 mg,comprimé,False,3693,unknown
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0352,Fer + Acide Folique Brand2,500 mg,capsule,True,3941,out
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0353,Fer + Acide Folique Brand3,750 mg,sirop,False,3987,unknown
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0354,Fer + Acide Folique Brand1,250 mg,capsule,True,4160,unknown
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0355,Fer + Acide Folique Brand2,500 mg,sirop,False,691,in_stock
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0356,Fer + Acide Folique Brand3,750 mg,suspension,True,4311,low
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0357,Fer + Acide Folique Brand1,250 mg,suspension,False,4254,low
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0358,Fer + Acide Folique Brand2,500 mg,suspension,True,3779,in_stock
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0359,Fer + Acide Folique Brand3,750 mg,comprimé,False,1552,out
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0360,Fer + Acide Folique Brand1,250 mg,suspension,True,3492,in_stock
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0361,Fer + Acide Folique Brand2,500 mg,suspension,False,4631,in_stock
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0362,Fer + Acide Folique Brand3,750 mg,comprimé,True,1567,in_stock
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0363,Fer + Acide Folique Brand1,250 mg,capsule,False,4690,in_stock
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0364,Fer + Acide Folique Brand2,500 mg,comprimé,True,4628,unknown
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0365,Fer + Acide Folique Brand3,750 mg,sirop,False,711,in_stock
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0366,Fer + Acide Folique Brand1,250 mg,comprimé,True,2086,low
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0367,Fer + Acide Folique Brand2,500 mg,suspension,False,2858,low
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0368,Fer + Acide Folique Brand3,750 mg,sirop,True,1036,out
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0369,Fer + Acide Folique Brand1,250 mg,capsule,False,1800,out
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0370,Fer + Acide Folique Brand2,500 mg,capsule,True,4238,low
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0371,Fer + Acide Folique Brand3,750 mg,capsule,False,4614,unknown
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0372,Fer + Acide Folique Brand1,250 mg,sirop,True,2653,low
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0373,Fer + Acide Folique Brand2,500 mg,capsule,False,3549,in_stock
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0374,Fer + Acide Folique Brand3,750 mg,sirop,True,1991,unknown
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0375,Fer + Acide Folique Brand1,250 mg,sirop,False,2778,out
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0376,Fer + Acide Folique Brand2,500 mg,suspension,True,1882,out
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0377,Fer + Acide Folique Brand3,750 mg,comprimé,False,4847,in_stock
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0378,Fer + Acide Folique Brand1,250 mg,capsule,True,4211,in_stock
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0379,Fer + Acide Folique Brand2,500 mg,capsule,False,4888,unknown
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0380,Fer + Acide Folique Brand3,750 mg,capsule,True,2668,unknown
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0381,Fer + Acide Folique Brand1,250 mg,capsule,False,1697,out
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0382,Fer + Acide Folique Brand2,500 mg,capsule,True,1166,unknown
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0383,Fer + Acide Folique Brand3,750 mg,sirop,False,1947,in_stock
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0384,Fer + Acide Folique Brand1,250 mg,capsule,True,4727,out
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0385,Fer + Acide Folique Brand2,500 mg,capsule,False,3061,in_stock
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0386,Fer + Acide Folique Brand3,750 mg,comprimé,True,2315,low
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0387,Fer + Acide Folique Brand1,250 mg,capsule,False,4040,unknown
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0388,Fer + Acide Folique Brand2,500 mg,capsule,True,891,low
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0389,Fer + Acide Folique Brand3,750 mg,suspension,False,2361,in_stock
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0390,Fer + Acide Folique Brand1,250 mg,comprimé,True,945,in_stock
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0391,Fer + Acide Folique Brand2,500 mg,capsule,False,2988,in_stock
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0392,Fer + Acide Folique Brand3,750 mg,capsule,True,4875,low
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0393,Fer + Acide Folique Brand1,250 mg,suspension,False,2967,low
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0394,Fer + Acide Folique Brand2,500 mg,sirop,True,3500,unknown
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0395,Fer + Acide Folique Brand3,750 mg,sirop,False,1603,in_stock
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0396,Fer + Acide Folique Brand1,250 mg,sirop,True,1723,unknown
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0397,Fer + Acide Folique Brand2,500 mg,comprimé,False,1021,low
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0398,Fer + Acide Folique Brand3,750 mg,capsule,True,3792,out
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0399,Fer + Acide Folique Brand1,250 mg,comprimé,False,959,out
+drug-201,Fer + Acide Folique,WHO ATC: B03AE10,Anti-anémiques,var-0400,Fer + Acide Folique Brand2,500 mg,suspension,True,4740,unknown
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0401,Artésunate + Amodiaquine Brand1,250 mg,sirop,False,1852,in_stock
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0402,Artésunate + Amodiaquine Brand2,500 mg,comprimé,True,1004,in_stock
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0403,Artésunate + Amodiaquine Brand3,750 mg,suspension,False,2020,low
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0404,Artésunate + Amodiaquine Brand1,250 mg,sirop,True,978,in_stock
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0405,Artésunate + Amodiaquine Brand2,500 mg,comprimé,False,2115,low
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0406,Artésunate + Amodiaquine Brand3,750 mg,suspension,True,2134,unknown
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0407,Artésunate + Amodiaquine Brand1,250 mg,sirop,False,4666,out
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0408,Artésunate + Amodiaquine Brand2,500 mg,comprimé,True,2959,in_stock
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0409,Artésunate + Amodiaquine Brand3,750 mg,suspension,False,4910,in_stock
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0410,Artésunate + Amodiaquine Brand1,250 mg,suspension,True,4077,unknown
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0411,Artésunate + Amodiaquine Brand2,500 mg,comprimé,False,4206,low
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0412,Artésunate + Amodiaquine Brand3,750 mg,sirop,True,1362,out
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0413,Artésunate + Amodiaquine Brand1,250 mg,sirop,False,817,in_stock
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0414,Artésunate + Amodiaquine Brand2,500 mg,capsule,True,2656,in_stock
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0415,Artésunate + Amodiaquine Brand3,750 mg,capsule,False,4072,out
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0416,Artésunate + Amodiaquine Brand1,250 mg,capsule,True,2277,in_stock
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0417,Artésunate + Amodiaquine Brand2,500 mg,comprimé,False,1890,out
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0418,Artésunate + Amodiaquine Brand3,750 mg,sirop,True,2161,low
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0419,Artésunate + Amodiaquine Brand1,250 mg,capsule,False,2072,unknown
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0420,Artésunate + Amodiaquine Brand2,500 mg,capsule,True,2459,unknown
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0421,Artésunate + Amodiaquine Brand3,750 mg,suspension,False,4367,in_stock
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0422,Artésunate + Amodiaquine Brand1,250 mg,comprimé,True,4081,low
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0423,Artésunate + Amodiaquine Brand2,500 mg,capsule,False,2236,unknown
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0424,Artésunate + Amodiaquine Brand3,750 mg,comprimé,True,1905,low
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0425,Artésunate + Amodiaquine Brand1,250 mg,comprimé,False,720,in_stock
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0426,Artésunate + Amodiaquine Brand2,500 mg,comprimé,True,1825,out
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0427,Artésunate + Amodiaquine Brand3,750 mg,sirop,False,735,in_stock
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0428,Artésunate + Amodiaquine Brand1,250 mg,comprimé,True,1633,in_stock
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0429,Artésunate + Amodiaquine Brand2,500 mg,comprimé,False,882,in_stock
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0430,Artésunate + Amodiaquine Brand3,750 mg,capsule,True,2132,in_stock
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0431,Artésunate + Amodiaquine Brand1,250 mg,suspension,False,1377,low
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0432,Artésunate + Amodiaquine Brand2,500 mg,sirop,True,2164,in_stock
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0433,Artésunate + Amodiaquine Brand3,750 mg,comprimé,False,782,in_stock
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0434,Artésunate + Amodiaquine Brand1,250 mg,capsule,True,4408,in_stock
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0435,Artésunate + Amodiaquine Brand2,500 mg,sirop,False,1301,low
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0436,Artésunate + Amodiaquine Brand3,750 mg,capsule,True,3114,out
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0437,Artésunate + Amodiaquine Brand1,250 mg,suspension,False,2639,in_stock
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0438,Artésunate + Amodiaquine Brand2,500 mg,capsule,True,2602,out
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0439,Artésunate + Amodiaquine Brand3,750 mg,comprimé,False,3514,out
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0440,Artésunate + Amodiaquine Brand1,250 mg,suspension,True,2856,in_stock
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0441,Artésunate + Amodiaquine Brand2,500 mg,suspension,False,755,unknown
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0442,Artésunate + Amodiaquine Brand3,750 mg,comprimé,True,3340,unknown
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0443,Artésunate + Amodiaquine Brand1,250 mg,comprimé,False,4906,low
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0444,Artésunate + Amodiaquine Brand2,500 mg,comprimé,True,2852,low
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0445,Artésunate + Amodiaquine Brand3,750 mg,suspension,False,510,low
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0446,Artésunate + Amodiaquine Brand1,250 mg,capsule,True,942,in_stock
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0447,Artésunate + Amodiaquine Brand2,500 mg,capsule,False,4520,in_stock
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0448,Artésunate + Amodiaquine Brand3,750 mg,suspension,True,2011,unknown
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0449,Artésunate + Amodiaquine Brand1,250 mg,capsule,False,4720,out
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0450,Artésunate + Amodiaquine Brand2,500 mg,sirop,True,2824,low
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0451,Artésunate + Amodiaquine Brand3,750 mg,sirop,False,4582,low
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0452,Artésunate + Amodiaquine Brand1,250 mg,comprimé,True,1162,unknown
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0453,Artésunate + Amodiaquine Brand2,500 mg,comprimé,False,3175,out
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0454,Artésunate + Amodiaquine Brand3,750 mg,comprimé,True,3787,unknown
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0455,Artésunate + Amodiaquine Brand1,250 mg,comprimé,False,3958,in_stock
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0456,Artésunate + Amodiaquine Brand2,500 mg,capsule,True,2188,out
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0457,Artésunate + Amodiaquine Brand3,750 mg,capsule,False,4006,low
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0458,Artésunate + Amodiaquine Brand1,250 mg,suspension,True,2413,unknown
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0459,Artésunate + Amodiaquine Brand2,500 mg,sirop,False,4854,in_stock
+drug-059,Artésunate + Amodiaquine,WHO ATC: P01BF05,Antipaludéens,var-0460,Artésunate + Amodiaquine Brand3,750 mg,capsule,True,3176,low
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0461,Augmentin (Amoxicilline + Ac. Clavulanique) Brand1,250 mg,suspension,False,3148,low
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0462,Augmentin (Amoxicilline + Ac. Clavulanique) Brand2,500 mg,suspension,True,4094,out
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0463,Augmentin (Amoxicilline + Ac. Clavulanique) Brand3,750 mg,sirop,False,1532,out
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0464,Augmentin (Amoxicilline + Ac. Clavulanique) Brand1,250 mg,suspension,True,2449,low
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0465,Augmentin (Amoxicilline + Ac. Clavulanique) Brand2,500 mg,capsule,False,2969,low
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0466,Augmentin (Amoxicilline + Ac. Clavulanique) Brand3,750 mg,sirop,True,2528,out
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0467,Augmentin (Amoxicilline + Ac. Clavulanique) Brand1,250 mg,capsule,False,1818,low
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0468,Augmentin (Amoxicilline + Ac. Clavulanique) Brand2,500 mg,capsule,True,2050,out
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0469,Augmentin (Amoxicilline + Ac. Clavulanique) Brand3,750 mg,comprimé,False,1848,in_stock
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0470,Augmentin (Amoxicilline + Ac. Clavulanique) Brand1,250 mg,sirop,True,3647,low
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0471,Augmentin (Amoxicilline + Ac. Clavulanique) Brand2,500 mg,sirop,False,2974,out
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0472,Augmentin (Amoxicilline + Ac. Clavulanique) Brand3,750 mg,suspension,True,2743,low
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0473,Augmentin (Amoxicilline + Ac. Clavulanique) Brand1,250 mg,comprimé,False,1375,out
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0474,Augmentin (Amoxicilline + Ac. Clavulanique) Brand2,500 mg,sirop,True,3681,unknown
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0475,Augmentin (Amoxicilline + Ac. Clavulanique) Brand3,750 mg,comprimé,False,603,unknown
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0476,Augmentin (Amoxicilline + Ac. Clavulanique) Brand1,250 mg,suspension,True,2322,out
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0477,Augmentin (Amoxicilline + Ac. Clavulanique) Brand2,500 mg,suspension,False,681,low
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0478,Augmentin (Amoxicilline + Ac. Clavulanique) Brand3,750 mg,capsule,True,3815,in_stock
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0479,Augmentin (Amoxicilline + Ac. Clavulanique) Brand1,250 mg,sirop,False,4022,unknown
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0480,Augmentin (Amoxicilline + Ac. Clavulanique) Brand2,500 mg,sirop,True,2372,low
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0481,Augmentin (Amoxicilline + Ac. Clavulanique) Brand3,750 mg,comprimé,False,4218,unknown
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0482,Augmentin (Amoxicilline + Ac. Clavulanique) Brand1,250 mg,capsule,True,2628,in_stock
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0483,Augmentin (Amoxicilline + Ac. Clavulanique) Brand2,500 mg,suspension,False,2485,unknown
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0484,Augmentin (Amoxicilline + Ac. Clavulanique) Brand3,750 mg,sirop,True,2548,unknown
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0485,Augmentin (Amoxicilline + Ac. Clavulanique) Brand1,250 mg,suspension,False,4228,in_stock
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0486,Augmentin (Amoxicilline + Ac. Clavulanique) Brand2,500 mg,suspension,True,4745,low
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0487,Augmentin (Amoxicilline + Ac. Clavulanique) Brand3,750 mg,capsule,False,587,unknown
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0488,Augmentin (Amoxicilline + Ac. Clavulanique) Brand1,250 mg,suspension,True,1371,in_stock
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0489,Augmentin (Amoxicilline + Ac. Clavulanique) Brand2,500 mg,capsule,False,4951,low
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0490,Augmentin (Amoxicilline + Ac. Clavulanique) Brand3,750 mg,sirop,True,2136,out
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0491,Augmentin (Amoxicilline + Ac. Clavulanique) Brand1,250 mg,comprimé,False,4241,low
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0492,Augmentin (Amoxicilline + Ac. Clavulanique) Brand2,500 mg,suspension,True,4695,in_stock
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0493,Augmentin (Amoxicilline + Ac. Clavulanique) Brand3,750 mg,capsule,False,4773,out
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0494,Augmentin (Amoxicilline + Ac. Clavulanique) Brand1,250 mg,suspension,True,4243,low
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0495,Augmentin (Amoxicilline + Ac. Clavulanique) Brand2,500 mg,sirop,False,3715,in_stock
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0496,Augmentin (Amoxicilline + Ac. Clavulanique) Brand3,750 mg,capsule,True,963,out
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0497,Augmentin (Amoxicilline + Ac. Clavulanique) Brand1,250 mg,capsule,False,3628,unknown
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0498,Augmentin (Amoxicilline + Ac. Clavulanique) Brand2,500 mg,comprimé,True,609,in_stock
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0499,Augmentin (Amoxicilline + Ac. Clavulanique) Brand3,750 mg,suspension,False,3945,out
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0500,Augmentin (Amoxicilline + Ac. Clavulanique) Brand1,250 mg,capsule,True,1395,low
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0501,Augmentin (Amoxicilline + Ac. Clavulanique) Brand2,500 mg,capsule,False,3780,low
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0502,Augmentin (Amoxicilline + Ac. Clavulanique) Brand3,750 mg,suspension,True,4285,low
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0503,Augmentin (Amoxicilline + Ac. Clavulanique) Brand1,250 mg,sirop,False,1559,in_stock
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0504,Augmentin (Amoxicilline + Ac. Clavulanique) Brand2,500 mg,sirop,True,4343,low
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0505,Augmentin (Amoxicilline + Ac. Clavulanique) Brand3,750 mg,sirop,False,3392,unknown
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0506,Augmentin (Amoxicilline + Ac. Clavulanique) Brand1,250 mg,suspension,True,2911,low
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0507,Augmentin (Amoxicilline + Ac. Clavulanique) Brand2,500 mg,suspension,False,3406,low
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0508,Augmentin (Amoxicilline + Ac. Clavulanique) Brand3,750 mg,capsule,True,3581,out
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0509,Augmentin (Amoxicilline + Ac. Clavulanique) Brand1,250 mg,suspension,False,2022,unknown
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0510,Augmentin (Amoxicilline + Ac. Clavulanique) Brand2,500 mg,comprimé,True,2803,out
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0511,Augmentin (Amoxicilline + Ac. Clavulanique) Brand3,750 mg,sirop,False,2972,out
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0512,Augmentin (Amoxicilline + Ac. Clavulanique) Brand1,250 mg,suspension,True,4472,unknown
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0513,Augmentin (Amoxicilline + Ac. Clavulanique) Brand2,500 mg,comprimé,False,3469,low
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0514,Augmentin (Amoxicilline + Ac. Clavulanique) Brand3,750 mg,capsule,True,3654,in_stock
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0515,Augmentin (Amoxicilline + Ac. Clavulanique) Brand1,250 mg,comprimé,False,3159,low
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0516,Augmentin (Amoxicilline + Ac. Clavulanique) Brand2,500 mg,capsule,True,622,in_stock
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0517,Augmentin (Amoxicilline + Ac. Clavulanique) Brand3,750 mg,sirop,False,1089,out
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0518,Augmentin (Amoxicilline + Ac. Clavulanique) Brand1,250 mg,capsule,True,1331,low
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0519,Augmentin (Amoxicilline + Ac. Clavulanique) Brand2,500 mg,sirop,False,2020,unknown
+drug-979,Augmentin (Amoxicilline + Ac. Clavulanique),WHO ATC: J01CR02,Antibiotiques,var-0520,Augmentin (Amoxicilline + Ac. Clavulanique) Brand3,750 mg,capsule,True,1750,low
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0521,Azithromycine Brand1,250 mg,suspension,False,4878,low
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0522,Azithromycine Brand2,500 mg,comprimé,True,4993,out
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0523,Azithromycine Brand3,750 mg,sirop,False,4550,low
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0524,Azithromycine Brand1,250 mg,comprimé,True,4092,in_stock
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0525,Azithromycine Brand2,500 mg,comprimé,False,2666,unknown
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0526,Azithromycine Brand3,750 mg,sirop,True,1641,unknown
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0527,Azithromycine Brand1,250 mg,suspension,False,978,unknown
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0528,Azithromycine Brand2,500 mg,suspension,True,1683,unknown
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0529,Azithromycine Brand3,750 mg,sirop,False,4581,low
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0530,Azithromycine Brand1,250 mg,comprimé,True,1813,out
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0531,Azithromycine Brand2,500 mg,suspension,False,4576,out
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0532,Azithromycine Brand3,750 mg,suspension,True,3571,unknown
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0533,Azithromycine Brand1,250 mg,suspension,False,1117,low
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0534,Azithromycine Brand2,500 mg,capsule,True,733,in_stock
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0535,Azithromycine Brand3,750 mg,comprimé,False,3207,in_stock
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0536,Azithromycine Brand1,250 mg,suspension,True,4470,low
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0537,Azithromycine Brand2,500 mg,comprimé,False,2247,unknown
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0538,Azithromycine Brand3,750 mg,sirop,True,3273,in_stock
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0539,Azithromycine Brand1,250 mg,capsule,False,3296,unknown
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0540,Azithromycine Brand2,500 mg,sirop,True,2827,unknown
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0541,Azithromycine Brand3,750 mg,capsule,False,3960,out
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0542,Azithromycine Brand1,250 mg,comprimé,True,2868,out
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0543,Azithromycine Brand2,500 mg,capsule,False,4544,unknown
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0544,Azithromycine Brand3,750 mg,capsule,True,4626,out
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0545,Azithromycine Brand1,250 mg,capsule,False,2167,unknown
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0546,Azithromycine Brand2,500 mg,comprimé,True,3210,low
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0547,Azithromycine Brand3,750 mg,capsule,False,2951,low
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0548,Azithromycine Brand1,250 mg,comprimé,True,828,unknown
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0549,Azithromycine Brand2,500 mg,suspension,False,4967,in_stock
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0550,Azithromycine Brand3,750 mg,suspension,True,2960,in_stock
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0551,Azithromycine Brand1,250 mg,comprimé,False,880,low
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0552,Azithromycine Brand2,500 mg,suspension,True,992,unknown
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0553,Azithromycine Brand3,750 mg,sirop,False,1179,low
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0554,Azithromycine Brand1,250 mg,comprimé,True,4250,low
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0555,Azithromycine Brand2,500 mg,comprimé,False,1985,in_stock
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0556,Azithromycine Brand3,750 mg,suspension,True,1324,in_stock
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0557,Azithromycine Brand1,250 mg,capsule,False,1636,out
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0558,Azithromycine Brand2,500 mg,capsule,True,2974,low
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0559,Azithromycine Brand3,750 mg,suspension,False,780,out
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0560,Azithromycine Brand1,250 mg,comprimé,True,4028,in_stock
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0561,Azithromycine Brand2,500 mg,suspension,False,4777,in_stock
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0562,Azithromycine Brand3,750 mg,comprimé,True,3949,unknown
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0563,Azithromycine Brand1,250 mg,suspension,False,1050,in_stock
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0564,Azithromycine Brand2,500 mg,suspension,True,1772,unknown
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0565,Azithromycine Brand3,750 mg,suspension,False,4995,in_stock
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0566,Azithromycine Brand1,250 mg,comprimé,True,4368,low
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0567,Azithromycine Brand2,500 mg,sirop,False,627,unknown
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0568,Azithromycine Brand3,750 mg,comprimé,True,576,in_stock
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0569,Azithromycine Brand1,250 mg,comprimé,False,2287,in_stock
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0570,Azithromycine Brand2,500 mg,sirop,True,4369,in_stock
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0571,Azithromycine Brand3,750 mg,capsule,False,2484,unknown
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0572,Azithromycine Brand1,250 mg,sirop,True,910,out
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0573,Azithromycine Brand2,500 mg,sirop,False,1190,out
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0574,Azithromycine Brand3,750 mg,suspension,True,4273,out
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0575,Azithromycine Brand1,250 mg,comprimé,False,761,in_stock
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0576,Azithromycine Brand2,500 mg,comprimé,True,620,in_stock
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0577,Azithromycine Brand3,750 mg,suspension,False,3048,out
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0578,Azithromycine Brand1,250 mg,sirop,True,4484,in_stock
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0579,Azithromycine Brand2,500 mg,capsule,False,3511,unknown
+drug-254,Azithromycine,WHO ATC: J01FA10,Antibiotiques,var-0580,Azithromycine Brand3,750 mg,suspension,True,1863,low
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0581,Captopril Brand1,250 mg,comprimé,False,3475,low
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0582,Captopril Brand2,500 mg,suspension,True,4407,unknown
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0583,Captopril Brand3,750 mg,suspension,False,2728,out
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0584,Captopril Brand1,250 mg,capsule,True,2792,in_stock
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0585,Captopril Brand2,500 mg,capsule,False,626,low
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0586,Captopril Brand3,750 mg,capsule,True,4010,low
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0587,Captopril Brand1,250 mg,suspension,False,3673,unknown
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0588,Captopril Brand2,500 mg,sirop,True,4196,out
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0589,Captopril Brand3,750 mg,comprimé,False,3133,out
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0590,Captopril Brand1,250 mg,capsule,True,3961,low
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0591,Captopril Brand2,500 mg,comprimé,False,2863,low
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0592,Captopril Brand3,750 mg,sirop,True,2743,unknown
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0593,Captopril Brand1,250 mg,capsule,False,4879,in_stock
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0594,Captopril Brand2,500 mg,suspension,True,3627,low
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0595,Captopril Brand3,750 mg,sirop,False,3035,in_stock
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0596,Captopril Brand1,250 mg,suspension,True,4311,low
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0597,Captopril Brand2,500 mg,capsule,False,576,unknown
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0598,Captopril Brand3,750 mg,suspension,True,4928,in_stock
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0599,Captopril Brand1,250 mg,capsule,False,1013,low
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0600,Captopril Brand2,500 mg,suspension,True,4768,out
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0601,Captopril Brand3,750 mg,capsule,False,4404,low
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0602,Captopril Brand1,250 mg,sirop,True,2242,low
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0603,Captopril Brand2,500 mg,comprimé,False,1980,out
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0604,Captopril Brand3,750 mg,capsule,True,3440,unknown
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0605,Captopril Brand1,250 mg,sirop,False,2517,in_stock
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0606,Captopril Brand2,500 mg,suspension,True,3564,in_stock
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0607,Captopril Brand3,750 mg,capsule,False,4296,in_stock
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0608,Captopril Brand1,250 mg,sirop,True,3086,in_stock
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0609,Captopril Brand2,500 mg,capsule,False,2798,in_stock
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0610,Captopril Brand3,750 mg,comprimé,True,775,low
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0611,Captopril Brand1,250 mg,suspension,False,2249,out
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0612,Captopril Brand2,500 mg,capsule,True,3989,in_stock
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0613,Captopril Brand3,750 mg,suspension,False,1572,out
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0614,Captopril Brand1,250 mg,comprimé,True,3275,low
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0615,Captopril Brand2,500 mg,sirop,False,3598,in_stock
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0616,Captopril Brand3,750 mg,comprimé,True,917,in_stock
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0617,Captopril Brand1,250 mg,capsule,False,4254,unknown
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0618,Captopril Brand2,500 mg,comprimé,True,3755,in_stock
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0619,Captopril Brand3,750 mg,comprimé,False,2606,out
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0620,Captopril Brand1,250 mg,sirop,True,1235,unknown
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0621,Captopril Brand2,500 mg,sirop,False,4172,low
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0622,Captopril Brand3,750 mg,capsule,True,2426,low
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0623,Captopril Brand1,250 mg,sirop,False,816,out
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0624,Captopril Brand2,500 mg,capsule,True,985,in_stock
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0625,Captopril Brand3,750 mg,comprimé,False,2612,unknown
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0626,Captopril Brand1,250 mg,comprimé,True,1327,low
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0627,Captopril Brand2,500 mg,capsule,False,547,low
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0628,Captopril Brand3,750 mg,capsule,True,4114,in_stock
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0629,Captopril Brand1,250 mg,suspension,False,3153,out
+drug-941,Captopril,WHO ATC: C09AA01,Cardiovasculaire,var-0630,Captopril Brand2,500 mg,capsule,True,3695,in_stock
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0631,Nifédipine Brand1,250 mg,capsule,False,4442,unknown
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0632,Nifédipine Brand2,500 mg,sirop,True,4115,low
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0633,Nifédipine Brand3,750 mg,sirop,False,603,unknown
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0634,Nifédipine Brand1,250 mg,sirop,True,795,low
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0635,Nifédipine Brand2,500 mg,sirop,False,1137,out
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0636,Nifédipine Brand3,750 mg,sirop,True,4163,in_stock
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0637,Nifédipine Brand1,250 mg,suspension,False,678,in_stock
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0638,Nifédipine Brand2,500 mg,suspension,True,3283,out
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0639,Nifédipine Brand3,750 mg,sirop,False,4411,in_stock
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0640,Nifédipine Brand1,250 mg,capsule,True,1669,out
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0641,Nifédipine Brand2,500 mg,sirop,False,964,low
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0642,Nifédipine Brand3,750 mg,suspension,True,1685,unknown
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0643,Nifédipine Brand1,250 mg,sirop,False,2682,unknown
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0644,Nifédipine Brand2,500 mg,suspension,True,2521,low
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0645,Nifédipine Brand3,750 mg,comprimé,False,2720,out
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0646,Nifédipine Brand1,250 mg,capsule,True,1874,out
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0647,Nifédipine Brand2,500 mg,suspension,False,1394,out
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0648,Nifédipine Brand3,750 mg,suspension,True,4452,in_stock
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0649,Nifédipine Brand1,250 mg,sirop,False,4706,in_stock
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0650,Nifédipine Brand2,500 mg,sirop,True,4411,out
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0651,Nifédipine Brand3,750 mg,comprimé,False,2611,low
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0652,Nifédipine Brand1,250 mg,capsule,True,4039,out
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0653,Nifédipine Brand2,500 mg,sirop,False,2450,in_stock
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0654,Nifédipine Brand3,750 mg,suspension,True,2870,unknown
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0655,Nifédipine Brand1,250 mg,sirop,False,970,out
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0656,Nifédipine Brand2,500 mg,sirop,True,631,unknown
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0657,Nifédipine Brand3,750 mg,capsule,False,4684,low
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0658,Nifédipine Brand1,250 mg,suspension,True,515,out
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0659,Nifédipine Brand2,500 mg,sirop,False,3449,unknown
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0660,Nifédipine Brand3,750 mg,comprimé,True,3850,low
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0661,Nifédipine Brand1,250 mg,capsule,False,1980,low
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0662,Nifédipine Brand2,500 mg,sirop,True,4773,low
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0663,Nifédipine Brand3,750 mg,sirop,False,2111,in_stock
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0664,Nifédipine Brand1,250 mg,comprimé,True,4558,out
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0665,Nifédipine Brand2,500 mg,sirop,False,2187,low
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0666,Nifédipine Brand3,750 mg,sirop,True,3023,low
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0667,Nifédipine Brand1,250 mg,comprimé,False,1038,unknown
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0668,Nifédipine Brand2,500 mg,comprimé,True,4747,out
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0669,Nifédipine Brand3,750 mg,capsule,False,2808,unknown
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0670,Nifédipine Brand1,250 mg,comprimé,True,626,unknown
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0671,Nifédipine Brand2,500 mg,suspension,False,1591,out
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0672,Nifédipine Brand3,750 mg,sirop,True,2024,out
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0673,Nifédipine Brand1,250 mg,comprimé,False,1839,out
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0674,Nifédipine Brand2,500 mg,comprimé,True,3417,unknown
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0675,Nifédipine Brand3,750 mg,comprimé,False,1489,out
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0676,Nifédipine Brand1,250 mg,sirop,True,3129,unknown
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0677,Nifédipine Brand2,500 mg,comprimé,False,2888,in_stock
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0678,Nifédipine Brand3,750 mg,suspension,True,4157,in_stock
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0679,Nifédipine Brand1,250 mg,sirop,False,669,low
+drug-381,Nifédipine,WHO ATC: C08CA05,Cardiovasculaire,var-0680,Nifédipine Brand2,500 mg,comprimé,True,2332,low
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0681,Amlodipine Brand1,250 mg,sirop,False,1341,out
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0682,Amlodipine Brand2,500 mg,capsule,True,746,in_stock
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0683,Amlodipine Brand3,750 mg,comprimé,False,2098,out
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0684,Amlodipine Brand1,250 mg,comprimé,True,4300,low
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0685,Amlodipine Brand2,500 mg,suspension,False,1342,out
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0686,Amlodipine Brand3,750 mg,comprimé,True,1966,in_stock
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0687,Amlodipine Brand1,250 mg,capsule,False,1508,unknown
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0688,Amlodipine Brand2,500 mg,suspension,True,4602,out
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0689,Amlodipine Brand3,750 mg,comprimé,False,1499,in_stock
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0690,Amlodipine Brand1,250 mg,suspension,True,1621,low
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0691,Amlodipine Brand2,500 mg,sirop,False,1706,unknown
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0692,Amlodipine Brand3,750 mg,suspension,True,1846,in_stock
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0693,Amlodipine Brand1,250 mg,suspension,False,3944,in_stock
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0694,Amlodipine Brand2,500 mg,suspension,True,925,out
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0695,Amlodipine Brand3,750 mg,capsule,False,3782,low
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0696,Amlodipine Brand1,250 mg,capsule,True,4068,out
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0697,Amlodipine Brand2,500 mg,suspension,False,938,out
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0698,Amlodipine Brand3,750 mg,sirop,True,3395,low
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0699,Amlodipine Brand1,250 mg,suspension,False,594,out
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0700,Amlodipine Brand2,500 mg,comprimé,True,4848,low
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0701,Amlodipine Brand3,750 mg,comprimé,False,3157,unknown
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0702,Amlodipine Brand1,250 mg,sirop,True,4635,in_stock
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0703,Amlodipine Brand2,500 mg,sirop,False,1642,unknown
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0704,Amlodipine Brand3,750 mg,suspension,True,4216,in_stock
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0705,Amlodipine Brand1,250 mg,comprimé,False,781,out
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0706,Amlodipine Brand2,500 mg,capsule,True,4942,in_stock
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0707,Amlodipine Brand3,750 mg,comprimé,False,2552,in_stock
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0708,Amlodipine Brand1,250 mg,comprimé,True,4052,low
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0709,Amlodipine Brand2,500 mg,comprimé,False,2855,in_stock
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0710,Amlodipine Brand3,750 mg,capsule,True,3347,low
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0711,Amlodipine Brand1,250 mg,comprimé,False,994,out
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0712,Amlodipine Brand2,500 mg,comprimé,True,4320,low
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0713,Amlodipine Brand3,750 mg,suspension,False,1515,low
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0714,Amlodipine Brand1,250 mg,capsule,True,3830,out
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0715,Amlodipine Brand2,500 mg,capsule,False,2493,in_stock
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0716,Amlodipine Brand3,750 mg,capsule,True,4220,low
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0717,Amlodipine Brand1,250 mg,suspension,False,2148,out
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0718,Amlodipine Brand2,500 mg,suspension,True,4989,out
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0719,Amlodipine Brand3,750 mg,suspension,False,4341,out
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0720,Amlodipine Brand1,250 mg,comprimé,True,2484,out
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0721,Amlodipine Brand2,500 mg,sirop,False,2046,unknown
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0722,Amlodipine Brand3,750 mg,suspension,True,597,out
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0723,Amlodipine Brand1,250 mg,sirop,False,2454,out
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0724,Amlodipine Brand2,500 mg,capsule,True,4525,out
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0725,Amlodipine Brand3,750 mg,capsule,False,2270,out
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0726,Amlodipine Brand1,250 mg,comprimé,True,678,low
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0727,Amlodipine Brand2,500 mg,comprimé,False,3350,unknown
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0728,Amlodipine Brand3,750 mg,comprimé,True,4735,unknown
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0729,Amlodipine Brand1,250 mg,suspension,False,3400,in_stock
+drug-815,Amlodipine,WHO ATC: C08CA01,Cardiovasculaire,var-0730,Amlodipine Brand2,500 mg,sirop,True,1765,unknown
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0731,Hydrochlorothiazide Brand1,250 mg,capsule,False,3387,low
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0732,Hydrochlorothiazide Brand2,500 mg,sirop,True,2767,in_stock
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0733,Hydrochlorothiazide Brand3,750 mg,suspension,False,2701,low
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0734,Hydrochlorothiazide Brand1,250 mg,suspension,True,1346,in_stock
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0735,Hydrochlorothiazide Brand2,500 mg,suspension,False,1462,unknown
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0736,Hydrochlorothiazide Brand3,750 mg,suspension,True,1725,unknown
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0737,Hydrochlorothiazide Brand1,250 mg,capsule,False,1409,unknown
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0738,Hydrochlorothiazide Brand2,500 mg,suspension,True,4251,out
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0739,Hydrochlorothiazide Brand3,750 mg,capsule,False,2899,out
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0740,Hydrochlorothiazide Brand1,250 mg,suspension,True,4809,unknown
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0741,Hydrochlorothiazide Brand2,500 mg,capsule,False,555,unknown
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0742,Hydrochlorothiazide Brand3,750 mg,suspension,True,4137,out
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0743,Hydrochlorothiazide Brand1,250 mg,sirop,False,4898,out
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0744,Hydrochlorothiazide Brand2,500 mg,sirop,True,4068,unknown
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0745,Hydrochlorothiazide Brand3,750 mg,sirop,False,1220,out
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0746,Hydrochlorothiazide Brand1,250 mg,capsule,True,2487,out
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0747,Hydrochlorothiazide Brand2,500 mg,sirop,False,3993,in_stock
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0748,Hydrochlorothiazide Brand3,750 mg,comprimé,True,888,out
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0749,Hydrochlorothiazide Brand1,250 mg,suspension,False,2956,out
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0750,Hydrochlorothiazide Brand2,500 mg,suspension,True,4738,unknown
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0751,Hydrochlorothiazide Brand3,750 mg,suspension,False,4303,out
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0752,Hydrochlorothiazide Brand1,250 mg,comprimé,True,3376,unknown
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0753,Hydrochlorothiazide Brand2,500 mg,comprimé,False,1059,low
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0754,Hydrochlorothiazide Brand3,750 mg,comprimé,True,3854,out
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0755,Hydrochlorothiazide Brand1,250 mg,suspension,False,1763,low
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0756,Hydrochlorothiazide Brand2,500 mg,suspension,True,4487,unknown
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0757,Hydrochlorothiazide Brand3,750 mg,suspension,False,3312,in_stock
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0758,Hydrochlorothiazide Brand1,250 mg,sirop,True,3471,out
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0759,Hydrochlorothiazide Brand2,500 mg,capsule,False,1115,out
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0760,Hydrochlorothiazide Brand3,750 mg,sirop,True,1405,out
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0761,Hydrochlorothiazide Brand1,250 mg,capsule,False,4668,unknown
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0762,Hydrochlorothiazide Brand2,500 mg,sirop,True,4793,out
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0763,Hydrochlorothiazide Brand3,750 mg,sirop,False,4636,low
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0764,Hydrochlorothiazide Brand1,250 mg,suspension,True,1994,in_stock
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0765,Hydrochlorothiazide Brand2,500 mg,comprimé,False,3393,in_stock
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0766,Hydrochlorothiazide Brand3,750 mg,suspension,True,587,in_stock
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0767,Hydrochlorothiazide Brand1,250 mg,capsule,False,532,out
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0768,Hydrochlorothiazide Brand2,500 mg,suspension,True,1306,in_stock
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0769,Hydrochlorothiazide Brand3,750 mg,comprimé,False,2110,low
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0770,Hydrochlorothiazide Brand1,250 mg,suspension,True,2679,low
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0771,Hydrochlorothiazide Brand2,500 mg,sirop,False,3867,in_stock
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0772,Hydrochlorothiazide Brand3,750 mg,sirop,True,1784,in_stock
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0773,Hydrochlorothiazide Brand1,250 mg,comprimé,False,1320,in_stock
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0774,Hydrochlorothiazide Brand2,500 mg,sirop,True,4780,unknown
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0775,Hydrochlorothiazide Brand3,750 mg,suspension,False,4027,in_stock
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0776,Hydrochlorothiazide Brand1,250 mg,comprimé,True,3144,low
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0777,Hydrochlorothiazide Brand2,500 mg,sirop,False,3398,out
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0778,Hydrochlorothiazide Brand3,750 mg,sirop,True,769,out
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0779,Hydrochlorothiazide Brand1,250 mg,comprimé,False,1016,out
+drug-803,Hydrochlorothiazide,WHO ATC: C03AA03,Cardiovasculaire,var-0780,Hydrochlorothiazide Brand2,500 mg,sirop,True,4185,unknown
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0781,Metformine Brand1,250 mg,comprimé,False,947,low
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0782,Metformine Brand2,500 mg,suspension,True,859,unknown
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0783,Metformine Brand3,750 mg,comprimé,False,2452,low
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0784,Metformine Brand1,250 mg,sirop,True,860,low
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0785,Metformine Brand2,500 mg,sirop,False,3078,in_stock
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0786,Metformine Brand3,750 mg,suspension,True,2987,unknown
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0787,Metformine Brand1,250 mg,capsule,False,4559,in_stock
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0788,Metformine Brand2,500 mg,sirop,True,3693,low
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0789,Metformine Brand3,750 mg,suspension,False,3032,unknown
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0790,Metformine Brand1,250 mg,suspension,True,683,low
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0791,Metformine Brand2,500 mg,comprimé,False,1921,low
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0792,Metformine Brand3,750 mg,capsule,True,3604,low
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0793,Metformine Brand1,250 mg,comprimé,False,2881,unknown
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0794,Metformine Brand2,500 mg,capsule,True,1441,out
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0795,Metformine Brand3,750 mg,suspension,False,3251,unknown
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0796,Metformine Brand1,250 mg,comprimé,True,1509,unknown
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0797,Metformine Brand2,500 mg,capsule,False,2506,unknown
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0798,Metformine Brand3,750 mg,sirop,True,4325,out
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0799,Metformine Brand1,250 mg,capsule,False,2442,unknown
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0800,Metformine Brand2,500 mg,comprimé,True,2786,in_stock
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0801,Metformine Brand3,750 mg,capsule,False,1777,low
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0802,Metformine Brand1,250 mg,sirop,True,1258,low
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0803,Metformine Brand2,500 mg,capsule,False,4963,low
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0804,Metformine Brand3,750 mg,suspension,True,4326,low
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0805,Metformine Brand1,250 mg,sirop,False,3513,out
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0806,Metformine Brand2,500 mg,sirop,True,3819,unknown
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0807,Metformine Brand3,750 mg,sirop,False,2935,unknown
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0808,Metformine Brand1,250 mg,sirop,True,2361,unknown
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0809,Metformine Brand2,500 mg,sirop,False,2636,unknown
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0810,Metformine Brand3,750 mg,capsule,True,4879,low
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0811,Metformine Brand1,250 mg,suspension,False,4679,low
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0812,Metformine Brand2,500 mg,sirop,True,1505,in_stock
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0813,Metformine Brand3,750 mg,capsule,False,3652,in_stock
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0814,Metformine Brand1,250 mg,sirop,True,3045,in_stock
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0815,Metformine Brand2,500 mg,suspension,False,1204,low
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0816,Metformine Brand3,750 mg,sirop,True,3129,low
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0817,Metformine Brand1,250 mg,comprimé,False,1057,out
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0818,Metformine Brand2,500 mg,capsule,True,2079,in_stock
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0819,Metformine Brand3,750 mg,capsule,False,1220,low
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0820,Metformine Brand1,250 mg,capsule,True,1533,unknown
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0821,Metformine Brand2,500 mg,capsule,False,3415,unknown
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0822,Metformine Brand3,750 mg,suspension,True,1582,out
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0823,Metformine Brand1,250 mg,sirop,False,742,out
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0824,Metformine Brand2,500 mg,capsule,True,3879,in_stock
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0825,Metformine Brand3,750 mg,suspension,False,2535,unknown
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0826,Metformine Brand1,250 mg,capsule,True,1300,low
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0827,Metformine Brand2,500 mg,capsule,False,1443,out
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0828,Metformine Brand3,750 mg,sirop,True,831,unknown
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0829,Metformine Brand1,250 mg,comprimé,False,1827,unknown
+drug-202,Metformine,WHO ATC: A10BA02,Métabolisme (Diabète),var-0830,Metformine Brand2,500 mg,sirop,True,2982,low
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0831,Glibenclamide Brand1,250 mg,suspension,False,821,out
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0832,Glibenclamide Brand2,500 mg,sirop,True,2364,unknown
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0833,Glibenclamide Brand3,750 mg,capsule,False,4062,out
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0834,Glibenclamide Brand1,250 mg,comprimé,True,1416,out
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0835,Glibenclamide Brand2,500 mg,comprimé,False,887,low
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0836,Glibenclamide Brand3,750 mg,comprimé,True,804,out
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0837,Glibenclamide Brand1,250 mg,sirop,False,3331,in_stock
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0838,Glibenclamide Brand2,500 mg,suspension,True,3724,low
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0839,Glibenclamide Brand3,750 mg,capsule,False,4819,in_stock
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0840,Glibenclamide Brand1,250 mg,capsule,True,3973,unknown
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0841,Glibenclamide Brand2,500 mg,capsule,False,4621,unknown
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0842,Glibenclamide Brand3,750 mg,comprimé,True,2187,unknown
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0843,Glibenclamide Brand1,250 mg,sirop,False,4510,low
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0844,Glibenclamide Brand2,500 mg,comprimé,True,2639,low
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0845,Glibenclamide Brand3,750 mg,sirop,False,2433,out
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0846,Glibenclamide Brand1,250 mg,sirop,True,986,low
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0847,Glibenclamide Brand2,500 mg,capsule,False,3344,unknown
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0848,Glibenclamide Brand3,750 mg,comprimé,True,2149,out
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0849,Glibenclamide Brand1,250 mg,sirop,False,1618,unknown
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0850,Glibenclamide Brand2,500 mg,suspension,True,2448,low
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0851,Glibenclamide Brand3,750 mg,comprimé,False,4722,unknown
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0852,Glibenclamide Brand1,250 mg,sirop,True,3379,out
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0853,Glibenclamide Brand2,500 mg,sirop,False,1662,low
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0854,Glibenclamide Brand3,750 mg,capsule,True,1466,unknown
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0855,Glibenclamide Brand1,250 mg,sirop,False,1768,unknown
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0856,Glibenclamide Brand2,500 mg,suspension,True,2190,in_stock
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0857,Glibenclamide Brand3,750 mg,capsule,False,601,out
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0858,Glibenclamide Brand1,250 mg,suspension,True,2191,in_stock
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0859,Glibenclamide Brand2,500 mg,comprimé,False,2800,out
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0860,Glibenclamide Brand3,750 mg,sirop,True,1405,out
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0861,Glibenclamide Brand1,250 mg,suspension,False,1425,low
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0862,Glibenclamide Brand2,500 mg,capsule,True,4146,unknown
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0863,Glibenclamide Brand3,750 mg,capsule,False,2871,low
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0864,Glibenclamide Brand1,250 mg,comprimé,True,873,in_stock
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0865,Glibenclamide Brand2,500 mg,suspension,False,4477,in_stock
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0866,Glibenclamide Brand3,750 mg,capsule,True,2666,in_stock
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0867,Glibenclamide Brand1,250 mg,suspension,False,4057,unknown
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0868,Glibenclamide Brand2,500 mg,sirop,True,4948,out
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0869,Glibenclamide Brand3,750 mg,comprimé,False,3443,in_stock
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0870,Glibenclamide Brand1,250 mg,capsule,True,2559,low
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0871,Glibenclamide Brand2,500 mg,comprimé,False,1635,in_stock
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0872,Glibenclamide Brand3,750 mg,comprimé,True,3738,low
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0873,Glibenclamide Brand1,250 mg,capsule,False,3513,low
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0874,Glibenclamide Brand2,500 mg,sirop,True,1337,out
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0875,Glibenclamide Brand3,750 mg,capsule,False,3607,low
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0876,Glibenclamide Brand1,250 mg,capsule,True,3122,low
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0877,Glibenclamide Brand2,500 mg,capsule,False,1616,out
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0878,Glibenclamide Brand3,750 mg,capsule,True,2460,in_stock
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0879,Glibenclamide Brand1,250 mg,comprimé,False,1378,unknown
+drug-673,Glibenclamide,WHO ATC: A10BB01,Métabolisme (Diabète),var-0880,Glibenclamide Brand2,500 mg,comprimé,True,2273,unknown
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0881,Oméprazole Brand1,250 mg,suspension,False,4592,low
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0882,Oméprazole Brand2,500 mg,capsule,True,1157,low
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0883,Oméprazole Brand3,750 mg,sirop,False,1840,low
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0884,Oméprazole Brand1,250 mg,suspension,True,3788,in_stock
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0885,Oméprazole Brand2,500 mg,comprimé,False,4100,unknown
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0886,Oméprazole Brand3,750 mg,sirop,True,2288,out
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0887,Oméprazole Brand1,250 mg,comprimé,False,762,unknown
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0888,Oméprazole Brand2,500 mg,sirop,True,2820,in_stock
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0889,Oméprazole Brand3,750 mg,comprimé,False,4715,unknown
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0890,Oméprazole Brand1,250 mg,capsule,True,1013,unknown
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0891,Oméprazole Brand2,500 mg,comprimé,False,1944,low
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0892,Oméprazole Brand3,750 mg,suspension,True,2922,in_stock
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0893,Oméprazole Brand1,250 mg,suspension,False,3351,low
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0894,Oméprazole Brand2,500 mg,suspension,True,1196,out
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0895,Oméprazole Brand3,750 mg,suspension,False,4009,low
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0896,Oméprazole Brand1,250 mg,suspension,True,1167,in_stock
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0897,Oméprazole Brand2,500 mg,capsule,False,2933,unknown
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0898,Oméprazole Brand3,750 mg,capsule,True,4438,low
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0899,Oméprazole Brand1,250 mg,capsule,False,3313,in_stock
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0900,Oméprazole Brand2,500 mg,sirop,True,2322,unknown
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0901,Oméprazole Brand3,750 mg,comprimé,False,1703,out
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0902,Oméprazole Brand1,250 mg,suspension,True,3449,low
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0903,Oméprazole Brand2,500 mg,suspension,False,3746,out
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0904,Oméprazole Brand3,750 mg,comprimé,True,2361,low
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0905,Oméprazole Brand1,250 mg,sirop,False,4990,in_stock
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0906,Oméprazole Brand2,500 mg,sirop,True,2576,in_stock
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0907,Oméprazole Brand3,750 mg,sirop,False,4848,out
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0908,Oméprazole Brand1,250 mg,suspension,True,2359,unknown
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0909,Oméprazole Brand2,500 mg,sirop,False,4933,in_stock
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0910,Oméprazole Brand3,750 mg,comprimé,True,3842,in_stock
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0911,Oméprazole Brand1,250 mg,suspension,False,1600,in_stock
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0912,Oméprazole Brand2,500 mg,comprimé,True,4268,unknown
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0913,Oméprazole Brand3,750 mg,sirop,False,2069,unknown
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0914,Oméprazole Brand1,250 mg,comprimé,True,1620,out
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0915,Oméprazole Brand2,500 mg,comprimé,False,3812,low
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0916,Oméprazole Brand3,750 mg,comprimé,True,3550,in_stock
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0917,Oméprazole Brand1,250 mg,comprimé,False,2245,unknown
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0918,Oméprazole Brand2,500 mg,capsule,True,1487,low
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0919,Oméprazole Brand3,750 mg,suspension,False,1218,low
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0920,Oméprazole Brand1,250 mg,comprimé,True,3405,low
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0921,Oméprazole Brand2,500 mg,capsule,False,3296,in_stock
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0922,Oméprazole Brand3,750 mg,capsule,True,1505,low
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0923,Oméprazole Brand1,250 mg,capsule,False,4703,out
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0924,Oméprazole Brand2,500 mg,suspension,True,856,out
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0925,Oméprazole Brand3,750 mg,comprimé,False,3414,out
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0926,Oméprazole Brand1,250 mg,comprimé,True,779,low
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0927,Oméprazole Brand2,500 mg,capsule,False,3402,low
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0928,Oméprazole Brand3,750 mg,suspension,True,674,unknown
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0929,Oméprazole Brand1,250 mg,comprimé,False,671,unknown
+drug-082,Oméprazole,WHO ATC: A02BC01,Gastro-entérologie,var-0930,Oméprazole Brand2,500 mg,comprimé,True,1104,out
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0931,SRO (Sels de Réhydratation Orale) Brand1,250 mg,sirop,False,1730,out
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0932,SRO (Sels de Réhydratation Orale) Brand2,500 mg,suspension,True,1681,out
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0933,SRO (Sels de Réhydratation Orale) Brand3,750 mg,capsule,False,4137,in_stock
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0934,SRO (Sels de Réhydratation Orale) Brand1,250 mg,comprimé,True,3304,low
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0935,SRO (Sels de Réhydratation Orale) Brand2,500 mg,suspension,False,4610,unknown
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0936,SRO (Sels de Réhydratation Orale) Brand3,750 mg,comprimé,True,790,in_stock
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0937,SRO (Sels de Réhydratation Orale) Brand1,250 mg,sirop,False,3715,unknown
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0938,SRO (Sels de Réhydratation Orale) Brand2,500 mg,sirop,True,4174,unknown
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0939,SRO (Sels de Réhydratation Orale) Brand3,750 mg,sirop,False,4735,in_stock
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0940,SRO (Sels de Réhydratation Orale) Brand1,250 mg,capsule,True,3197,low
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0941,SRO (Sels de Réhydratation Orale) Brand2,500 mg,capsule,False,1572,in_stock
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0942,SRO (Sels de Réhydratation Orale) Brand3,750 mg,sirop,True,1890,out
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0943,SRO (Sels de Réhydratation Orale) Brand1,250 mg,suspension,False,3214,unknown
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0944,SRO (Sels de Réhydratation Orale) Brand2,500 mg,suspension,True,3397,out
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0945,SRO (Sels de Réhydratation Orale) Brand3,750 mg,comprimé,False,3248,unknown
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0946,SRO (Sels de Réhydratation Orale) Brand1,250 mg,capsule,True,2356,in_stock
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0947,SRO (Sels de Réhydratation Orale) Brand2,500 mg,sirop,False,4263,in_stock
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0948,SRO (Sels de Réhydratation Orale) Brand3,750 mg,sirop,True,1676,out
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0949,SRO (Sels de Réhydratation Orale) Brand1,250 mg,suspension,False,2739,in_stock
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0950,SRO (Sels de Réhydratation Orale) Brand2,500 mg,capsule,True,3423,low
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0951,SRO (Sels de Réhydratation Orale) Brand3,750 mg,comprimé,False,1280,low
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0952,SRO (Sels de Réhydratation Orale) Brand1,250 mg,suspension,True,1310,out
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0953,SRO (Sels de Réhydratation Orale) Brand2,500 mg,capsule,False,2450,low
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0954,SRO (Sels de Réhydratation Orale) Brand3,750 mg,comprimé,True,2990,out
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0955,SRO (Sels de Réhydratation Orale) Brand1,250 mg,capsule,False,4668,low
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0956,SRO (Sels de Réhydratation Orale) Brand2,500 mg,capsule,True,3825,out
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0957,SRO (Sels de Réhydratation Orale) Brand3,750 mg,comprimé,False,3262,out
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0958,SRO (Sels de Réhydratation Orale) Brand1,250 mg,suspension,True,4626,out
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0959,SRO (Sels de Réhydratation Orale) Brand2,500 mg,sirop,False,2423,out
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0960,SRO (Sels de Réhydratation Orale) Brand3,750 mg,sirop,True,1610,low
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0961,SRO (Sels de Réhydratation Orale) Brand1,250 mg,comprimé,False,4212,unknown
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0962,SRO (Sels de Réhydratation Orale) Brand2,500 mg,suspension,True,3744,out
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0963,SRO (Sels de Réhydratation Orale) Brand3,750 mg,sirop,False,1043,low
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0964,SRO (Sels de Réhydratation Orale) Brand1,250 mg,capsule,True,3027,out
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0965,SRO (Sels de Réhydratation Orale) Brand2,500 mg,capsule,False,1102,low
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0966,SRO (Sels de Réhydratation Orale) Brand3,750 mg,comprimé,True,1964,out
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0967,SRO (Sels de Réhydratation Orale) Brand1,250 mg,capsule,False,4332,out
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0968,SRO (Sels de Réhydratation Orale) Brand2,500 mg,suspension,True,1054,unknown
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0969,SRO (Sels de Réhydratation Orale) Brand3,750 mg,capsule,False,1935,out
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0970,SRO (Sels de Réhydratation Orale) Brand1,250 mg,capsule,True,4976,in_stock
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0971,SRO (Sels de Réhydratation Orale) Brand2,500 mg,sirop,False,2695,low
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0972,SRO (Sels de Réhydratation Orale) Brand3,750 mg,comprimé,True,2288,in_stock
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0973,SRO (Sels de Réhydratation Orale) Brand1,250 mg,suspension,False,4169,low
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0974,SRO (Sels de Réhydratation Orale) Brand2,500 mg,capsule,True,4611,in_stock
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0975,SRO (Sels de Réhydratation Orale) Brand3,750 mg,sirop,False,2480,in_stock
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0976,SRO (Sels de Réhydratation Orale) Brand1,250 mg,sirop,True,898,in_stock
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0977,SRO (Sels de Réhydratation Orale) Brand2,500 mg,comprimé,False,3294,low
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0978,SRO (Sels de Réhydratation Orale) Brand3,750 mg,comprimé,True,2041,out
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0979,SRO (Sels de Réhydratation Orale) Brand1,250 mg,comprimé,False,3145,in_stock
+drug-136,SRO (Sels de Réhydratation Orale),WHO ATC: A07CA,Réhydratation,var-0980,SRO (Sels de Réhydratation Orale) Brand2,500 mg,sirop,True,3134,out
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-0981,Zinc (Sulfate de zinc) Brand1,250 mg,comprimé,False,4483,unknown
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-0982,Zinc (Sulfate de zinc) Brand2,500 mg,capsule,True,1929,in_stock
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-0983,Zinc (Sulfate de zinc) Brand3,750 mg,suspension,False,872,in_stock
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-0984,Zinc (Sulfate de zinc) Brand1,250 mg,capsule,True,4549,unknown
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-0985,Zinc (Sulfate de zinc) Brand2,500 mg,capsule,False,4295,in_stock
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-0986,Zinc (Sulfate de zinc) Brand3,750 mg,comprimé,True,3095,out
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-0987,Zinc (Sulfate de zinc) Brand1,250 mg,comprimé,False,3900,out
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-0988,Zinc (Sulfate de zinc) Brand2,500 mg,sirop,True,1265,in_stock
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-0989,Zinc (Sulfate de zinc) Brand3,750 mg,sirop,False,2224,low
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-0990,Zinc (Sulfate de zinc) Brand1,250 mg,comprimé,True,3431,out
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-0991,Zinc (Sulfate de zinc) Brand2,500 mg,suspension,False,3318,low
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-0992,Zinc (Sulfate de zinc) Brand3,750 mg,capsule,True,2384,out
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-0993,Zinc (Sulfate de zinc) Brand1,250 mg,suspension,False,759,out
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-0994,Zinc (Sulfate de zinc) Brand2,500 mg,suspension,True,2779,out
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-0995,Zinc (Sulfate de zinc) Brand3,750 mg,capsule,False,1580,out
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-0996,Zinc (Sulfate de zinc) Brand1,250 mg,comprimé,True,4397,in_stock
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-0997,Zinc (Sulfate de zinc) Brand2,500 mg,capsule,False,1733,low
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-0998,Zinc (Sulfate de zinc) Brand3,750 mg,suspension,True,1236,in_stock
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-0999,Zinc (Sulfate de zinc) Brand1,250 mg,sirop,False,1501,in_stock
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1000,Zinc (Sulfate de zinc) Brand2,500 mg,sirop,True,1989,out
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1001,Zinc (Sulfate de zinc) Brand3,750 mg,capsule,False,1723,low
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1002,Zinc (Sulfate de zinc) Brand1,250 mg,sirop,True,4829,in_stock
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1003,Zinc (Sulfate de zinc) Brand2,500 mg,capsule,False,2487,unknown
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1004,Zinc (Sulfate de zinc) Brand3,750 mg,suspension,True,2246,out
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1005,Zinc (Sulfate de zinc) Brand1,250 mg,suspension,False,4269,low
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1006,Zinc (Sulfate de zinc) Brand2,500 mg,capsule,True,716,in_stock
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1007,Zinc (Sulfate de zinc) Brand3,750 mg,comprimé,False,1036,unknown
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1008,Zinc (Sulfate de zinc) Brand1,250 mg,capsule,True,991,low
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1009,Zinc (Sulfate de zinc) Brand2,500 mg,suspension,False,3858,unknown
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1010,Zinc (Sulfate de zinc) Brand3,750 mg,sirop,True,751,out
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1011,Zinc (Sulfate de zinc) Brand1,250 mg,comprimé,False,2648,unknown
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1012,Zinc (Sulfate de zinc) Brand2,500 mg,sirop,True,2395,out
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1013,Zinc (Sulfate de zinc) Brand3,750 mg,sirop,False,3170,unknown
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1014,Zinc (Sulfate de zinc) Brand1,250 mg,capsule,True,2944,unknown
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1015,Zinc (Sulfate de zinc) Brand2,500 mg,sirop,False,1783,unknown
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1016,Zinc (Sulfate de zinc) Brand3,750 mg,capsule,True,1618,out
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1017,Zinc (Sulfate de zinc) Brand1,250 mg,capsule,False,1224,out
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1018,Zinc (Sulfate de zinc) Brand2,500 mg,comprimé,True,4477,low
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1019,Zinc (Sulfate de zinc) Brand3,750 mg,sirop,False,3119,unknown
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1020,Zinc (Sulfate de zinc) Brand1,250 mg,sirop,True,927,low
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1021,Zinc (Sulfate de zinc) Brand2,500 mg,capsule,False,878,unknown
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1022,Zinc (Sulfate de zinc) Brand3,750 mg,sirop,True,4061,low
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1023,Zinc (Sulfate de zinc) Brand1,250 mg,capsule,False,700,in_stock
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1024,Zinc (Sulfate de zinc) Brand2,500 mg,sirop,True,577,low
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1025,Zinc (Sulfate de zinc) Brand3,750 mg,capsule,False,1735,out
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1026,Zinc (Sulfate de zinc) Brand1,250 mg,comprimé,True,1882,unknown
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1027,Zinc (Sulfate de zinc) Brand2,500 mg,suspension,False,1239,unknown
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1028,Zinc (Sulfate de zinc) Brand3,750 mg,capsule,True,3749,out
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1029,Zinc (Sulfate de zinc) Brand1,250 mg,comprimé,False,2421,low
+drug-107,Zinc (Sulfate de zinc),WHO ATC: A12CB01,Suppléments,var-1030,Zinc (Sulfate de zinc) Brand2,500 mg,comprimé,True,810,low
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1031,Cotrimoxazole (SMX/TMP) Brand1,250 mg,sirop,False,4026,in_stock
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1032,Cotrimoxazole (SMX/TMP) Brand2,500 mg,comprimé,True,895,out
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1033,Cotrimoxazole (SMX/TMP) Brand3,750 mg,comprimé,False,1403,in_stock
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1034,Cotrimoxazole (SMX/TMP) Brand1,250 mg,suspension,True,1612,unknown
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1035,Cotrimoxazole (SMX/TMP) Brand2,500 mg,comprimé,False,1966,low
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1036,Cotrimoxazole (SMX/TMP) Brand3,750 mg,sirop,True,4968,in_stock
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1037,Cotrimoxazole (SMX/TMP) Brand1,250 mg,capsule,False,4565,in_stock
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1038,Cotrimoxazole (SMX/TMP) Brand2,500 mg,capsule,True,2262,low
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1039,Cotrimoxazole (SMX/TMP) Brand3,750 mg,comprimé,False,2736,low
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1040,Cotrimoxazole (SMX/TMP) Brand1,250 mg,comprimé,True,2667,out
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1041,Cotrimoxazole (SMX/TMP) Brand2,500 mg,comprimé,False,853,low
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1042,Cotrimoxazole (SMX/TMP) Brand3,750 mg,comprimé,True,3843,out
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1043,Cotrimoxazole (SMX/TMP) Brand1,250 mg,capsule,False,586,out
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1044,Cotrimoxazole (SMX/TMP) Brand2,500 mg,comprimé,True,4217,out
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1045,Cotrimoxazole (SMX/TMP) Brand3,750 mg,capsule,False,3861,out
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1046,Cotrimoxazole (SMX/TMP) Brand1,250 mg,suspension,True,3956,out
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1047,Cotrimoxazole (SMX/TMP) Brand2,500 mg,suspension,False,3637,low
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1048,Cotrimoxazole (SMX/TMP) Brand3,750 mg,suspension,True,3657,unknown
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1049,Cotrimoxazole (SMX/TMP) Brand1,250 mg,sirop,False,543,low
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1050,Cotrimoxazole (SMX/TMP) Brand2,500 mg,capsule,True,3588,low
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1051,Cotrimoxazole (SMX/TMP) Brand3,750 mg,sirop,False,1451,in_stock
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1052,Cotrimoxazole (SMX/TMP) Brand1,250 mg,comprimé,True,905,unknown
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1053,Cotrimoxazole (SMX/TMP) Brand2,500 mg,capsule,False,4124,out
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1054,Cotrimoxazole (SMX/TMP) Brand3,750 mg,suspension,True,507,unknown
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1055,Cotrimoxazole (SMX/TMP) Brand1,250 mg,suspension,False,4678,out
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1056,Cotrimoxazole (SMX/TMP) Brand2,500 mg,suspension,True,2420,unknown
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1057,Cotrimoxazole (SMX/TMP) Brand3,750 mg,capsule,False,1025,unknown
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1058,Cotrimoxazole (SMX/TMP) Brand1,250 mg,capsule,True,3138,in_stock
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1059,Cotrimoxazole (SMX/TMP) Brand2,500 mg,sirop,False,2670,out
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1060,Cotrimoxazole (SMX/TMP) Brand3,750 mg,suspension,True,3348,unknown
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1061,Cotrimoxazole (SMX/TMP) Brand1,250 mg,sirop,False,1663,in_stock
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1062,Cotrimoxazole (SMX/TMP) Brand2,500 mg,capsule,True,4792,low
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1063,Cotrimoxazole (SMX/TMP) Brand3,750 mg,sirop,False,3496,low
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1064,Cotrimoxazole (SMX/TMP) Brand1,250 mg,sirop,True,1748,unknown
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1065,Cotrimoxazole (SMX/TMP) Brand2,500 mg,sirop,False,854,out
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1066,Cotrimoxazole (SMX/TMP) Brand3,750 mg,suspension,True,3463,unknown
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1067,Cotrimoxazole (SMX/TMP) Brand1,250 mg,comprimé,False,3858,low
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1068,Cotrimoxazole (SMX/TMP) Brand2,500 mg,capsule,True,3573,in_stock
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1069,Cotrimoxazole (SMX/TMP) Brand3,750 mg,capsule,False,3421,out
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1070,Cotrimoxazole (SMX/TMP) Brand1,250 mg,suspension,True,1220,out
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1071,Cotrimoxazole (SMX/TMP) Brand2,500 mg,suspension,False,2879,unknown
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1072,Cotrimoxazole (SMX/TMP) Brand3,750 mg,comprimé,True,4180,unknown
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1073,Cotrimoxazole (SMX/TMP) Brand1,250 mg,sirop,False,4738,low
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1074,Cotrimoxazole (SMX/TMP) Brand2,500 mg,comprimé,True,1569,out
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1075,Cotrimoxazole (SMX/TMP) Brand3,750 mg,suspension,False,4765,low
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1076,Cotrimoxazole (SMX/TMP) Brand1,250 mg,capsule,True,4787,out
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1077,Cotrimoxazole (SMX/TMP) Brand2,500 mg,suspension,False,2571,in_stock
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1078,Cotrimoxazole (SMX/TMP) Brand3,750 mg,sirop,True,506,out
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1079,Cotrimoxazole (SMX/TMP) Brand1,250 mg,comprimé,False,1961,out
+drug-355,Cotrimoxazole (SMX/TMP),WHO ATC: J01EE01,Antibiotiques,var-1080,Cotrimoxazole (SMX/TMP) Brand2,500 mg,capsule,True,3154,out
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1081,Doxycycline Brand1,250 mg,sirop,False,2674,unknown
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1082,Doxycycline Brand2,500 mg,comprimé,True,4802,unknown
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1083,Doxycycline Brand3,750 mg,comprimé,False,2152,low
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1084,Doxycycline Brand1,250 mg,suspension,True,2879,out
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1085,Doxycycline Brand2,500 mg,comprimé,False,4125,unknown
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1086,Doxycycline Brand3,750 mg,capsule,True,842,out
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1087,Doxycycline Brand1,250 mg,suspension,False,4030,out
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1088,Doxycycline Brand2,500 mg,capsule,True,2454,unknown
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1089,Doxycycline Brand3,750 mg,sirop,False,2069,out
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1090,Doxycycline Brand1,250 mg,comprimé,True,2164,out
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1091,Doxycycline Brand2,500 mg,comprimé,False,1154,unknown
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1092,Doxycycline Brand3,750 mg,suspension,True,3721,unknown
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1093,Doxycycline Brand1,250 mg,suspension,False,709,in_stock
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1094,Doxycycline Brand2,500 mg,suspension,True,4286,unknown
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1095,Doxycycline Brand3,750 mg,suspension,False,4379,low
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1096,Doxycycline Brand1,250 mg,comprimé,True,4103,unknown
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1097,Doxycycline Brand2,500 mg,suspension,False,1608,in_stock
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1098,Doxycycline Brand3,750 mg,sirop,True,2140,unknown
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1099,Doxycycline Brand1,250 mg,comprimé,False,2908,out
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1100,Doxycycline Brand2,500 mg,suspension,True,4267,in_stock
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1101,Doxycycline Brand3,750 mg,comprimé,False,2308,in_stock
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1102,Doxycycline Brand1,250 mg,comprimé,True,1333,unknown
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1103,Doxycycline Brand2,500 mg,comprimé,False,2266,unknown
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1104,Doxycycline Brand3,750 mg,comprimé,True,2137,out
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1105,Doxycycline Brand1,250 mg,suspension,False,948,unknown
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1106,Doxycycline Brand2,500 mg,sirop,True,3833,in_stock
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1107,Doxycycline Brand3,750 mg,sirop,False,3125,out
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1108,Doxycycline Brand1,250 mg,sirop,True,4745,in_stock
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1109,Doxycycline Brand2,500 mg,sirop,False,4914,out
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1110,Doxycycline Brand3,750 mg,capsule,True,1209,out
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1111,Doxycycline Brand1,250 mg,suspension,False,2589,out
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1112,Doxycycline Brand2,500 mg,suspension,True,4685,unknown
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1113,Doxycycline Brand3,750 mg,comprimé,False,3013,out
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1114,Doxycycline Brand1,250 mg,sirop,True,3614,unknown
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1115,Doxycycline Brand2,500 mg,capsule,False,2998,low
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1116,Doxycycline Brand3,750 mg,sirop,True,926,low
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1117,Doxycycline Brand1,250 mg,capsule,False,4302,unknown
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1118,Doxycycline Brand2,500 mg,sirop,True,3496,out
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1119,Doxycycline Brand3,750 mg,sirop,False,4239,in_stock
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1120,Doxycycline Brand1,250 mg,capsule,True,569,in_stock
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1121,Doxycycline Brand2,500 mg,suspension,False,3150,in_stock
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1122,Doxycycline Brand3,750 mg,capsule,True,2299,unknown
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1123,Doxycycline Brand1,250 mg,capsule,False,2142,low
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1124,Doxycycline Brand2,500 mg,suspension,True,3825,unknown
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1125,Doxycycline Brand3,750 mg,sirop,False,2164,in_stock
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1126,Doxycycline Brand1,250 mg,sirop,True,4053,in_stock
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1127,Doxycycline Brand2,500 mg,comprimé,False,1622,in_stock
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1128,Doxycycline Brand3,750 mg,suspension,True,1975,in_stock
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1129,Doxycycline Brand1,250 mg,sirop,False,4581,low
+drug-851,Doxycycline,WHO ATC: J01AA02,Antibiotiques,var-1130,Doxycycline Brand2,500 mg,capsule,True,2228,low
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1131,Quinine Brand1,250 mg,sirop,False,2194,in_stock
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1132,Quinine Brand2,500 mg,suspension,True,1280,low
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1133,Quinine Brand3,750 mg,comprimé,False,912,unknown
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1134,Quinine Brand1,250 mg,sirop,True,2610,unknown
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1135,Quinine Brand2,500 mg,suspension,False,1768,in_stock
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1136,Quinine Brand3,750 mg,sirop,True,842,low
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1137,Quinine Brand1,250 mg,suspension,False,2905,low
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1138,Quinine Brand2,500 mg,capsule,True,1761,out
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1139,Quinine Brand3,750 mg,capsule,False,3157,low
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1140,Quinine Brand1,250 mg,sirop,True,2390,unknown
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1141,Quinine Brand2,500 mg,comprimé,False,3183,unknown
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1142,Quinine Brand3,750 mg,sirop,True,2884,low
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1143,Quinine Brand1,250 mg,comprimé,False,2123,unknown
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1144,Quinine Brand2,500 mg,sirop,True,2006,unknown
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1145,Quinine Brand3,750 mg,capsule,False,3788,in_stock
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1146,Quinine Brand1,250 mg,comprimé,True,3382,in_stock
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1147,Quinine Brand2,500 mg,sirop,False,4795,in_stock
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1148,Quinine Brand3,750 mg,capsule,True,4513,out
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1149,Quinine Brand1,250 mg,comprimé,False,4567,in_stock
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1150,Quinine Brand2,500 mg,sirop,True,4471,out
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1151,Quinine Brand3,750 mg,capsule,False,4929,in_stock
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1152,Quinine Brand1,250 mg,sirop,True,1644,unknown
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1153,Quinine Brand2,500 mg,capsule,False,2361,out
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1154,Quinine Brand3,750 mg,comprimé,True,1324,in_stock
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1155,Quinine Brand1,250 mg,capsule,False,2092,low
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1156,Quinine Brand2,500 mg,capsule,True,910,low
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1157,Quinine Brand3,750 mg,capsule,False,3369,unknown
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1158,Quinine Brand1,250 mg,suspension,True,2526,out
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1159,Quinine Brand2,500 mg,capsule,False,1965,in_stock
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1160,Quinine Brand3,750 mg,capsule,True,1068,unknown
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1161,Quinine Brand1,250 mg,comprimé,False,1425,low
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1162,Quinine Brand2,500 mg,suspension,True,4279,in_stock
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1163,Quinine Brand3,750 mg,comprimé,False,824,in_stock
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1164,Quinine Brand1,250 mg,suspension,True,1581,unknown
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1165,Quinine Brand2,500 mg,capsule,False,1124,out
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1166,Quinine Brand3,750 mg,sirop,True,3444,low
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1167,Quinine Brand1,250 mg,comprimé,False,3216,in_stock
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1168,Quinine Brand2,500 mg,suspension,True,2985,low
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1169,Quinine Brand3,750 mg,capsule,False,1270,in_stock
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1170,Quinine Brand1,250 mg,sirop,True,1459,low
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1171,Quinine Brand2,500 mg,suspension,False,2715,in_stock
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1172,Quinine Brand3,750 mg,capsule,True,4332,low
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1173,Quinine Brand1,250 mg,sirop,False,4886,in_stock
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1174,Quinine Brand2,500 mg,capsule,True,3505,low
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1175,Quinine Brand3,750 mg,capsule,False,3807,low
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1176,Quinine Brand1,250 mg,sirop,True,2465,low
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1177,Quinine Brand2,500 mg,comprimé,False,623,in_stock
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1178,Quinine Brand3,750 mg,comprimé,True,4500,low
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1179,Quinine Brand1,250 mg,sirop,False,1213,low
+drug-350,Quinine,WHO ATC: P01BC01,Antipaludéens,var-1180,Quinine Brand2,500 mg,sirop,True,2664,in_stock

@@ -9,6 +9,7 @@ require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
+const { medIdentityKey } = require('../../public/pro-utils');
 
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
@@ -120,6 +121,7 @@ async function seedPharmacies(quartiers) {
       statut: r.statut || 'non_verifie',
       source: r.source || 'admin',
       horaires,
+      est_demo: true, // données de test (PR 1)
     };
   }).filter(Boolean);
 
@@ -148,18 +150,36 @@ async function seedMedicaments() {
     categorie: r.categorie,
     ordonnance: r.ordonnance === 'true',
     description: r.description,
+    est_demo: true, // catalogue de test ; `restreint` reste à true (décision du propriétaire / d'un pharmacien)
   }));
 
   console.log(`💊 Insertion de ${medicaments.length} médicaments…`);
 
-  const { data, error } = await supabase
+  // Idempotent : un médicament déjà présent (même nom + dosage, ou même produit : DCI + marque + dosage + forme)
+  // n'est jamais recréé. L'ancien upsert sur `nom` ne s'appuyait sur aucune contrainte unique.
+  const nomDosage = (m) => `${String(m.nom || '').trim().toLowerCase()}|${String(m.dosage || '').replace(/\s+/g, '').toLowerCase()}`;
+  const { data: existants, error: lectureErreur } = await supabase
     .from('medicaments')
-    .upsert(medicaments, { onConflict: 'nom' })
-    .select();
+    .select('id, nom, nom_commercial, dci, forme, dosage');
+  if (lectureErreur) throw new Error(`Médicaments (lecture): ${lectureErreur.message}`);
 
-  if (error) throw new Error(`Médicaments: ${error.message}`);
-  console.log(`   ✅ ${data.length} médicaments insérés`);
-  return data;
+  const connus = new Set();
+  existants.forEach((m) => { connus.add(medIdentityKey(m)); connus.add(nomDosage(m)); });
+  const aInserer = medicaments.filter((m) => {
+    const cles = [medIdentityKey(m), nomDosage(m)];
+    if (cles.some((c) => connus.has(c))) return false;
+    cles.forEach((c) => connus.add(c));
+    return true;
+  });
+
+  let inseres = [];
+  if (aInserer.length > 0) {
+    const { data, error } = await supabase.from('medicaments').insert(aInserer).select();
+    if (error) throw new Error(`Médicaments: ${error.message}`);
+    inseres = data;
+  }
+  console.log(`   ✅ ${inseres.length} médicaments insérés, ${medicaments.length - aInserer.length} déjà présents`);
+  return [...inseres, ...existants];
 }
 
 async function seedDemoStocks(pharmacies, medicaments) {
@@ -218,4 +238,6 @@ async function main() {
   }
 }
 
-main();
+if (require.main === module) main();
+
+module.exports = { seedMedicaments };

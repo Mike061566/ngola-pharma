@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <title>Activer mon compte — N'Gola Pharma</title>
+    <style>
+        :root { --primary:#003366; --bg:#f4f6f9; --text:#1c2733; --muted:#5d6b7a; --border:#d9e0e8; --danger:#b3261e; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+        header { background: var(--primary); color: #fff; padding: 14px 16px; font-weight: 700; }
+        main { max-width: 520px; margin: 0 auto; padding: 16px; }
+        .carte { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; }
+        h1 { font-size: 20px; margin-bottom: 10px; } p { color: var(--muted); margin-bottom: 14px; }
+        button { width: 100%; padding: 14px; background: var(--primary); color: #fff; border: 0; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; }
+        button:disabled { background: #8a97a5; } .erreur { color: var(--danger); margin-top: 12px; } .masque { display: none; }
+    </style>
+</head>
+<body>
+<header>N'Gola Pharma</header>
+<main>
+    <div class="carte">
+        <h1>Activer mon compte</h1>
+        <p id="texte">Votre demande a été approuvée. Cliquez sur le bouton pour accéder à votre Espace Pro. Ce lien est personnel et ne fonctionne qu'une seule fois.</p>
+        <button id="bouton">Activer et accéder à mon Espace Pro</button>
+        <div id="erreur" class="erreur masque" role="alert"></div>
+    </div>
+</main>
+<script src="/alerte-config.js"></script>
+<script src="/demo-banner.js"></script>
+<script src="/demande-utils.js"></script>
+<script>
+(function () {
+    var U = window.DemandeUtils, C = window.NGOLA_ALERTE, $ = function (id) { return document.getElementById(id); };
+    var jeton = U.jetonDuFragment(window.location.hash);
+    if (!jeton) { $('bouton').classList.add('masque'); $('texte').classList.add('masque'); $('erreur').textContent = U.messageErreur('lien_invalide'); $('erreur').classList.remove('masque'); return; }
+    // Le jeton est retiré de la barre d'adresse (historique) dès l'affichage.
+    try { history.replaceState(null, '', window.location.pathname); } catch (e) { /* sans importance */ }
+    // Le lien n'est consommé que par un clic volontaire : les scanners d'emails ne l'« usent » pas.
+    $('bouton').addEventListener('click', function () {
+        $('bouton').disabled = true; $('bouton').textContent = 'Activation…'; $('erreur').classList.add('masque');
+        fetch(C.apiBase + '/functions/v1/activer-compte', { method: 'POST', headers: { apikey: C.anonKey, 'content-type': 'application/json' }, body: JSON.stringify({ jeton: jeton }) })
+            .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, j: j }; }); })
+            .then(function (r) {
+                if (r.ok && r.j.lien_connexion) { window.location.replace(r.j.lien_connexion); return; }
+                $('erreur').textContent = U.messageErreur(r.j.erreur); $('erreur').classList.remove('masque');
+                $('bouton').classList.add('masque');
+            })
+            .catch(function () { $('erreur').textContent = 'Connexion impossible. Réessayez.'; $('erreur').classList.remove('masque'); $('bouton').disabled = false; $('bouton').textContent = 'Activer et accéder à mon Espace Pro'; });
+    });
+}());
+</script>
+</body>
+</html>

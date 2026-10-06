@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const { supabaseAdmin, supabase: supabaseAnon } = require('../config/supabase');
+const { sanitizeSearchTerm, orIlike } = require('../utils/search');
 const supabase = supabaseAdmin || supabaseAnon;
 
 const router = Router();
@@ -28,7 +29,11 @@ router.get('/', async (req, res, next) => {
       .select('*', { count: 'exact' });
 
     if (q) {
-      query = query.or(`nom.ilike.%${q}%,dci.ilike.%${q}%,nom_commercial.ilike.%${q}%,categorie.ilike.%${q}%`);
+      const term = sanitizeSearchTerm(q);
+      if (!term) {
+        return res.json({ data: [], total: 0, page: pageNum, limit: limitNum, pages: 0 });
+      }
+      query = query.or(orIlike(['nom', 'dci', 'nom_commercial', 'categorie'], term));
     }
 
     if (categorie) {

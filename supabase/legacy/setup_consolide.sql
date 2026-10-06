@@ -169,19 +169,88 @@ CREATE TABLE IF NOT EXISTS alertes_stock (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_email      TEXT,
     user_phone      TEXT,
-    canal           TEXT DEFAULT 'email' CHECK (canal IN ('email', 'whatsapp', 'ussd')),
+    canal           TEXT DEFAULT 'email',
     medicament_nom  TEXT NOT NULL,
     medicament_id   UUID REFERENCES medicaments(id),
     quartier_id     UUID REFERENCES quartiers(id),
     created_at      TIMESTAMPTZ DEFAULT now(),
     notified_at     TIMESTAMPTZ,
     active          BOOLEAN DEFAULT true,
-    CONSTRAINT contact_required CHECK (user_email IS NOT NULL OR user_phone IS NOT NULL)
+    -- Alerte « héritée » (canal whatsapp / ussd de l'ancien formulaire) : jamais contactée
+    -- par le système de routage. Posée par le trigger d'insertion. Voir
+    -- supabase/fix_alertes_stock_validation.sql.
+    heritee         BOOLEAN NOT NULL DEFAULT false,
+    CONSTRAINT contact_required CHECK (user_email IS NOT NULL OR user_phone IS NOT NULL),
+    CONSTRAINT alertes_stock_canal_check CHECK (canal IN ('email', 'sms', 'whatsapp', 'ussd')),
+    CONSTRAINT alertes_stock_email_format CHECK (heritee OR user_email IS NULL
+        OR (char_length(user_email) <= 254 AND user_email ~ '^[^@[:space:]]+@[^@[:space:]]+\.[^@[:space:]]+$')),
+    CONSTRAINT alertes_stock_phone_format CHECK (heritee OR user_phone IS NULL OR user_phone ~ '^\+[1-9][0-9]{7,14}$'),
+    CONSTRAINT alertes_stock_medicament_nom_len CHECK (heritee OR char_length(btrim(medicament_nom)) BETWEEN 1 AND 120),
+    CONSTRAINT alertes_stock_canal_contact CHECK (heritee OR canal IS NULL
+        OR (canal = 'email' AND user_email IS NOT NULL)
+        OR (canal <> 'email' AND user_phone IS NOT NULL))
 );
 
 CREATE INDEX IF NOT EXISTS idx_alertes_stock_active ON alertes_stock(active, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_alertes_stock_email ON alertes_stock(user_email);
 CREATE INDEX IF NOT EXISTS idx_alertes_stock_phone ON alertes_stock(user_phone);
+
+-- ── Index pour les contrôles anti-spam ────────────────────────────────
+CREATE INDEX IF NOT EXISTS idx_alertes_stock_email_recent ON alertes_stock (lower(user_email), created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_alertes_stock_phone_recent ON alertes_stock (user_phone, created_at DESC);
+
+-- ── Trigger : normalisation, marquage « héritée », fusion et limite ───
+-- SECURITY DEFINER : le rôle anon n'a pas le droit de lire la table (RLS), le trigger doit
+-- pouvoir compter les alertes déjà reçues pour ce contact.
+CREATE OR REPLACE FUNCTION alertes_stock_avant_insertion()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+    deja_recu INTEGER;
+BEGIN
+    -- Champs décidés par le serveur, jamais par le client. (canal NULL => pas héritée : COALESCE.)
+    NEW.created_at  := now();
+    NEW.notified_at := NULL;
+    NEW.heritee     := COALESCE(NEW.canal IN ('whatsapp', 'ussd'), false);
+
+    -- Normalisation : le formulaire envoie déjà +237XXXXXXXXX ; on tolère espaces et tirets.
+    NEW.user_email := NULLIF(lower(btrim(NEW.user_email)), '');
+    NEW.user_phone := NULLIF(regexp_replace(btrim(NEW.user_phone), '[\s.\-]', '', 'g'), '');
+
+    -- Même contact + même médicament sous 30 min : fusionné (aucune erreur côté client).
+    IF EXISTS (
+        SELECT 1 FROM alertes_stock a
+        WHERE a.created_at > now() - interval '30 minutes'
+          AND ((NEW.user_email IS NOT NULL AND lower(a.user_email) = NEW.user_email)
+            OR (NEW.user_phone IS NOT NULL AND a.user_phone = NEW.user_phone))
+          AND (a.medicament_id IS NOT DISTINCT FROM NEW.medicament_id)
+          AND lower(btrim(a.medicament_nom)) = lower(btrim(NEW.medicament_nom))
+    ) THEN
+        RETURN NULL;
+    END IF;
+
+    -- Limite : 5 alertes / 24 h par contact (email ou téléphone).
+    SELECT count(*) INTO deja_recu
+    FROM alertes_stock a
+    WHERE a.created_at > now() - interval '24 hours'
+      AND ((NEW.user_email IS NOT NULL AND lower(a.user_email) = NEW.user_email)
+        OR (NEW.user_phone IS NOT NULL AND a.user_phone = NEW.user_phone));
+    IF deja_recu >= 5 THEN
+        RAISE EXCEPTION 'Trop d''alertes pour ce contact aujourd''hui. Réessayez demain.'
+            USING ERRCODE = '54000';
+    END IF;
+
+    RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS trg_alertes_stock_avant_insertion ON alertes_stock;
+CREATE TRIGGER trg_alertes_stock_avant_insertion
+    BEFORE INSERT ON alertes_stock
+    FOR EACH ROW EXECUTE FUNCTION alertes_stock_avant_insertion();
 
 -- ============================================================
 -- ÉTAPE 3 : FONCTION ANTI-RÉCURSION POUR LES POLICIES RLS
@@ -237,7 +306,33 @@ CREATE POLICY "Pharmacies lisibles par tous" ON pharmacies FOR SELECT USING (tru
 CREATE POLICY "Pharmacies modifiables par admin" ON pharmacies FOR ALL
     USING (auth_role() = 'admin');
 CREATE POLICY "Pharmacien modifie sa pharmacie" ON pharmacies FOR UPDATE
-    USING (auth_role() = 'pharmacien' AND id = auth_pharmacie_id());
+    USING (auth_role() = 'pharmacien' AND id = auth_pharmacie_id())
+    WITH CHECK (auth_role() = 'pharmacien' AND id = auth_pharmacie_id());
+
+-- Un pharmacien ne peut modifier que telephone, email, site_web, logo_url et horaires :
+-- statut, nom, adresse, GPS, garde... restent à l'admin (trigger ci-dessous).
+-- Voir supabase/fix_pharmacies_colonnes_protegees.sql.
+CREATE OR REPLACE FUNCTION protect_pharmacies_columns()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SET search_path = public
+AS $$
+DECLARE
+    editable CONSTANT text[] := ARRAY['telephone', 'email', 'site_web', 'logo_url', 'horaires', 'updated_at'];
+BEGIN
+    IF current_user NOT IN ('anon', 'authenticated') OR auth_role() = 'admin' THEN
+        RETURN NEW;
+    END IF;
+    IF (to_jsonb(NEW) - editable) IS DISTINCT FROM (to_jsonb(OLD) - editable) THEN
+        RAISE EXCEPTION 'Seuls telephone, email, site_web, logo_url et horaires sont modifiables par la pharmacie'
+            USING ERRCODE = '42501';
+    END IF;
+    RETURN NEW;
+END;
+$$;
+DROP TRIGGER IF EXISTS trg_pharmacies_protect ON pharmacies;
+CREATE TRIGGER trg_pharmacies_protect BEFORE UPDATE ON pharmacies
+    FOR EACH ROW EXECUTE FUNCTION protect_pharmacies_columns();
 
 -- Médicaments : lecture publique, écriture admin
 ALTER TABLE medicaments ENABLE ROW LEVEL SECURITY;
@@ -267,15 +362,20 @@ DROP POLICY IF EXISTS "profils_update" ON profils;
 DROP POLICY IF EXISTS "profils_insert" ON profils;
 CREATE POLICY "profils_select" ON profils FOR SELECT
     USING (id = auth.uid() OR auth_role() = 'admin');
--- Un utilisateur peut modifier son propre profil, mais ne peut pas
--- s'auto-attribuer un rôle pharmacien/admin en le modifiant après coup
--- (seul un admin existant le peut). Sans cette restriction sur `role`,
--- n'importe quel compte pourrait s'octroyer l'accès admin.
+-- Un utilisateur peut modifier son propre profil, mais ne peut changer ni son
+-- `role` ni son `pharmacie_id` (seul un admin le peut). Sans la restriction sur
+-- `role`, n'importe quel compte pourrait s'octroyer l'accès admin ; sans celle sur
+-- `pharmacie_id`, un pharmacien pourrait se rattacher à une autre officine et
+-- modifier ses stocks. Voir supabase/fix_profils_pharmacie_id.sql.
 CREATE POLICY "profils_update" ON profils FOR UPDATE
-    USING (id = auth.uid())
+    USING (id = auth.uid() OR auth_role() = 'admin')
     WITH CHECK (
-        id = auth.uid()
-        AND (role = (SELECT role FROM profils WHERE id = auth.uid()) OR auth_role() = 'admin')
+        auth_role() = 'admin'
+        OR (
+            id = auth.uid()
+            AND role = auth_role()
+            AND pharmacie_id IS NOT DISTINCT FROM auth_pharmacie_id()
+        )
     );
 -- Auto-inscription publique : uniquement en tant que patient, sans
 -- pharmacie liée. Un admin existant peut créer un profil avec
@@ -299,8 +399,9 @@ ALTER TABLE alertes_stock ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Tout le monde peut créer une alerte" ON alertes_stock;
 DROP POLICY IF EXISTS "Admins voient les alertes" ON alertes_stock;
 DROP POLICY IF EXISTS "Admins modifient les alertes" ON alertes_stock;
+-- (policy d'insertion publique à retirer quand l'Edge Function de création d'alerte existera)
 CREATE POLICY "Tout le monde peut créer une alerte" ON alertes_stock FOR INSERT
-    TO anon, authenticated WITH CHECK (true);
+    TO anon, authenticated WITH CHECK (notified_at IS NULL AND active IS NOT FALSE);
 CREATE POLICY "Admins voient les alertes" ON alertes_stock FOR SELECT
     TO authenticated USING (auth_role() = 'admin');
 CREATE POLICY "Admins modifient les alertes" ON alertes_stock FOR UPDATE
@@ -374,7 +475,10 @@ INSERT INTO quartiers (nom, slug, description) VALUES
 ON CONFLICT (slug) DO NOTHING;
 
 -- Médicaments (20)
-INSERT INTO medicaments (nom, nom_commercial, dci, forme, dosage, categorie, ordonnance, description) VALUES
+-- Idempotent : une fiche déjà présente (même nom + dosage, ou même produit : DCI + marque + dosage + forme)
+-- n'est jamais recréée, avec ou sans index unique (uq_medicaments_nom_dosage, voir la migration de fusion).
+INSERT INTO medicaments (nom, nom_commercial, dci, forme, dosage, categorie, ordonnance, description)
+SELECT v.* FROM (VALUES
     ('Paracétamol 500mg', 'Doliprane', 'Paracétamol', 'Comprimé', '500mg', 'Antalgique', false, 'Antalgique et antipyrétique courant'),
     ('Paracétamol 1000mg', 'Efferalgan', 'Paracétamol', 'Comprimé effervescent', '1000mg', 'Antalgique', false, 'Antalgique effervescent'),
     ('Ibuprofène 400mg', 'Advil', 'Ibuprofène', 'Comprimé', '400mg', 'Anti-inflammatoire', false, 'Anti-inflammatoire non stéroïdien'),
@@ -395,6 +499,12 @@ INSERT INTO medicaments (nom, nom_commercial, dci, forme, dosage, categorie, ord
     ('Salbutamol', 'Ventoline', 'Salbutamol', 'Aérosol', '100µg/dose', 'Pneumologie', true, 'Bronchodilatateur d''urgence'),
     ('Fer + Acide folique', 'Tardyféron', 'Fer-Acide folique', 'Comprimé', '80mg+0.35mg', 'Hématologie', false, 'Traitement de l''anémie'),
     ('Ciprofloxacine 500mg', 'Ciflox', 'Ciprofloxacine', 'Comprimé', '500mg', 'Antibiotique', true, 'Fluoroquinolone à large spectre')
+) AS v(nom, nom_commercial, dci, forme, dosage, categorie, ordonnance, description)
+WHERE NOT EXISTS (
+    SELECT 1 FROM medicaments m
+    WHERE ((lower(btrim(m.nom)), lower(regexp_replace(coalesce(m.dosage, ''), '\s', '', 'g'))) = (lower(btrim(v.nom)), lower(regexp_replace(coalesce(v.dosage, ''), '\s', '', 'g'))))
+       OR concat_ws('|', lower(btrim(coalesce(m.dci, ''))), lower(btrim(coalesce(m.nom_commercial, ''))), lower(regexp_replace(coalesce(m.dosage, ''), '\s', '', 'g')), lower(btrim(coalesce(m.forme, ''))), CASE WHEN btrim(coalesce(m.dci, '')) = '' AND btrim(coalesce(m.nom_commercial, '')) = '' THEN lower(btrim(m.nom)) END) = concat_ws('|', lower(btrim(coalesce(v.dci, ''))), lower(btrim(coalesce(v.nom_commercial, ''))), lower(regexp_replace(coalesce(v.dosage, ''), '\s', '', 'g')), lower(btrim(coalesce(v.forme, ''))), CASE WHEN btrim(coalesce(v.dci, '')) = '' AND btrim(coalesce(v.nom_commercial, '')) = '' THEN lower(btrim(v.nom)) END)
+)
 ON CONFLICT DO NOTHING;
 
 -- Pharmacies de démo (extrait minimal pour tester le flux — pas les 52 de Yaoundé,

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+    <title>Répondre à une demande — N'Gola Pharma</title>
+    <style>
+        :root { --primary:#003366; --bg:#f4f6f9; --text:#1c2733; --muted:#5d6b7a; --border:#d9e0e8; --ok:#1b7a3d; --ko:#b3261e; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+        header { background: var(--primary); color: #fff; padding: 14px 16px; font-weight: 700; }
+        main { max-width: 480px; margin: 0 auto; padding: 16px; }
+        .carte { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+        h1 { font-size: 20px; margin-bottom: 4px; }
+        .meta { color: var(--muted); font-size: 14px; margin-bottom: 14px; }
+        .ordo { margin: 12px 0; padding: 10px 12px; background: #fff8e1; border: 1px solid #ffe08a; border-radius: 8px; font-size: 13px; }
+        label { display: block; font-weight: 600; font-size: 14px; margin: 14px 0 4px; }
+        input { width: 100%; padding: 14px; border: 1px solid var(--border); border-radius: 10px; font-size: 18px; }
+        .boutons { display: grid; gap: 12px; margin-top: 18px; }
+        button { padding: 18px; border: 0; border-radius: 12px; font-size: 18px; font-weight: 700; color: #fff; cursor: pointer; }
+        button.oui { background: var(--ok); } button.non { background: var(--ko); }
+        button:disabled { opacity: .5; cursor: not-allowed; }
+        .etat { font-size: 18px; font-weight: 700; margin: 8px 0; }
+        .erreur { color: var(--ko); font-size: 14px; margin-top: 10px; }
+        .masque { display: none; }
+        .note { font-size: 12px; color: var(--muted); margin-top: 14px; }
+    </style>
+</head>
+<body>
+<header>N'Gola Pharma</header>
+<main>
+    <div class="carte">
+        <div id="chargement">Chargement…</div>
+        <div id="introuvable" class="masque"><h1>Lien introuvable</h1><p class="meta">Ce lien n'est pas valable. Ouvrez l'Espace Pro pour répondre aux demandes.</p></div>
+
+        <div id="demande" class="masque">
+            <p class="meta" id="pharmacie"></p>
+            <h1 id="medicament"></h1>
+            <p class="meta" id="quartier"></p>
+            <div id="ordonnance" class="ordo masque">📋 Médicament sur ordonnance : à présenter au comptoir lors de l'achat ou du retrait.</div>
+
+            <div id="formulaire">
+                <label for="prix">Prix en FCFA (facultatif, met votre stock à jour)</label>
+                <input id="prix" type="text" inputmode="numeric" autocomplete="off" placeholder="Ex. 1 500">
+                <div class="boutons">
+                    <button id="boutonOui" class="oui" type="button">✅ Disponible</button>
+                    <button id="boutonNon" class="non" type="button">❌ Indisponible</button>
+                </div>
+            </div>
+            <div id="resultat" class="masque"><div class="etat" id="texteResultat"></div></div>
+            <div id="erreur" class="erreur" role="alert"></div>
+            <p class="note">Aucune donnée du patient n'est transmise. Votre réponse met aussi à jour votre stock.</p>
+        </div>
+    </div>
+</main>
+<script src="/alerte-config.js"></script>
+<script src="/demo-banner.js"></script>
+<script src="/alerte-utils.js"></script>
+<script>
+(function () {
+    var U = window.AlerteUtils, C = window.NGOLA_ALERTE;
+    var code = U.codeDepuisChemin(location.pathname);
+    var $ = function (id) { return document.getElementById(id); };
+    var show = function (id, oui) { $(id).classList.toggle('masque', !oui); };
+    var api = C.apiBase + '/functions/v1/repondre-lien';
+    var H = { apikey: C.anonKey };
+
+    function afficherEtat(d) {
+        $('pharmacie').textContent = d.pharmacie || '';
+        $('medicament').textContent = (d.medicament || 'Médicament') + (d.forme ? ' — ' + d.forme : '');
+        $('quartier').textContent = d.quartier ? 'Demande pour le quartier ' + d.quartier + (d.urgence === 'urgent' ? ' · URGENT' : '') : '';
+        show('ordonnance', d.sur_ordonnance === true);
+        if (d.prix_prefill && !$('prix').value) $('prix').value = d.prix_prefill;
+        var ferme = d.etat !== 'ouvert';
+        show('formulaire', !ferme);
+        show('resultat', ferme);
+        if (d.etat === 'repondu') $('texteResultat').textContent = (d.reponse === 'available' ? '✅ Disponible' : '❌ Indisponible') + (d.prix ? ' · ' + d.prix + ' FCFA' : '') + ' — réponse enregistrée' + (d.heure_reponse ? ' à ' + d.heure_reponse : '') + '. Merci !';
+        else if (ferme) $('texteResultat').textContent = '⌛ Cette demande a expiré.';
+    }
+
+    function envoyer(reponse) {
+        $('erreur').textContent = '';
+        var prix = reponse === 'available' ? U.analyserPrix($('prix').value) : null;
+        if (prix !== null && Number.isNaN(prix)) { $('erreur').textContent = 'Prix invalide : saisissez un nombre entier en FCFA.'; return; }
+        var corps = { code: code, reponse: reponse };
+        if (prix !== null) corps.prix = prix;
+        $('boutonOui').disabled = $('boutonNon').disabled = true;
+        fetch(api, { method: 'POST', headers: { 'content-type': 'application/json', apikey: C.anonKey }, body: JSON.stringify(corps) })
+            .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { status: r.status, json: j }; }); })
+            .then(function (res) {
+                if (res.status === 200) {
+                    var j = res.json;
+                    show('formulaire', false); show('resultat', true);
+                    $('texteResultat').textContent = (j.deja ? 'ℹ️ Déjà traitée : ' : '') + (j.reponse === 'available' ? '✅ Disponible' : '❌ Indisponible') + (j.prix ? ' · ' + j.prix + ' FCFA' : '') + ' — enregistré à ' + j.heure + '. Merci !';
+                    return;
+                }
+                $('boutonOui').disabled = $('boutonNon').disabled = false;
+                $('erreur').textContent = res.status === 410 ? 'Cette demande a expiré.' : res.status === 400 ? 'Prix invalide.' : 'Une erreur est survenue. Réessayez.';
+            })
+            .catch(function () { $('boutonOui').disabled = $('boutonNon').disabled = false; $('erreur').textContent = 'Connexion impossible. Réessayez.'; });
+    }
+
+    $('boutonOui').addEventListener('click', function () { envoyer('available'); });
+    $('boutonNon').addEventListener('click', function () { envoyer('unavailable'); });
+    if (!code) { show('chargement', false); show('introuvable', true); return; }
+    fetch(api + '?code=' + encodeURIComponent(code), { headers: H })
+        .then(function (r) { return r.status === 200 ? r.json() : null; })
+        .then(function (d) { show('chargement', false); if (!d) { show('introuvable', true); return; } show('demande', true); afficherEtat(d); })
+        .catch(function () { show('chargement', false); show('introuvable', true); });
+})();
+</script>
+</body>
+</html>
