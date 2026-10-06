@@ -59,7 +59,9 @@ jobs:
         run: |
           psql "$DB_URL" -X -A -t -F'|' -f supabase/diagnostics/verification_post_migrations.sql > "$RUNNER_TEMP/verification.txt"
           grep -E '\|f$' "$RUNNER_TEMP/verification.txt" || true
-          grep -qE '^0\|BILAN\|0 contrôle\(s\) en échec' "$RUNNER_TEMP/verification.txt"
+          # Le stockage est désactivé en local (config.toml) : le seul contrôle du bucket ne peut pas s'y vérifier.
+          # Il reste actif en production. Tout autre échec fait échouer l'étape.
+          ! grep -E '\|f$' "$RUNNER_TEMP/verification.txt" | grep -v -e '^0|BILAN|' -e 'bucket documents-demandes présent et PRIVÉ'
       - name: Arrêter Supabase local
         if: always()
         run: supabase stop --no-backup
