@@ -55,6 +55,11 @@ jobs:
         run: |
           psql "$DB_URL" -X -q --csv -f supabase/diagnostics/schema_inventory.sql > "$RUNNER_TEMP/inventory.csv"
           node scripts/compare-schema.js "$RUNNER_TEMP/inventory.csv"
+      - name: Script de vérification post-migrations (docs/MISE-EN-PRODUCTION.md, phase D)
+        run: |
+          psql "$DB_URL" -X -A -t -F'|' -f supabase/diagnostics/verification_post_migrations.sql > "$RUNNER_TEMP/verification.txt"
+          grep -E '\|f$' "$RUNNER_TEMP/verification.txt" || true
+          grep -qE '^0\|BILAN\|0 contrôle\(s\) en échec' "$RUNNER_TEMP/verification.txt"
       - name: Arrêter Supabase local
         if: always()
         run: supabase stop --no-backup
