@@ -24,15 +24,17 @@ Commit à déployer : **le dernier de la branche `claude/friendly-albattani-4yd1
 - [ ] **A6. Ne jamais rejouer** : `20261003000000_baseline.sql` (déjà en production), `supabase/legacy/*`, `supabase/applied/*`.
 - [ ] **A7. Domaines connus** : URL du projet Supabase `https://<ref>.supabase.co`, URL publique du site (Netlify ou domaine personnalisé) : `__________`.
 
-## Phase B — Fusion des fiches en double (si pas déjà faite)
+## Phase B — Catalogue de test : repartir d'un catalogue unique (décision du propriétaire : pas de fusion)
 
-Procédure détaillée : `supabase/rollback/README.md`. **Elle s'exécute AVANT les migrations de la phase C.**
+**État constaté en production (06/10/2026) :** 40 lignes dans `medicaments` = 20 médicaments × 2 exécutions du seed (12/09 et 22/09), 24 fiches référencées par des stocks. L'unicité des migrations (`uq_medicaments_nom_dosage`) échouerait sur ces doublons.
+**Choix retenu : pas de fusion.** Les 40 fiches de test sont retirées, puis le catalogue de 236 fiches est chargé (phase I). La migration de fusion `20261003100000` reste dans la chaîne (historique versionné) mais ne fait **rien** sur un catalogue sans doublon (vérifié : 0 fiche supprimée).
+**Elle s'exécute AVANT les migrations de la phase C.**
 
-- [ ] **B1.** `supabase/diagnostics/fusion_doublons_dry_run.sql` : relire le résumé ; la section `COLLISION_INDEX` doit être **vide**.
-- [ ] **B2.** `supabase/migrations/20261003100000_fusion_doublons_medicaments.sql` (une transaction ; une anomalie annule tout).
-- [ ] **B3.** `supabase/diagnostics/fusion_doublons_verification.sql` : toutes les lignes `ok = true`.
-- [ ] **B4. Point de non-retour partiel.** Le script de retour arrière de la fusion **n'est valable qu'avant** la phase C. Une fois la phase C commencée, le seul retour arrière est la **restauration de la sauvegarde** (A1).
-- [ ] **B5.** Le schéma `sauvegarde_fusion` n'est purgé (`DROP SCHEMA sauvegarde_fusion CASCADE;`) qu'après la fin du pilote.
+- [ ] **B0. `supabase/ops/remplacer_catalogue_test.sql`** — d'abord en **simulation** (aucune écriture), relire le rapport : attendu **40 fiches supprimées**, `fiches_restantes` = les fiches qui ne viennent pas du seed (souvent 0). Les stocks liés (données de test) sont supprimés ; les demandes patient `alertes_stock` sont **détachées** (le nom saisi est conservé). Une sauvegarde complète va dans le schéma `sauvegarde_remplacement`. Le script s'arrête sans rien modifier au-delà de 40 correspondances. Si les stocks concernent de **vraies** pharmacies, ne pas continuer. Puis remplacer `ROLLBACK` par `COMMIT`. Retour : bloc en fin de fichier (valable tant que la phase C n'a pas commencé).
+- [ ] **B1.** `supabase/migrations/20261003100000_fusion_doublons_medicaments.sql` (une transaction). Avec un catalogue sans doublon, le rapport doit afficher `fiches supprimées = 0`. Il ne reste plus rien à fusionner.
+- [ ] **B2.** `supabase/diagnostics/fusion_doublons_verification.sql` : toutes les lignes `ok = true`.
+- [ ] **B3. Point de non-retour partiel.** Le retour arrière de B0 **n'est valable qu'avant** la phase C. Ensuite, le seul retour arrière est la **restauration de la sauvegarde** (A1).
+- [ ] **B4.** Les schémas `sauvegarde_remplacement` et `sauvegarde_fusion` ne sont purgés (`DROP SCHEMA … CASCADE;`) qu'après la fin du pilote.
 
 ## Phase C — Migrations 20261004 → 20261016 (une par une, dans l'ordre)
 
@@ -142,7 +144,7 @@ Rien n'est lancé tant que vous n'exécutez pas ces scripts. **Ordre** :
 
 ## Phase I — Données de départ (mode démo)
 
-- [ ] **I1. Archivage des 20 anciennes fiches de test** (si vous le décidez) : `supabase/ops/archiver_anciennes_fiches_test.sql` — **d'abord en simulation** (le rapport affiche fiches, stocks et alertes liés), puis remplacer `ROLLBACK` par `COMMIT`. Retour : `archiver_anciennes_fiches_test_retour.sql`.
+- [ ] **I1. Archivage des anciennes fiches de test** : **sans objet si B0 a été fait** (les 40 fiches ont déjà été retirées). Sinon : `supabase/ops/archiver_anciennes_fiches_test.sql` — **d'abord en simulation** (le rapport affiche fiches, stocks et alertes liés), puis remplacer `ROLLBACK` par `COMMIT`. Retour : `archiver_anciennes_fiches_test_retour.sql`.
 - [ ] **I2. Catalogue de démonstration** : `node scripts/demo-reset.js --confirmer --catalogue supabase/seed/demo_catalog.csv` (variables `SUPABASE_URL` et `SUPABASE_SERVICE_KEY` **dans votre terminal uniquement**).
   ⚠️ **Mise en garde `reinitialiser_demo` / bouton « Remettre la démo à zéro »** : elle efface alertes, messages, jetons et liste de blocage et rétablit les stocks des pharmacies de démonstration. Elle refuse hors mode démo et ne touche pas aux pharmacies réelles ni aux comptes de test, mais **ne la lancez plus une fois le pilote commencé** sans l'avoir décidé.
 - [ ] **I3. Classification** : votre pharmacien validateur remplit `supabase/seed/demo_classification.csv` (`restricted`, `requires_prescription`) ; **vous** le commitez ; puis console → « Classification du catalogue » (n° d'Ordre saisi dans le formulaire, jamais dans le dépôt). Sans cela, **aucune alerte n'est routable** (comportement voulu). Relecture : à chaque ajout au catalogue + chaque trimestre.
@@ -194,7 +196,7 @@ Le verrou de la base refuse le passage tant que les 5 conditions ne sont pas rem
 
 ## Ce qui n'est PAS vérifié par le dépôt (à savoir avant de vous lancer)
 
-- Aucune migration n'a tourné sur **votre** base de production : elles ont tourné sur Postgres local et sur le Supabase local de la CI (même schéma de base, **pas vos données**). Les données réelles (20 fiches après fusion, pharmacies, stocks, profils) peuvent révéler un cas non prévu : d'où la sauvegarde et le « une par une ».
+- Aucune migration n'a tourné sur **votre** base de production : elles ont tourné sur Postgres local et sur le Supabase local de la CI (même schéma de base, **pas vos données**). Les données réelles (catalogue de test retiré, pharmacies, stocks, profils) peuvent révéler un cas non prévu : d'où la sauvegarde et le « une par une ».
 - Aucun envoi **réel** Telegram ni ZeptoMail n'a été exécuté, ni aucun appel réel à Cloudflare Turnstile.
 - La durée d'un import de 500 lignes n'a été mesurée que sur un catalogue synthétique (≈ 4 s) ; à remesurer (limite de durée des requêtes des utilisateurs connectés).
 - L'interface n'a été jouée qu'avec une fausse base (navigateur automatisé) : à parcourir vous-même en phase J.

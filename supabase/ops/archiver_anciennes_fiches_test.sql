@@ -2,7 +2,8 @@
 -- Archivage des anciennes fiches de test du catalogue (20 fiches de supabase/seed/medicaments.csv) — À EXÉCUTER À LA MAIN
 -- par le propriétaire, APRÈS SAUVEGARDE de la base. Réversible : voir archiver_anciennes_fiches_test_retour.sql.
 -- Rien n'est supprimé : statut_catalogue passe de 'actif' à 'archive' (stocks, alertes et historique restent intacts).
--- Les fiches sont désignées par (nom, nom_commercial, dosage) EXACTS, tirés du fichier de seed : aucune heuristique.
+-- Les fiches sont désignées par (nom_commercial, dosage) EXACTS, tirés du fichier de seed : aucune heuristique. Le `nom` n'est pas comparé :
+-- en production il vaut « Paracétamol 500mg » (demo_setup.sql) et non « Paracétamol » (medicaments.csv).
 --
 -- Mode d'emploi (SQL Editor ou psql) :
 --   1. Lancer tel quel : SIMULATION (aucune écriture : la transaction finit par ROLLBACK) -> lire le rapport.
@@ -45,7 +46,7 @@ INSERT INTO _anciennes VALUES
 CREATE TEMP TABLE _cibles ON COMMIT DROP AS
 SELECT m.id, m.statut_catalogue
 FROM public.medicaments m
-JOIN _anciennes a ON a.nom = m.nom AND NULLIF(a.nom_commercial, '') IS NOT DISTINCT FROM NULLIF(m.nom_commercial, '') AND NULLIF(a.dosage, '') IS NOT DISTINCT FROM NULLIF(m.dosage, '')
+JOIN _anciennes a ON NULLIF(a.nom_commercial, '') IS NOT DISTINCT FROM NULLIF(m.nom_commercial, '') AND NULLIF(a.dosage, '') IS NOT DISTINCT FROM NULLIF(m.dosage, '')
 WHERE m.statut_catalogue = 'actif';
 
 INSERT INTO public.sauvegarde_archivage_fiches_test (medicament_id, statut_avant)
