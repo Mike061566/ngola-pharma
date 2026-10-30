@@ -460,28 +460,28 @@
         .pharmacy-result { background: white; border-radius: 8px; padding: 20px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.06); display: flex; gap: 16px; align-items: flex-start; transition: transform var(--ng-d-rapide) var(--ng-courbe-sortie), opacity var(--ng-d-rapide) var(--ng-courbe-sortie); cursor: pointer; }
         .pharmacy-result:hover { box-shadow: 0 4px 12px rgba(0,0,0,.1); }
         .pharmacy-result-icon { width: 48px; height: 48px; border-radius: 10px; background: #003366; color: white; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
-        .pharmacy-result-icon.garde { background: #28a745; }
+        .pharmacy-result-icon.garde { background: var(--ng-garde); }
         .pharmacy-result-body { flex: 1; }
         .pharmacy-result-name { font-weight: 600; font-size: 16px; color: #1a1a1a; }
         .pharmacy-result-meta { font-size: 13px; color: var(--ng-texte-2); margin-top: 4px; }
         .pharmacy-result-badges { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
-        .badge { font-size: 13px; padding: 3px 8px; border-radius: 4px; font-weight: 600; text-transform: uppercase; }
-        .badge-garde { background: #d4edda; color: #155724; }
-        .badge-verifie { background: #d1ecf1; color: #0c5460; }
+        .badge { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; padding: 3px 8px; border-radius: 4px; font-weight: 600; text-transform: uppercase; }
+        .badge-garde { background: var(--ng-garde-fond); color: var(--ng-garde); }
+        .badge-verifie { background: var(--ng-verifie-fond); color: var(--ng-verifie); }
         .badge-partenaire { background: #fff3cd; color: #856404; }
         .badge-demo { background: #fff3cd; color: #7a4f00; border: 1px solid #ffe08a; font-weight: 700; }
-        .badge-ngola-verified { background: linear-gradient(135deg, #f6d365, #f5c842); color: #6b4701; border: 1px solid #e6b800; font-weight: 700; letter-spacing: 0.3px; }
-        .badge-stock-fresh { background: #d4edda; color: #155724; }
-        .badge-stock-stale { background: #fff3cd; color: #856404; }
-        .badge-stock-old { background: #f8d7da; color: #721c24; }
+        .badge-ngola-verified { background: var(--ng-verifie-fond); color: var(--ng-verifie); border: 1px solid #A9D6DF; font-weight: 700; letter-spacing: 0.3px; }
+        .badge-stock-fresh { background: var(--ng-dispo-fond); color: var(--ng-dispo); }
+        .badge-stock-stale { background: var(--ng-faible-fond); color: var(--ng-faible); }
+        .badge-stock-old { background: var(--ng-rupture-fond); color: var(--ng-rupture); }
         .badge-prix-verifie { background: #e8f4fd; color: #0c5460; }
-        .badge-garde-confirmee { background: #c3e6cb; color: #155724; font-weight: 700; }
+        .badge-garde-confirmee { background: var(--ng-garde-fond); color: var(--ng-garde); font-weight: 700; }
         .med-reliability { display: flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 13px; }
         .reliability-bar { width: 60px; height: 6px; border-radius: 3px; background: #e9ecef; overflow: hidden; flex-shrink: 0; }
         .reliability-fill { height: 100%; border-radius: 3px; transition: transform var(--ng-d-rapide) var(--ng-courbe-sortie), opacity var(--ng-d-rapide) var(--ng-courbe-sortie); }
-        .reliability-fill.high { background: #28a745; }
-        .reliability-fill.medium { background: #fd7e14; }
-        .reliability-fill.low { background: #dc3545; }
+        .reliability-fill.high { background: var(--ng-dispo); }
+        .reliability-fill.medium { background: var(--ng-faible); }
+        .reliability-fill.low { background: var(--ng-texte-3); }
         /* Phase 3 — Alert form */
         .ngola-alert-box { background: #f0f7ff; border: 1px solid #b3d4fc; border-radius: 12px; padding: 20px; margin-top: 16px; text-align: center; }
         .ngola-alert-box h3 { margin: 0 0 8px; color: #003366; font-size: 15px; }
@@ -512,10 +512,6 @@
         .med-result-price { font-size: 18px; font-weight: 700; color: #003366; }
         .med-result-avail { margin-top: 10px; font-size: 13px; color: #555; }
         .med-result-stock { margin-top: 10px; display: flex; align-items: center; gap: 8px; font-size: 13px; }
-        .med-stock-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
-        .med-stock-dot.green { background: #28a745; }
-        .med-stock-dot.orange { background: #fd7e14; }
-        .med-stock-dot.red { background: #dc3545; }
         .med-result-nearest { margin-top: 8px; font-size: 13px; color: #555; display: flex; align-items: center; gap: 6px; }
         .med-result-freshness { font-size: 13px; color: var(--ng-texte-2); margin-top: 4px; }
         .med-result-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
@@ -536,7 +532,7 @@
         .prix-filter-select:focus { outline: none; border-color: #003B7E; box-shadow: 0 0 0 3px rgba(0,59,126,0.12); }
         .prix-filter-toggle { display: flex; align-items: center; gap: 8px; cursor: pointer; white-space: nowrap; }
         .prix-filter-toggle input[type="checkbox"] {
-            width: 18px; height: 18px; accent-color: #28a745; cursor: pointer;
+            width: 18px; height: 18px; accent-color: var(--ng-garde); cursor: pointer;
         }
         .prix-filter-toggle-label { font-size: 14px; font-weight: 600; color: #1a202c; }
 
@@ -556,7 +552,7 @@
         .modal-stock-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #f9f9f9; border-radius: 6px; margin-bottom: 6px; font-size: 14px; }
         .modal-stock-name { font-weight: 500; color: #1a1a1a; }
         .modal-stock-price { font-weight: 700; color: #003366; }
-        .modal-stock-oos { color: #dc3545; font-size: 13px; }
+        .modal-stock-oos { color: var(--ng-rupture); font-size: 13px; display: inline-flex; align-items: center; gap: 4px; }
         .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid #ddd; border-top-color: #003366; border-radius: 50%; animation: spin .6s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -624,22 +620,7 @@
             line-height: 1;
         }
 
-        .quick-action-btn.qa-garde {
-            background: rgba(40,167,69,0.25);
-            border-color: rgba(40,167,69,0.6);
-        }
 
-        .quick-action-btn.qa-garde:hover {
-            background: rgba(40,167,69,0.4);
-            border-color: #28a745;
-        }
-
-        .quick-action-btn .qa-pulse {
-            width: 8px;
-            height: 8px;
-            background: #28a745;
-            border-radius: 50%;
-        }
 
         /* Distance badge in pharmacy card */
         .pharmacy-distance {
@@ -940,7 +921,7 @@
             position: absolute;
             top: 16px;
             right: 16px;
-            background: #dc3545;
+            background: var(--ng-marine);  /* le rouge est réservé à la garde */
             color: white;
             font-weight: 700;
             font-size: 16px;
@@ -1008,7 +989,7 @@
         .offre-expire {
             margin: 0;
             font-size: 13px;
-            color: #dc3545;
+            color: var(--ng-faible);
             font-weight: 600;
         }
 
@@ -1319,6 +1300,26 @@
         .featured-card-btn:active, .quartier-card:active, .med-action-btn:active, .ng-btn-reessayer:active,
         .quick-action-btn:active, .search-bar button:active, .results-back:active, .med-alert-btn:active,
         .btn-login:active, .lang-toggle button:active, .ngola-alert-form button:active { transform: scale(.97); }
+
+        /* ===== PR 4 : garde et signaux de confiance (couleur + icône + texte) ===== */
+        .ng-statut { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+        .ng-statut-dispo { color: var(--ng-dispo); }
+        .ng-statut-faible { color: var(--ng-faible); }
+        .ng-statut-rupture { color: var(--ng-rupture); }
+        .ng-garde-texte { color: var(--ng-garde); font-weight: 700; display: inline-flex; align-items: center; gap: 4px; }
+        .modal-stock-prix { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+        .modal-stock-maj { font-size: 13px; color: var(--ng-texte-2); display: inline-flex; align-items: center; gap: 4px; font-weight: 400; }
+        .med-result-nearest .ng-icone, .med-result-freshness .ng-icone { color: var(--ng-texte-2); }
+        .pharmacy-result-icon .ng-icone { width: 24px; height: 24px; }
+        .item-icon .ng-icone { width: 18px; height: 18px; }
+        .offre-icon .ng-icone { width: 28px; height: 28px; }
+        /* Bouton « garde » du hero : contour sobre, pastille rouge réservée à la garde (plus de point vert pulsant) */
+        .quick-action-btn.qa-garde { background: rgba(255,255,255,0.10); border-color: rgba(255,255,255,0.7); }
+        .quick-action-btn.qa-garde:hover { background: rgba(255,255,255,0.18); border-color: #fff; }
+        .qa-garde .qa-icon { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: var(--ng-garde); color: #fff; }
+        .qa-garde .qa-icon .ng-icone { width: 16px; height: 16px; }
+        .ng-avis { display: flex; align-items: flex-start; gap: 8px; padding: 10px 14px; background: var(--ng-faible-fond); color: var(--ng-faible); border-radius: 8px; margin-bottom: 16px; font-size: 13px; }
+        .ng-avis .ng-icone { flex-shrink: 0; margin-top: 1px; }
     </style>
 </head>
 <body>
@@ -1441,8 +1442,7 @@
 
             <div class="quick-actions">
                 <button class="quick-action-btn qa-garde" onclick="NGolaApp.showNearbyGarde()">
-                    <span class="qa-icon">📍</span>
-                    <span class="qa-pulse"></span>
+                    <span class="qa-icon"><svg class="ng-icone" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5"/><path d="M8 4.8v6.4M4.8 8h6.4"/></svg></span>
                     <span data-i18n="qa_nearby_garde">Pharmacies de garde près de moi</span>
                 </button>
             </div>
@@ -1458,7 +1458,7 @@
 
     <!-- Mention Légale -->
     <div class="legal-notice">
-        <p data-i18n-html="legal_notice">ℹ️ N'Gola Pharma ne répertorie que les pharmacies et officines <strong>dûment enregistrées auprès de l'Ordre des Pharmaciens du Cameroun</strong>. <a href="#">Consulter nos conditions d'usage</a>.</p>
+        <p data-i18n-html="legal_notice"><svg class="ng-icone" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.3v3.9M8 4.8v.1"/></svg> N'Gola Pharma ne répertorie que les pharmacies et officines <strong>dûment enregistrées auprès de l'Ordre des Pharmaciens du Cameroun</strong>. <a href="#">Consulter nos conditions d'usage</a>.</p>
     </div>
 
     <!-- Featured Cards -->
@@ -1598,7 +1598,7 @@
             <div class="offre-card">
                 <div class="offre-badge">-25%</div>
                 <div class="offre-content">
-                    <div class="offre-icon">&#128138;</div>
+                    <div class="offre-icon"><svg class="ng-icone" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5.3 13.2a2.9 2.9 0 0 1-4.1-4.1l7.6-7.6a2.9 2.9 0 0 1 4.1 4.1z"/><path d="M5 5.2l4.4 4.4"/></svg></div>
                     <div class="offre-details">
                         <span class="badge badge-demo" data-i18n="example_badge">Exemple</span>
                         <h3>Pack Famille Paracétamol</h3>
@@ -1607,7 +1607,7 @@
                             <span class="offre-prix-old">4 500 FCFA</span>
                             <span class="offre-prix-new">3 375 FCFA</span>
                         </div>
-                        <p class="offre-pharmacie">&#127973; Pharmacie du Centre &bull; Centre-Ville</p>
+                        <p class="offre-pharmacie"><svg class="ng-icone" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2.5 14V5.6L8 2l5.5 3.6V14z"/><path d="M8 7v4.2M5.9 9.1h4.2"/></svg> Pharmacie du Centre &bull; Centre-Ville</p>
                         <p class="offre-expire" data-i18n="offer1_expire">Expire dimanche à 23:59</p>
                     </div>
                 </div>
@@ -1616,7 +1616,7 @@
             <div class="offre-card">
                 <div class="offre-badge">-30%</div>
                 <div class="offre-content">
-                    <div class="offre-icon">&#128138;</div>
+                    <div class="offre-icon"><svg class="ng-icone" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5.3 13.2a2.9 2.9 0 0 1-4.1-4.1l7.6-7.6a2.9 2.9 0 0 1 4.1 4.1z"/><path d="M5 5.2l4.4 4.4"/></svg></div>
                     <div class="offre-details">
                         <span class="badge badge-demo" data-i18n="example_badge">Exemple</span>
                         <h3>Vitamines Boost Immunité</h3>
@@ -1625,7 +1625,7 @@
                             <span class="offre-prix-old">7 000 FCFA</span>
                             <span class="offre-prix-new">4 900 FCFA</span>
                         </div>
-                        <p class="offre-pharmacie">&#127973; Pharmacie de Bastos &bull; Bastos</p>
+                        <p class="offre-pharmacie"><svg class="ng-icone" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2.5 14V5.6L8 2l5.5 3.6V14z"/><path d="M8 7v4.2M5.9 9.1h4.2"/></svg> Pharmacie de Bastos &bull; Bastos</p>
                         <p class="offre-expire" data-i18n="offer2_expire">Expire vendredi à 18:00</p>
                     </div>
                 </div>
@@ -1726,7 +1726,7 @@
                 geo_distance_away: "away",
 
                 // Legal
-                legal_notice: 'ℹ️ N\'Gola Pharma lists only pharmacies and dispensaries <strong>duly registered with the Cameroon Order of Pharmacists</strong>. <a href="#">View our terms of use</a>.',
+                legal_notice: '<svg class="ng-icone" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.3v3.9M8 4.8v.1"/></svg> N\'Gola Pharma lists only pharmacies and dispensaries <strong>duly registered with the Cameroon Order of Pharmacists</strong>. <a href="#">View our terms of use</a>.',
 
                 // Featured cards
                 card1_title: "Find low prices",
@@ -1760,6 +1760,33 @@
                 // Quartiers
                 browse_district: "Browse by district",
                 ph_voir: "See pharmacies",
+                // Garde et confiance (PR 4)
+                badge_garde_confirmee: "On-duty confirmed",
+                statut: "Status",
+                statut_non_verifie: "Not yet verified by N'Gola",
+                badge_verifie: "N'Gola verified",
+                badge_partenaire: "Partner",
+                badge_demo: "Demo data",
+                stock_frais: "Fresh stock",
+                donnees_anciennes: "Outdated data",
+                maj_il_y_a: "Updated {t} ago",
+                maj_instant: "Updated just now",
+                en_stock_un: "In stock at 1 pharmacy",
+                en_stock_n: "In stock at {n} pharmacies",
+                dispo_limitee: "limited availability",
+                rupture: "Out of stock",
+                rupture_court: "Out of stock",
+                prevenir_dispo: "Notify me when available",
+                plus_proche: "Nearest:",
+                fiabilite: "Reliability",
+                fiable: "Reliable",
+                modere: "Moderate",
+                fiabilite_faible: "Low",
+                dispo_verifiee: "Available at a verified pharmacy",
+                ordonnance_requise: "Prescription required",
+                des: "From",
+                de_garde: "On duty",
+                de_garde_maintenant: "On duty now",
                 // Fenêtre de détail et confirmation (PR 3)
                 fermer: "Close",
                 detail: "Details",
@@ -1843,7 +1870,7 @@
                 geo_nearby_title: "Pharmacies de garde près de vous",
                 geo_distance_away: "",
 
-                legal_notice: 'ℹ️ N\'Gola Pharma ne répertorie que les pharmacies et officines <strong>dûment enregistrées auprès de l\'Ordre des Pharmaciens du Cameroun</strong>. <a href="#">Consulter nos conditions d\'usage</a>.',
+                legal_notice: '<svg class="ng-icone" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.3v3.9M8 4.8v.1"/></svg> N\'Gola Pharma ne répertorie que les pharmacies et officines <strong>dûment enregistrées auprès de l\'Ordre des Pharmaciens du Cameroun</strong>. <a href="#">Consulter nos conditions d\'usage</a>.',
 
                 card1_title: "Trouvez les prix bas",
                 card1_desc: "Comparez les prix des pharmacies de Yaoundé",
@@ -1875,6 +1902,33 @@
 
                 browse_district: "Parcourir par quartier",
                 ph_voir: "Voir les pharmacies",
+                // Garde et confiance (PR 4)
+                badge_garde_confirmee: "Garde confirmée",
+                statut: "Statut",
+                statut_non_verifie: "Pas encore vérifiée par N'Gola",
+                badge_verifie: "Vérifiée N'Gola",
+                badge_partenaire: "Partenaire",
+                badge_demo: "Données de démonstration",
+                stock_frais: "Stock frais",
+                donnees_anciennes: "Données anciennes",
+                maj_il_y_a: "Mis à jour il y a {t}",
+                maj_instant: "Mis à jour à l'instant",
+                en_stock_un: "En stock dans 1 pharmacie",
+                en_stock_n: "En stock dans {n} pharmacies",
+                dispo_limitee: "disponibilité limitée",
+                rupture: "Rupture de stock",
+                rupture_court: "Rupture",
+                prevenir_dispo: "Me prévenir quand disponible",
+                plus_proche: "Plus proche :",
+                fiabilite: "Fiabilité",
+                fiable: "Fiable",
+                modere: "Modérée",
+                fiabilite_faible: "Faible",
+                dispo_verifiee: "Dispo en pharmacie vérifiée",
+                ordonnance_requise: "Ordonnance requise",
+                des: "Dès",
+                de_garde: "De garde",
+                de_garde_maintenant: "De garde actuellement",
                 // Fenêtre de détail et confirmation (PR 3)
                 fermer: "Fermer",
                 detail: "Détail",
@@ -1991,6 +2045,7 @@
 
     <!-- Micro-interactions partagées (sans dépendance) -->
     <script src="/ui-mouvement.js"></script>
+    <script src="/ui-icones.js"></script>
 
     <!-- Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2017,6 +2072,23 @@
             return n === undefined ? v : v.replace('{n}', n);
         }
         function trCompte(base, n) { return tr(n === 1 ? base + '_un' : base + '_n', n); }
+        // Icônes SVG décoratives (public/ui-icones.js) ; le texte voisin porte toujours le sens
+        function ic(nom) { return window.NgIcones ? window.NgIcones.icone(nom) : ''; }
+        // « Mis à jour il y a 3 h » / « Mis à jour à l'instant »
+        function libelleMaj(dateStr) {
+            if (!dateStr) return '';
+            if ((Date.now() - new Date(dateStr).getTime()) / 1000 < 60) return tr('maj_instant');
+            return tr('maj_il_y_a').replace('{t}', timeAgo(dateStr));
+        }
+        // Badges d'une pharmacie : garde (rouge réservé), vérifiée, partenaire, démo
+        function badgesPharmacie(p) {
+            var b = '';
+            if (p.est_de_garde) b += '<span class="badge badge-garde-confirmee">' + ic('garde') + tr('badge_garde_confirmee') + '</span>';
+            if (p.statut === 'verifie' || p.statut === 'partenaire') b += '<span class="badge badge-ngola-verified">' + ic('verifie') + tr('badge_verifie') + '</span>';
+            if (p.statut === 'partenaire') b += '<span class="badge badge-partenaire">' + tr('badge_partenaire') + '</span>';
+            if (p.est_demo) b += '<span class="badge badge-demo">' + tr('badge_demo') + '</span>';
+            return b;
+        }
 
         // ── États des listes : chargement, vide, erreur avec nouvel essai ──
         var _dernierEssai = null;
@@ -2095,12 +2167,8 @@
             return Math.floor(diff/86400) + (currentLang === 'en' ? 'd' : 'j');
         }
 
-        function freshnessIcon(dateStr) {
-            if (!dateStr) return '🔴';
-            var hours = (Date.now() - new Date(dateStr).getTime()) / 3600000;
-            if (hours < 6) return '🟢';
-            if (hours < 24) return '🟠';
-            return '🔴';
+        function freshnessIcon() {
+            return ic('horloge');
         }
 
         function reliabilityScore(stockEntries) {
@@ -2120,17 +2188,17 @@
         }
 
         function reliabilityLabel(score) {
-            if (score >= 80) return { text: currentLang === 'en' ? 'Reliable' : 'Fiable', css: 'high', icon: '🟢' };
-            if (score >= 50) return { text: currentLang === 'en' ? 'Moderate' : 'Modéré', css: 'medium', icon: '🟠' };
-            return { text: currentLang === 'en' ? 'Low reliability' : 'Fiabilité faible', css: 'low', icon: '🔴' };
+            if (score >= 80) return { text: tr('fiable'), css: 'high' };
+            if (score >= 50) return { text: tr('modere'), css: 'medium' };
+            return { text: tr('fiabilite_faible'), css: 'low' };
         }
 
         function freshnessBadge(dateStr) {
             if (!dateStr) return '';
             var hours = (Date.now() - new Date(dateStr).getTime()) / 3600000;
-            if (hours < 6) return '<span class="badge badge-stock-fresh">📊 ' + (currentLang === 'en' ? 'Fresh stock' : 'Stock frais') + '</span>';
-            if (hours < 24) return '<span class="badge badge-stock-stale">📊 ' + (currentLang === 'en' ? 'Updated ' + timeAgo(dateStr) + ' ago' : 'MAJ il y a ' + timeAgo(dateStr)) + '</span>';
-            return '<span class="badge badge-stock-old">📊 ' + (currentLang === 'en' ? 'Outdated' : 'Données anciennes') + '</span>';
+            if (hours < 6) return '<span class="badge badge-stock-fresh">' + ic('horloge') + tr('stock_frais') + '</span>';
+            if (hours < 24) return '<span class="badge badge-stock-stale">' + ic('horloge') + libelleMaj(dateStr) + '</span>';
+            return '<span class="badge badge-stock-old">' + ic('horloge') + tr('donnees_anciennes') + '</span>';
         }
 
         // ── Phase 3 : Alerte stock (Email / SMS) ─
@@ -2139,18 +2207,18 @@
             var escName = esc(medName).replace(/'/g, '&#39;');
             var midParam = medId ? '\'' + medId + '\'' : 'null';
             return '<div class="ngola-alert-box" id="' + uid + '">' +
-                '<h3>🔔 ' + (currentLang === 'en' ? 'Get notified' : 'Me prévenir') + '</h3>' +
+                '<h3>' + ic('cloche') + ' ' + (currentLang === 'en' ? 'Get notified' : 'Me prévenir') + '</h3>' +
                 '<p>' + (currentLang === 'en'
                     ? 'Receive an alert when <strong>' + esc(medName) + '</strong> becomes available near you.'
                     : 'Recevez une alerte quand <strong>' + esc(medName) + '</strong> sera disponible près de chez vous.') + '</p>' +
                 '<div class="ngola-alert-channel-tabs">' +
-                    '<button class="ngola-alert-channel-tab active" data-canal="email" onclick="NGolaApp.switchAlertChannel(\'' + uid + '\', \'email\')">📧 Email</button>' +
-                    '<button class="ngola-alert-channel-tab" data-canal="sms" onclick="NGolaApp.switchAlertChannel(\'' + uid + '\', \'sms\')">📱 SMS</button>' +
+                    '<button class="ngola-alert-channel-tab active" data-canal="email" onclick="NGolaApp.switchAlertChannel(\'' + uid + '\', \'email\')">' + ic('email') + ' Email</button>' +
+                    '<button class="ngola-alert-channel-tab" data-canal="sms" onclick="NGolaApp.switchAlertChannel(\'' + uid + '\', \'sms\')">' + ic('mobile') + ' SMS</button>' +
                 '</div>' +
                 '<div class="ngola-alert-form" id="form_' + uid + '">' +
                     '<input type="email" id="contact_' + uid + '" placeholder="' + (currentLang === 'en' ? 'Your email' : 'Votre email') + '" />' +
                     '<button onclick="NGolaApp.submitAlert(\'' + uid + '\', \'' + escName + '\', ' + midParam + ')">' +
-                        '🔔 ' + (currentLang === 'en' ? 'Notify me' : 'Me prévenir') +
+                        ic('cloche') + ' ' + (currentLang === 'en' ? 'Notify me' : 'Me prévenir') +
                     '</button>' +
                 '</div>' +
                 '<input type="hidden" id="canal_' + uid + '" value="email" />' +
@@ -2236,12 +2304,12 @@
                 if (res.error) {
                     msgDiv.innerHTML = '<div class="ngola-alert-error">' +
                         (currentLang === 'en' ? 'Error: ' + res.error.message : 'Erreur : ' + res.error.message) + '</div>';
-                    if (btn) { btn.disabled = false; btn.textContent = '🔔 ' + (currentLang === 'en' ? 'Notify me' : 'Me prévenir'); }
+                    if (btn) { btn.disabled = false; btn.innerHTML = ic('cloche') + ' ' + (currentLang === 'en' ? 'Notify me' : 'Me prévenir'); }
                 } else {
-                    var channelIcon = canal === 'email' ? '📧' : '📱';
+                    var channelIcon = ic(canal === 'email' ? 'email' : 'mobile');
                     var channelName = canal === 'email' ? 'email' : 'SMS';
                     document.getElementById(boxId).innerHTML =
-                        '<div class="ngola-alert-success">✅ ' +
+                        '<div class="ngola-alert-success">' + ic('dispo') + ' ' +
                         (currentLang === 'en'
                             ? 'You will be notified via ' + channelName + ' ' + channelIcon + ' at <strong>' + esc(contact) + '</strong> when <strong>' + esc(medName) + '</strong> is available.'
                             : 'Vous serez prévenu(e) par ' + channelName + ' ' + channelIcon + ' à <strong>' + esc(contact) + '</strong> quand <strong>' + esc(medName) + '</strong> sera disponible.') +
@@ -2375,7 +2443,7 @@
                 html += '<div class="search-dropdown-label" id="sugg-grp-med" role="presentation">' + tr('medicaments_label') + '</div>';
                 meds.forEach(function(m) {
                     html += '<div class="search-dropdown-item" role="option" aria-selected="false" id="sugg-' + (n++) + '" onclick="NGolaApp.showMedDetail(\'' + m.id + '\')">' +
-                        '<div class="item-icon med" aria-hidden="true">&#128138;</div>' +
+                        '<div class="item-icon med" aria-hidden="true">' + ic('pilule') + '</div>' +
                         '<div class="item-details">' +
                             '<div class="item-name">' + nomAvecDosage(m.nom, m.dosage) + '</div>' +
                             '<div class="item-sub">' + esc(m.forme || '') + (m.dci ? ' &bull; ' + esc(m.dci) : '') +
@@ -2393,7 +2461,7 @@
                 html += '<div class="search-dropdown-label" id="sugg-grp-ph" role="presentation">' + tr('pharmacies_label') + '</div>';
                 pharmas.forEach(function(p) {
                     html += '<div class="search-dropdown-item" role="option" aria-selected="false" id="sugg-' + (n++) + '" onclick="NGolaApp.showPharmacyDetail(\'' + p.id + '\')">' +
-                        '<div class="item-icon ph" aria-hidden="true">&#127973;</div>' +
+                        '<div class="item-icon ph" aria-hidden="true">' + ic('pharmacie') + '</div>' +
                         '<div class="item-details">' +
                             '<div class="item-name">' + esc(p.nom) + '</div>' +
                             '<div class="item-sub">' + esc(p.adresse || p.quartier_nom || '') + '</div>' +
@@ -2498,13 +2566,7 @@
 
         // ── Render Cards ────────────────────────────────────
         function renderPharmacyCard(p) {
-            var badges = '';
-            if (p.est_de_garde) badges += '<span class="badge badge-garde-confirmee">🟢 ' + (currentLang === 'en' ? 'On-duty confirmed' : 'Garde confirmée') + '</span>';
-            if (p.statut === 'verifie' || p.statut === 'partenaire') {
-                badges += '<span class="badge badge-ngola-verified">✓ ' + (currentLang === 'en' ? "N'Gola Verified" : "Vérifié N'Gola") + '</span>';
-            }
-            if (p.statut === 'partenaire') badges += '<span class="badge badge-partenaire">Partenaire</span>';
-            if (p.est_demo) badges += '<span class="badge badge-demo">' + (currentLang === 'en' ? 'Demo data' : 'Données de démonstration') + '</span>';
+            var badges = badgesPharmacie(p);
             // Stock freshness badge if pharmacy has _freshestDate from enrichment
             if (p._freshestDate) {
                 badges += freshnessBadge(p._freshestDate);
@@ -2513,16 +2575,16 @@
             var actions = '';
             if (p.telephone) {
                 actions += '<a href="tel:' + esc(p.telephone) + '" onclick="event.stopPropagation()" class="med-action-btn call">' +
-                    '<span aria-hidden="true">📞</span> ' + tr('appeler') + '<span class="ng-visuellement-masque"> ' + esc(p.nom) + ', ' + esc(p.telephone) + '</span></a>';
+                    ic('telephone') + ' ' + tr('appeler') + '<span class="ng-visuellement-masque"> ' + esc(p.nom) + ', ' + esc(p.telephone) + '</span></a>';
             }
             if (p.latitude && p.longitude) {
                 actions += '<a href="https://www.google.com/maps/search/?api=1&query=' + p.latitude + ',' + p.longitude +
                     '" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="med-action-btn route">' +
-                    '<span aria-hidden="true">📍</span> ' + tr('itineraire') + '<span class="ng-visuellement-masque"> ' + esc(p.nom) + '</span></a>';
+                    ic('epingle') + ' ' + tr('itineraire') + '<span class="ng-visuellement-masque"> ' + esc(p.nom) + '</span></a>';
             }
 
             return '<article class="pharmacy-result" onclick="NGolaApp.showPharmacyDetail(\'' + p.id + '\')">' +
-                '<div class="pharmacy-result-icon' + (p.est_de_garde ? ' garde' : '') + '" aria-hidden="true">&#127973;</div>' +
+                '<div class="pharmacy-result-icon' + (p.est_de_garde ? ' garde' : '') + '" aria-hidden="true">' + ic('pharmacie') + '</div>' +
                 '<div class="pharmacy-result-body">' +
                     '<h3 class="pharmacy-result-name"><button type="button" class="carte-titre" onclick="event.stopPropagation();NGolaApp.showPharmacyDetail(\'' + p.id + '\')">' + esc(p.nom) + '</button></h3>' +
                     '<div class="pharmacy-result-meta">' +
@@ -2541,21 +2603,16 @@
             var stockHtml = '';
             if (m._stockCount !== undefined) {
                 if (m._stockCount > 0) {
-                    var dotClass = m._stockCount >= 3 ? 'green' : 'orange';
-                    stockHtml = '<div class="med-result-stock">' +
-                        '<span class="med-stock-dot ' + dotClass + '"></span>' +
-                        (currentLang === 'en'
-                            ? 'In stock at ' + m._stockCount + ' pharmac' + (m._stockCount > 1 ? 'ies' : 'y')
-                            : 'En stock dans ' + m._stockCount + ' pharmacie' + (m._stockCount > 1 ? 's' : '')) +
-                        '</div>';
+                    var large = m._stockCount >= 3;
+                    stockHtml = '<div class="med-result-stock"><span class="ng-statut ' + (large ? 'ng-statut-dispo' : 'ng-statut-faible') + '">' +
+                        ic(large ? 'dispo' : 'faible') + trCompte('en_stock', m._stockCount) +
+                        (large ? '' : ' · ' + tr('dispo_limitee')) + '</span></div>';
                 } else {
-                    stockHtml = '<div class="med-result-stock">' +
-                        '<span class="med-stock-dot red"></span>' +
-                        (currentLang === 'en' ? 'Out of stock' : 'Rupture de stock') +
-                        '</div>' +
+                    stockHtml = '<div class="med-result-stock"><span class="ng-statut ng-statut-rupture">' +
+                        ic('rupture') + tr('rupture') + '</span></div>' +
                         '<div class="med-alert-inline" onclick="event.stopPropagation()">' +
                             '<button class="med-alert-btn" onclick="NGolaApp.showInlineAlert(this, \'' + esc(m.nom || '') + '\', \'' + m.id + '\')">' +
-                                '🔔 ' + (currentLang === 'en' ? 'Notify me when available' : 'Me prévenir quand disponible') +
+                                ic('cloche') + ' ' + tr('prevenir_dispo') +
                             '</button>' +
                         '</div>';
                 }
@@ -2570,7 +2627,7 @@
                     distText = formatDistance(m._nearestStock._dist) + ' · ';
                 }
                 nearestHtml = '<div class="med-result-nearest">' +
-                    '📍 ' + (currentLang === 'en' ? 'Nearest: ' : 'Plus proche : ') +
+                    ic('epingle') + ' ' + tr('plus_proche') + ' ' +
                     '<strong>' + esc(ph.nom) + '</strong>' +
                     (distText ? ' — ' + distText : '') +
                     '</div>';
@@ -2580,8 +2637,7 @@
             var freshHtml = '';
             if (m._lastUpdate) {
                 freshHtml = '<div class="med-result-freshness">' +
-                    freshnessIcon(m._lastUpdate) + ' ' +
-                    (currentLang === 'en' ? 'Updated ' + timeAgo(m._lastUpdate) + ' ago' : 'Mis à jour il y a ' + timeAgo(m._lastUpdate)) +
+                    freshnessIcon(m._lastUpdate) + ' ' + libelleMaj(m._lastUpdate) +
                     '</div>';
             }
 
@@ -2591,17 +2647,17 @@
                 var score = reliabilityScore(m._allStocks);
                 var label = reliabilityLabel(score);
                 reliabilityHtml = '<div class="med-reliability">' +
-                    '<span>' + (currentLang === 'en' ? 'Reliability' : 'Fiabilité') + ' :</span>' +
+                    '<span>' + tr('fiabilite') + ' :</span>' +
                     '<div class="reliability-bar"><div class="reliability-fill ' + label.css + '" style="width:' + score + '%"></div></div>' +
-                    '<span>' + label.icon + ' ' + score + '%</span>' +
+                    '<span>' + label.text + ' · ' + score + '%</span>' +
                     '</div>';
             }
 
             // Verified pharmacy badges on med card
             var verifiedBadgesHtml = '';
             if (m._hasVerifiedPharmacy) {
-                verifiedBadgesHtml = '<div style="margin-top:6px"><span class="badge badge-ngola-verified">✓ ' +
-                    (currentLang === 'en' ? 'Available at verified pharmacy' : 'Dispo en pharmacie vérifiée') + '</span>' +
+                verifiedBadgesHtml = '<div style="margin-top:6px"><span class="badge badge-ngola-verified">' + ic('verifie') +
+                    tr('dispo_verifiee') + '</span>' +
                     (m._lastUpdate ? ' ' + freshnessBadge(m._lastUpdate) : '') +
                     '</div>';
             }
@@ -2612,18 +2668,18 @@
                 var nph = m._nearestStock.pharmacies;
                 if (nph.telephone) {
                     actionsHtml += '<a href="tel:' + esc(nph.telephone) + '" onclick="event.stopPropagation()" class="med-action-btn call">' +
-                        '<span aria-hidden="true">📞</span> ' + tr('appeler') + '<span class="ng-visuellement-masque"> ' + esc(nph.nom) + '</span></a>';
+                        ic('telephone') + ' ' + tr('appeler') + '<span class="ng-visuellement-masque"> ' + esc(nph.nom) + '</span></a>';
                 }
                 if (nph.latitude && nph.longitude) {
                     actionsHtml += '<a href="https://www.google.com/maps/search/?api=1&query=' + nph.latitude + ',' + nph.longitude +
                         '" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="med-action-btn route">' +
-                        '<span aria-hidden="true">📍</span> ' + tr('itineraire') + '<span class="ng-visuellement-masque"> ' + esc(nph.nom) + '</span></a>';
+                        ic('epingle') + ' ' + tr('itineraire') + '<span class="ng-visuellement-masque"> ' + esc(nph.nom) + '</span></a>';
                 }
             }
 
             // Price display
             var priceHtml = m._minPrice
-                ? '<div class="med-result-price">' + (currentLang === 'en' ? 'From ' : 'Dès ') + fmt(m._minPrice) + '</div>'
+                ? '<div class="med-result-price">' + tr('des') + ' ' + fmt(m._minPrice) + '</div>'
                 : '';
 
             return '<article class="med-result" onclick="NGolaApp.showMedDetail(\'' + m.id + '\')">' +
@@ -2636,7 +2692,7 @@
                     priceHtml +
                 '</div>' +
                 '<div class="med-result-avail">' + esc(m.categorie || '') +
-                    (m.ordonnance ? ' &bull; &#128221; ' + (currentLang === 'en' ? 'Prescription required' : 'Ordonnance requise') : '') +
+                    (m.ordonnance ? ' &bull; ' + ic('ordonnance') + ' ' + tr('ordonnance_requise') : '') +
                 '</div>' +
                 stockHtml +
                 verifiedBadgesHtml +
@@ -2810,11 +2866,10 @@
                         '<div class="med-result-price">' + fmt(s.prix_fcfa) + '</div>' +
                     '</div>' +
                     '<div class="med-result-avail">' +
-                        (s.est_de_garde ? '<span style="color:#28a745;font-weight:700">&#9679; ' +
-                            (currentLang === 'en' ? 'On duty' : 'De garde') + '</span> &bull; ' : '') +
+                        (s.est_de_garde ? '<span class="ng-garde-texte">' + ic('garde') + tr('de_garde') + '</span> &bull; ' : '') +
                         (currentLang === 'en' ? 'Best price at ' : 'Meilleur prix chez ') +
                         esc(s.pharmacie_nom) + (s.quartier_nom ? ' &bull; ' + esc(s.quartier_nom) : '') +
-                        (s.pharmacie_est_demo ? ' <span class="badge badge-demo">' + (currentLang === 'en' ? 'Demo data' : 'Données de démonstration') + '</span>' : '') +
+                        (s.pharmacie_est_demo ? ' <span class="badge badge-demo">' + tr('badge_demo') + '</span>' : '') +
                     '</div>' +
                 '</div>';
             });
@@ -2841,10 +2896,14 @@
                     html += '<div class="modal-section"><h4>' + (currentLang === 'en' ? 'Information' : 'Informations') + '</h4>';
                     if (p.telephone) html += '<div class="modal-info-row"><span class="modal-info-label">' +
                         (currentLang === 'en' ? 'Phone' : 'Téléphone') + '</span><span class="modal-info-value"><a href="tel:' + esc(p.telephone) + '">' + esc(p.telephone) + '</a></span></div>';
-                    html += '<div class="modal-info-row"><span class="modal-info-label">Statut</span><span class="modal-info-value">' + esc(p.statut) + '</span></div>';
+                    html += '<div class="modal-info-row"><span class="modal-info-label">' + tr('statut') + '</span><span class="modal-info-value">' +
+                        (p.statut === 'verifie' || p.statut === 'partenaire'
+                            ? '<span class="badge badge-ngola-verified">' + ic('verifie') + tr('badge_verifie') + '</span>' +
+                              (p.statut === 'partenaire' ? ' <span class="badge badge-partenaire">' + tr('badge_partenaire') + '</span>' : '')
+                            : esc(tr('statut_non_verifie'))) + '</span></div>';
                     if (p.est_demo) html += '<div class="modal-info-row"><span class="modal-info-label"></span><span class="modal-info-value"><span class="badge badge-demo">Données de démonstration</span></span></div>';
-                    if (p.est_de_garde) html += '<div class="modal-info-row"><span class="modal-info-label">Garde</span><span class="modal-info-value" style="color:#28a745;font-weight:700">&#9679; ' +
-                        (currentLang === 'en' ? 'On duty now' : 'De garde actuellement') + '</span></div>';
+                    if (p.est_de_garde) html += '<div class="modal-info-row"><span class="modal-info-label">' + tr('badge_garde') + '</span><span class="modal-info-value ng-garde-texte">' + ic('garde') +
+                        tr('de_garde_maintenant') + '</span></div>';
 
                     // Horaires
                     if (p.horaires && Object.keys(p.horaires).length > 0) {
@@ -2868,7 +2927,7 @@
                             (p.longitude + 0.005) + ',' + (p.latitude + 0.003) +
                             '&layer=mapnik&marker=' + p.latitude + ',' + p.longitude;
                         html += '<div class="modal-section"><h4>' +
-                            '<span style="margin-right:6px">📍</span>' +
+                            ic('epingle') + ' ' +
                             (currentLang === 'en' ? 'Location' : 'Localisation') + '</h4>';
                         html += '<div style="border-radius:12px;overflow:hidden;margin-bottom:10px;border:1px solid #e2e8f0">' +
                             '<iframe width="100%" height="220" frameborder="0" style="border:0;display:block" ' +
@@ -2890,8 +2949,9 @@
                             html += '<div class="modal-stock-row">' +
                                 '<span class="modal-stock-name">' + esc(medName) + '</span>' +
                                 (s.en_stock !== false
-                                    ? '<span class="modal-stock-price">' + fmt(s.prix_fcfa) + '</span>'
-                                    : '<span class="modal-stock-oos">' + (currentLang === 'en' ? 'Out of stock' : 'Rupture') + '</span>') +
+                                    ? '<span class="modal-stock-prix"><span class="modal-stock-price">' + fmt(s.prix_fcfa) + '</span>' +
+                                        (s.date_maj ? '<span class="modal-stock-maj">' + ic('horloge') + libelleMaj(s.date_maj) + '</span>' : '') + '</span>'
+                                    : '<span class="modal-stock-oos">' + ic('rupture') + tr('rupture_court') + '</span>') +
                             '</div>';
                         });
                         html += '</div>';
@@ -2901,7 +2961,7 @@
                 })
                 .catch(function() {
                     remplirModal(
-                        '<div style="text-align:center;padding:30px;color:#dc3545">' +
+                        '<div style="text-align:center;padding:30px;color:var(--ng-texte-2)">' +
                         (currentLang === 'en' ? 'Unable to load details' : 'Impossible de charger les détails') + '</div>');
                 });
         }
@@ -2943,13 +3003,15 @@
                             var mapsLink = hasCoords ? 'https://www.google.com/maps?q=' + ph.latitude + ',' + ph.longitude : '';
                             html += '<div class="modal-stock-row" style="flex-wrap:wrap;gap:4px">' +
                                 '<span class="modal-stock-name">' + esc(phName) +
+                                (ph.est_de_garde ? ' <span class="badge badge-garde">' + ic('garde') + tr('badge_garde') + '</span>' : '') +
                                 (hasCoords ? ' <a href="' + mapsLink + '" target="_blank" rel="noopener" title="' +
                                     (currentLang === 'en' ? 'View on map' : 'Voir sur la carte') +
-                                    '" style="color:#1a73e8;text-decoration:none;font-size:13px">📍</a>' : '') +
+                                    '" style="color:var(--ng-action);text-decoration:none;font-size:13px">' + ic('epingle') + '<span class="ng-visuellement-masque">' + esc(phName) + '</span></a>' : '') +
                                 '</span>' +
                                 (s.en_stock !== false
-                                    ? '<span class="modal-stock-price">' + fmt(s.prix_fcfa) + '</span>'
-                                    : '<span class="modal-stock-oos">' + (currentLang === 'en' ? 'Out of stock' : 'Rupture') + '</span>') +
+                                    ? '<span class="modal-stock-prix"><span class="modal-stock-price">' + fmt(s.prix_fcfa) + '</span>' +
+                                        (s.date_maj ? '<span class="modal-stock-maj">' + ic('horloge') + libelleMaj(s.date_maj) + '</span>' : '') + '</span>'
+                                    : '<span class="modal-stock-oos">' + ic('rupture') + tr('rupture_court') + '</span>') +
                             '</div>';
                         });
                         html += '</div>';
@@ -2962,7 +3024,7 @@
                 })
                 .catch(function() {
                     remplirModal(
-                        '<div style="text-align:center;padding:30px;color:#dc3545">' +
+                        '<div style="text-align:center;padding:30px;color:var(--ng-texte-2)">' +
                         (currentLang === 'en' ? 'Unable to load details' : 'Impossible de charger les détails') + '</div>');
                 });
         }
@@ -3250,31 +3312,25 @@
         }
 
         function renderPharmacyCardWithDistance(p) {
-            var badges = '';
-            if (p.est_de_garde) badges += '<span class="badge badge-garde-confirmee">🟢 ' + (currentLang === 'en' ? 'On-duty confirmed' : 'Garde confirmée') + '</span>';
-            if (p.statut === 'verifie' || p.statut === 'partenaire') {
-                badges += '<span class="badge badge-ngola-verified">✓ ' + (currentLang === 'en' ? "N'Gola Verified" : "Vérifié N'Gola") + '</span>';
-            }
-            if (p.statut === 'partenaire') badges += '<span class="badge badge-partenaire">Partenaire</span>';
-            if (p.est_demo) badges += '<span class="badge badge-demo">' + (currentLang === 'en' ? 'Demo data' : 'Données de démonstration') + '</span>';
+            var badges = badgesPharmacie(p);
             var distHtml = '';
             if (p._distance !== undefined) {
                 var awayText = currentLang === 'en' ? ' away' : '';
-                distHtml = '<span class="pharmacy-distance">📍 ' + formatDistance(p._distance) + awayText + '</span> ';
+                distHtml = '<span class="pharmacy-distance">' + ic('epingle') + ' ' + formatDistance(p._distance) + awayText + '</span> ';
             }
             var actions = '';
             if (p.telephone) {
                 actions += '<a href="tel:' + esc(p.telephone) + '" onclick="event.stopPropagation()" class="med-action-btn call">' +
-                    '<span aria-hidden="true">📞</span> ' + tr('appeler') + '<span class="ng-visuellement-masque"> ' + esc(p.nom) + ', ' + esc(p.telephone) + '</span></a>';
+                    ic('telephone') + ' ' + tr('appeler') + '<span class="ng-visuellement-masque"> ' + esc(p.nom) + ', ' + esc(p.telephone) + '</span></a>';
             }
             if (p.latitude && p.longitude) {
                 actions += '<a href="https://www.google.com/maps/search/?api=1&query=' + p.latitude + ',' + p.longitude +
                     '" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="med-action-btn route">' +
-                    '<span aria-hidden="true">📍</span> ' + tr('itineraire') + '<span class="ng-visuellement-masque"> ' + esc(p.nom) + '</span></a>';
+                    ic('epingle') + ' ' + tr('itineraire') + '<span class="ng-visuellement-masque"> ' + esc(p.nom) + '</span></a>';
             }
 
             return '<article class="pharmacy-result" onclick="NGolaApp.showPharmacyDetail(\'' + p.id + '\')">' +
-                '<div class="pharmacy-result-icon' + (p.est_de_garde ? ' garde' : '') + '" aria-hidden="true">&#127973;</div>' +
+                '<div class="pharmacy-result-icon' + (p.est_de_garde ? ' garde' : '') + '" aria-hidden="true">' + ic('pharmacie') + '</div>' +
                 '<div class="pharmacy-result-body">' +
                     '<h3 class="pharmacy-result-name"><button type="button" class="carte-titre" onclick="event.stopPropagation();NGolaApp.showPharmacyDetail(\'' + p.id + '\')">' + esc(p.nom) + '</button></h3>' +
                     '<div class="pharmacy-result-meta">' +
@@ -3316,8 +3372,8 @@
                     if (err.code === 1) {
                         // Refus de géolocalisation → afficher toutes les pharmacies de garde
                         list.innerHTML = '<div style="text-align:center;padding:30px">' +
-                            '<div style="font-size:48px;margin-bottom:16px">📍</div>' +
-                            '<div style="font-size:15px;color:#dc3545;font-weight:600;margin-bottom:12px">' +
+                            '<div style="margin-bottom:12px;color:var(--ng-texte-2)">' + ic('epingle').replace('ng-icone', 'ng-icone" style="width:40px;height:40px') + '</div>' +
+                            '<div style="font-size:15px;color:var(--ng-texte);font-weight:600;margin-bottom:12px">' +
                                 (currentLang === 'en'
                                     ? 'Location access denied. Please enable it in your browser settings.'
                                     : 'Accès à la localisation refusé. Activez-la dans les paramètres de votre navigateur.') + '</div>' +
@@ -3346,8 +3402,7 @@
                             (currentLang === 'en' ? 'No on-duty pharmacies right now' : 'Aucune pharmacie de garde actuellement') + '</div>';
                         return;
                     }
-                    var html = '<div style="padding:10px 14px;background:#fff3cd;border-radius:8px;margin-bottom:16px;font-size:13px;color:#856404">' +
-                        '⚠️ ' + message + '</div>';
+                    var html = '<div class="ng-avis" role="note">' + ic('faible') + '<span>' + message + '</span></div>';
                     html += data.map(renderPharmacyCardWithDistance).join('');
                     list.innerHTML = html;
                 });
@@ -3396,8 +3451,8 @@
                     document.getElementById('resultsCount').textContent =
                         found.length + (currentLang === 'en' ? ' on-duty pharmacy(ies) near you' : ' pharmacie(s) de garde près de vous');
 
-                    var html = '<div style="padding:10px 14px;background:#e8f5e9;border-radius:8px;margin-bottom:16px;font-size:13px;color:#2e7d32;display:flex;align-items:center;gap:8px">' +
-                        '<span style="font-size:18px">📍</span>';
+                    var html = '<div style="padding:10px 14px;background:var(--ng-dispo-fond);border-radius:8px;margin-bottom:16px;font-size:13px;color:var(--ng-dispo);display:flex;align-items:center;gap:8px">' +
+                        ic('epingle');
 
                     if (rayonUtilise && rayonUtilise > 3000) {
                         html += (currentLang === 'en'
@@ -3441,8 +3496,7 @@
                     document.getElementById('resultsCount').textContent =
                         data.length + (currentLang === 'en' ? ' nearest pharmacy(ies)' : ' pharmacie(s) les plus proches');
 
-                    var html = '<div style="padding:12px 14px;background:#fff3cd;border-radius:8px;margin-bottom:16px;font-size:13px;color:#856404;display:flex;align-items:flex-start;gap:8px">' +
-                        '<span style="font-size:18px;line-height:1">⚠️</span>' +
+                    var html = '<div class="ng-avis" role="note">' + ic('faible') +
                         '<div>' +
                             '<strong>' + (currentLang === 'en'
                                 ? 'No on-duty pharmacy found right now'
