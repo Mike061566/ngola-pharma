@@ -28,11 +28,10 @@ window.AdminPharmacies = (function () {
             '<p class="console-note">Colonnes : <strong>nom</strong> et <strong>quartier</strong> obligatoires ; adresse, telephone, latitude, longitude, titulaire, numero_ordre, email, telephone_mobile facultatives. ' +
             'Toutes les pharmacies sont créées <strong>non vérifiées et non publiées</strong> ; vous les vérifiez ensuite une par une (checklist de 5 cases obligatoire).</p>' +
             '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"><button class="btn btn-secondary" onclick="AdminPharmacies.modele()">⬇ Modèle CSV</button></div>' +
-            '<div class="import-zone" id="pharmaciesZone"><div class="icon">📄</div><p><strong>Glissez un fichier ici</strong> ou cliquez pour sélectionner</p><p style="font-size:12px;margin-top:4px">.csv — 5 Mo et 1 000 lignes au maximum</p></div>' +
-            '<input type="file" id="pharmaciesFichier" accept=".csv,.txt" style="display:none"><div id="pharmaciesProgression" class="console-note"></div>' +
+            '<label class="import-zone" id="pharmaciesZone" for="pharmaciesFichier"><span class="icon" aria-hidden="true">📄</span><span class="import-zone-texte"><strong>Choisir un fichier</strong> ou le glisser ici</span><span class="import-zone-texte" id="pharmaciesFormats" style="font-size:13px;margin-top:4px">.csv — 5 Mo et 1 000 lignes au maximum</span><input type="file" id="pharmaciesFichier" accept=".csv,.txt" aria-describedby="pharmaciesFormats"></label>' +
+            '<div id="pharmaciesProgression" class="console-note" role="status" aria-live="polite"></div>' +
             '<h4 style="margin:14px 0 6px">Historique</h4><div id="pharmaciesHistorique"><div class="spinner"></div></div>';
         var zone = $('pharmaciesZone'), champ = $('pharmaciesFichier');
-        zone.addEventListener('click', function () { champ.click(); });
         ['dragover', 'dragenter'].forEach(function (ev) { zone.addEventListener(ev, function (e) { e.preventDefault(); zone.classList.add('dragover'); }); });
         ['dragleave', 'drop'].forEach(function (ev) { zone.addEventListener(ev, function () { zone.classList.remove('dragover'); }); });
         zone.addEventListener('drop', function (e) { e.preventDefault(); if (e.dataTransfer.files.length) lire(e.dataTransfer.files[0]); });

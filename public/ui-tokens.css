@@ -58,6 +58,9 @@
   --ng-courbe-entree: cubic-bezier(.3, 0, 1, 1);
 }
 
+/* Texte réservé aux lecteurs d'écran (masqué visuellement, toujours lu) */
+.ng-visuellement-masque { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
 /* Focus visible partout (WCAG 2.4.7) ; les pages précisent la couleur sur fond sombre */
 :focus-visible {
   outline: 3px solid var(--ng-focus);

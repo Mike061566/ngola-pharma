@@ -40,7 +40,7 @@
         /* ===== Login Page ===== */
         .login-wrapper { display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 60px); padding: 20px; }
         .login-card { background: var(--card-bg); border-radius: 16px; box-shadow: var(--shadow); padding: 40px; max-width: 420px; width: 100%; text-align: center; }
-        .login-card h2 { color: var(--primary); margin-bottom: 8px; font-size: 22px; }
+        .login-card h1 { color: var(--primary); margin-bottom: 8px; font-size: 22px; }
         .login-card p { color: var(--text-muted); margin-bottom: 24px; font-size: 14px; }
         .login-card .logo { width: 64px; height: 64px; margin: 0 auto 16px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: #fff; }
         .form-group { margin-bottom: 16px; text-align: left; }
@@ -51,7 +51,7 @@
         .btn-primary:hover { background: var(--primary-light); }
         .btn-primary:disabled { background: #999; cursor: not-allowed; }
         .login-error { color: var(--danger); font-size: 13px; margin-top: 12px; display: none; }
-        .login-footer { margin-top: 20px; font-size: 12px; color: var(--text-muted); }
+        .login-footer { margin-top: 20px; font-size: 13px; color: var(--text-muted); }
         .login-footer a { color: var(--primary); text-decoration: none; }
 
         /* ===== Dashboard Layout ===== */
@@ -67,8 +67,8 @@
         .stat-icon.green { background: #d4edda; color: var(--success); }
         .stat-icon.orange { background: #fff3cd; color: var(--warning); }
         .stat-icon.gold { background: #fef3cd; color: #6b4701; }
-        .stat-info h3 { font-size: 24px; font-weight: 700; color: var(--text); line-height: 1.2; }
-        .stat-info p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+        .stat-info .stat-valeur { font-size: 24px; font-weight: 700; color: var(--text); line-height: 1.2; }
+        .stat-info p { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
 
         /* Tabs */
         .dash-tabs { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 24px; overflow-x: auto; }
@@ -101,10 +101,10 @@
 
         /* Table */
         .stock-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        .stock-table th { text-align: left; padding: 10px 12px; background: #f8f9fa; color: var(--text-muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; border-bottom: 2px solid var(--border); }
+        .stock-table th { text-align: left; padding: 10px 12px; background: #f8f9fa; color: var(--text-muted); font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: .5px; border-bottom: 2px solid var(--border); }
         .stock-table td { padding: 12px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
         .stock-table tr:hover { background: #fafbfd; }
-        .stock-badge { padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+        .stock-badge { padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; }
         .stock-badge.in-stock { background: #d4edda; color: #155724; }
         .stock-badge.out-stock { background: #f8d7da; color: #721c24; }
         .stock-actions { display: flex; gap: 6px; }
@@ -138,7 +138,7 @@
         .import-zone p { color: var(--text-muted); font-size: 14px; margin-top: 8px; }
         .import-zone .icon { font-size: 36px; }
         .import-preview { max-height: 300px; overflow: auto; margin: 16px 0; }
-        .import-preview table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .import-preview table { width: 100%; border-collapse: collapse; font-size: 13px; }
         .import-preview th, .import-preview td { padding: 6px 8px; border: 1px solid var(--border); text-align: left; }
         .import-preview th { background: #f8f9fa; font-weight: 600; }
         .import-stats { display: flex; gap: 16px; margin: 12px 0; font-size: 13px; }
@@ -147,23 +147,23 @@
         /* Pharmacy info */
         .pharmacy-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .info-item { }
-        .info-item label { font-size: 11px; text-transform: uppercase; color: var(--text-muted); letter-spacing: .5px; display: block; margin-bottom: 4px; }
+        .info-item label { font-size: 13px; text-transform: uppercase; color: var(--text-muted); letter-spacing: .5px; display: block; margin-bottom: 4px; }
         .info-item span { font-size: 14px; font-weight: 500; color: var(--text); }
-        .badge-verified { display: inline-block; padding: 3px 10px; background: linear-gradient(135deg, #f6d365, #f5c842); color: #6b4701; border-radius: 12px; font-size: 11px; font-weight: 700; }
-        .badge-unverified { display: inline-block; padding: 3px 10px; background: #eef0f2; color: #5b6570; border-radius: 12px; font-size: 11px; font-weight: 600; }
-        .badge-suspended { display: inline-block; padding: 3px 10px; background: #fde8e8; color: #b42318; border-radius: 12px; font-size: 11px; font-weight: 600; }
+        .badge-verified { display: inline-block; padding: 3px 10px; background: linear-gradient(135deg, #f6d365, #f5c842); color: #6b4701; border-radius: 12px; font-size: 13px; font-weight: 700; }
+        .badge-unverified { display: inline-block; padding: 3px 10px; background: #eef0f2; color: #5b6570; border-radius: 12px; font-size: 13px; font-weight: 600; }
+        .badge-suspended { display: inline-block; padding: 3px 10px; background: #fde8e8; color: #b42318; border-radius: 12px; font-size: 13px; font-weight: 600; }
         .info-item.wide { grid-column: 1 / -1; }
-        .info-note { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+        .info-note { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
         .map-frame { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 8px; }
         .map-frame iframe { display: block; width: 100%; height: 220px; border: 0; }
-        .badge-partner { display: inline-block; padding: 3px 10px; background: var(--primary); color: #fff; border-radius: 12px; font-size: 11px; font-weight: 600; }
+        .badge-partner { display: inline-block; padding: 3px 10px; background: var(--primary); color: #fff; border-radius: 12px; font-size: 13px; font-weight: 600; }
 
         /* Alerts section */
         .alert-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
         .alert-item:last-child { border-bottom: none; }
         .alert-contact { font-weight: 500; }
-        .alert-channel { padding: 2px 8px; border-radius: 8px; font-size: 11px; background: #e3f0ff; color: var(--primary); }
-        .alert-date { color: var(--text-muted); font-size: 12px; }
+        .alert-channel { padding: 2px 8px; border-radius: 8px; font-size: 13px; background: #e3f0ff; color: var(--primary); }
+        .alert-date { color: var(--text-muted); font-size: 13px; }
 
         /* Spinner */
         .spinner { width: 24px; height: 24px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 20px auto; }
@@ -176,17 +176,17 @@
         .onb-tache { display:flex; gap:10px; align-items:flex-start; padding:8px 0; border-top:1px solid #f0f0f0; font-size:14px; }
         .onb-tache .pastille { flex:none; width:22px; height:22px; border-radius:50%; border:2px solid var(--border); text-align:center; line-height:18px; font-size:13px; }
         .onb-tache.fait .pastille { background:#1b7a3d; border-color:#1b7a3d; color:#fff; }
-        .onb-tache .corps { flex:1; } .onb-tache .aide { color:var(--text-muted); font-size:12px; }
+        .onb-tache .corps { flex:1; } .onb-tache .aide { color:var(--text-muted); font-size:13px; }
         .onb-tache .actions { margin-top:6px; display:flex; gap:6px; flex-wrap:wrap; }
         .onb-mdp input { padding:8px 10px; border:1px solid var(--border); border-radius:8px; margin:4px 6px 4px 0; }
-        .console-pastille { display: inline-block; padding: 4px 12px; border-radius: 14px; background: #eef0f2; font-size: 12px; font-weight: 600; margin: 0 6px 6px 0; }
+        .console-pastille { display: inline-block; padding: 4px 12px; border-radius: 14px; background: #eef0f2; font-size: 13px; font-weight: 600; margin: 0 6px 6px 0; }
         #consoleIndicateurs { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
         .console-carte { border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 13px; }
         .console-carte small { display: block; color: var(--text-muted); }
         .console-valeur { font-size: 22px; font-weight: 700; }
         .console-ligne.actif { background: #eef4fb; }
         .console-actions { display: flex; gap: 6px; flex-wrap: wrap; margin: 10px 0; }
-        .console-note { font-size: 12px; color: var(--text-muted); margin: 6px 0; }
+        .console-note { font-size: 13px; color: var(--text-muted); margin: 6px 0; }
         .console-chrono { list-style: none; padding: 0; font-size: 13px; }
         .console-chrono li { padding: 4px 0; border-bottom: 1px solid #f0f0f0; }
         .console-heure { color: var(--text-muted); font-variant-numeric: tabular-nums; margin-right: 6px; }
@@ -208,7 +208,7 @@
             .pro-nav-user { display: none; }
             .stats-row { grid-template-columns: 1fr 1fr; }
             .pharmacy-info-grid { grid-template-columns: 1fr; }
-            .stock-table { font-size: 12px; }
+            .stock-table { font-size: 13px; }
             .stock-table th, .stock-table td { padding: 8px 6px; }
             .modal { padding: 20px; }
         }
@@ -216,6 +216,49 @@
             .stats-row { grid-template-columns: 1fr; }
             .dash-tab { padding: 10px 14px; font-size: 13px; }
         }
+
+        /* ===== PR 5 : Espace Pro (accessibilité, tablette, import) ===== */
+        .dash-tab { min-height: 44px; }
+        .stock-actions .btn { min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+        .stock-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; }
+        .stock-badge.in-stock { background: var(--ng-dispo-fond); color: var(--ng-dispo); }
+        .stock-badge.out-stock { background: var(--ng-rupture-fond); color: var(--ng-rupture); }
+        .stock-table th { font-size: 13px; position: sticky; top: 0; z-index: 1; }
+        .stock-table .ng-icone { vertical-align: -3px; }
+        /* Tablette (≥ 600 px) : tableau, lignes aérées */
+        @media (min-width: 600px) and (max-width: 1024px) {
+            .stock-table { font-size: 14px; }
+            .stock-table th, .stock-table td { padding: 12px 10px; }
+        }
+        /* Téléphone (< 600 px) : chaque ligne devient une carte lisible, avec le nom de la colonne devant la valeur */
+        @media (max-width: 599px) {
+            .ng-tableau-cartes thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+            .ng-tableau-cartes, .ng-tableau-cartes tbody, .ng-tableau-cartes tr, .ng-tableau-cartes td { display: block; width: 100%; }
+            .ng-tableau-cartes tr { border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; margin-bottom: 10px; background: #fff; }
+            .ng-tableau-cartes td { border: 0; padding: 6px 0; text-align: right; overflow: hidden; }
+            .ng-tableau-cartes td::before { content: attr(data-label); float: left; max-width: 45%; padding-right: 12px; font-weight: 600; color: var(--text-muted); text-align: left; }
+            .ng-tableau-cartes td[data-label=""]::before { content: none; }
+            .ng-tableau-cartes .stock-actions { justify-content: flex-end; }
+            .ng-tableau-cartes td[colspan] { display: block; text-align: center; }
+            .ng-tableau-cartes td[colspan]::before { content: none; }
+        }
+        /* Téléphone : le logo ramène déjà au site public, le lien en doublon est masqué pour garder la barre sur une ligne */
+        @media (max-width: 480px) { .pro-nav-link { display: none; } }
+        /* Import guidé : étapes */
+        .ng-etapes { display: flex; gap: 8px; list-style: none; padding: 0; margin: 0 0 16px; counter-reset: etape; flex-wrap: wrap; }
+        .ng-etapes li { counter-increment: etape; display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-muted); padding: 6px 12px 6px 6px; border-radius: 999px; background: #eef0f2; }
+        .ng-etapes li::before { content: counter(etape); width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: #fff; color: var(--text); font-weight: 700; font-size: 13px; }
+        .ng-etapes li.fait { background: var(--ng-dispo-fond); color: var(--ng-dispo); }
+        .ng-etapes li.fait::before { content: "✓"; background: var(--ng-dispo); color: #fff; }
+        .ng-etapes li[aria-current="step"] { background: var(--ng-marine); color: #fff; font-weight: 600; }
+        .ng-etapes li[aria-current="step"]::before { color: var(--ng-marine); }
+        /* Zone de dépôt : vrai champ fichier (clavier, lecteurs d'écran), le glisser-déposer est un plus */
+        .import-zone { display: block; }
+        .import-zone .icon { display: block; }
+        .import-zone .import-zone-texte { display: block; color: var(--text-muted); font-size: 14px; margin-top: 8px; }
+        .import-zone input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; }
+        .import-zone:focus-within { border-color: var(--ng-focus); box-shadow: 0 0 0 3px rgba(29,78,216,.25); }
+        .import-probleme { display: flex; gap: 6px; align-items: flex-start; }
     </style>
 </head>
 <body>
@@ -223,7 +266,7 @@
 <!-- ===== NAV ===== -->
 <nav class="pro-nav">
     <a href="/" class="pro-nav-brand">
-        <span style="width:36px;height:36px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;">💊</span>
+        <span style="width:36px;height:36px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 14 14" width="20" height="20" aria-hidden="true" focusable="false"><rect x="5.25" y="1" width="3.5" height="12" rx="1.75" fill="#FFD700"/><rect x="1" y="5.25" width="12" height="3.5" rx="1.75" fill="#003366"/><rect x="5.25" y="5.25" width="3.5" height="3.5" fill="#FFD700"/></svg></span>
         N'Gola Pharma <span style="font-weight:400;opacity:.7;font-size:13px;margin-left:4px;">Pro</span>
     </a>
     <div class="pro-nav-right" id="navRight" style="display:none">
@@ -233,11 +276,12 @@
     </div>
 </nav>
 
+<main id="contenu">
 <!-- ===== LOGIN ===== -->
 <div id="loginSection" class="login-wrapper">
     <div class="login-card">
-        <div class="logo">💊</div>
-        <h2>Espace Pharmacien</h2>
+        <div class="logo" aria-hidden="true"><svg viewBox="0 0 14 14" width="32" height="32" aria-hidden="true" focusable="false"><rect x="5.25" y="1" width="3.5" height="12" rx="1.75" fill="#FFD700"/><rect x="1" y="5.25" width="12" height="3.5" rx="1.75" fill="#ffffff"/><rect x="5.25" y="5.25" width="3.5" height="3.5" fill="#FFD700"/></svg></div>
+        <h1>Espace Pharmacien</h1>
         <p>Gérez vos stocks, prix et disponibilités en temps réel</p>
         <form onsubmit="ProApp.login(event)">
             <div class="form-group">
@@ -261,57 +305,58 @@
 <div id="dashboardSection" class="dashboard">
     <div class="dash-container">
         <!-- Checklist d'onboarding (pharmacie non publiée) -->
+        <h1 class="ng-visuellement-masque">Tableau de bord de l'Espace Pro</h1>
         <div class="onb-carte" id="onboardingCard" style="display:none" role="region" aria-label="Checklist d'onboarding"></div>
 
         <!-- Stats Row -->
         <div class="stats-row" id="statsRow">
             <div class="stat-card">
-                <div class="stat-icon blue">📦</div>
+                <div class="stat-icon blue" aria-hidden="true">📦</div>
                 <div class="stat-info">
-                    <h3 id="statTotalStock">—</h3>
+                    <p class="stat-valeur" id="statTotalStock">—</p>
                     <p>Médicaments référencés</p>
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon green">✅</div>
+                <div class="stat-icon green" aria-hidden="true">✅</div>
                 <div class="stat-info">
-                    <h3 id="statInStock">—</h3>
+                    <p class="stat-valeur" id="statInStock">—</p>
                     <p>Disponibles</p>
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon orange">⚠️</div>
+                <div class="stat-icon orange" aria-hidden="true">⚠️</div>
                 <div class="stat-info">
-                    <h3 id="statOutStock">—</h3>
+                    <p class="stat-valeur" id="statOutStock">—</p>
                     <p>En rupture</p>
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon gold">🔔</div>
+                <div class="stat-icon gold" aria-hidden="true">🔔</div>
                 <div class="stat-info">
-                    <h3 id="statAlerts">—</h3>
+                    <p class="stat-valeur" id="statAlerts">—</p>
                     <p>Alertes reçues</p>
                 </div>
             </div>
         </div>
 
         <!-- Tabs -->
-        <div class="dash-tabs">
-            <button class="dash-tab active" onclick="ProApp.switchTab('stocks')">📦 Mes Stocks</button>
-            <button class="dash-tab" id="tabBtnImport" onclick="ProApp.switchTab('import')">📥 Import</button>
-            <button class="dash-tab" onclick="ProApp.switchTab('pharmacy')">🏥 Ma Pharmacie</button>
-            <button class="dash-tab" onclick="ProApp.switchTab('alerts')">🔔 Alertes</button>
-            <button class="dash-tab" id="tabBtnConsole" style="display:none" onclick="ProApp.switchTab('console')">🛰️ Console alertes</button>
-            <button class="dash-tab" id="tabBtnPharmacies" style="display:none" onclick="ProApp.switchTab('pharmacies')">🏥 Pharmacies</button>
-            <button class="dash-tab" id="tabBtnDemandes" style="display:none" onclick="ProApp.switchTab('demandes')">📥 Demandes</button>
-            <button class="dash-tab" id="tabBtnClassification" style="display:none" onclick="ProApp.switchTab('classification')">🛡️ Classification du catalogue</button>
+        <div class="dash-tabs" role="tablist" aria-label="Sections de l'Espace Pro">
+            <button type="button" role="tab" id="tabbtn-stocks" aria-controls="tab-stocks" aria-selected="true" tabindex="0" class="dash-tab active" onclick="ProApp.switchTab('stocks')"><span aria-hidden="true">📦</span> Mes Stocks</button>
+            <button type="button" role="tab" aria-controls="tab-import" aria-selected="false" tabindex="-1" class="dash-tab" id="tabBtnImport" onclick="ProApp.switchTab('import')"><span aria-hidden="true">📥</span> Import</button>
+            <button type="button" role="tab" id="tabbtn-pharmacy" aria-controls="tab-pharmacy" aria-selected="false" tabindex="-1" class="dash-tab" onclick="ProApp.switchTab('pharmacy')"><span aria-hidden="true">🏥</span> Ma Pharmacie</button>
+            <button type="button" role="tab" id="tabbtn-alerts" aria-controls="tab-alerts" aria-selected="false" tabindex="-1" class="dash-tab" onclick="ProApp.switchTab('alerts')"><span aria-hidden="true">🔔</span> Alertes</button>
+            <button type="button" role="tab" aria-controls="tab-console" aria-selected="false" tabindex="-1" class="dash-tab" id="tabBtnConsole" style="display:none" onclick="ProApp.switchTab('console')"><span aria-hidden="true">🛰️</span> Console alertes</button>
+            <button type="button" role="tab" aria-controls="tab-pharmacies" aria-selected="false" tabindex="-1" class="dash-tab" id="tabBtnPharmacies" style="display:none" onclick="ProApp.switchTab('pharmacies')"><span aria-hidden="true">🏥</span> Pharmacies</button>
+            <button type="button" role="tab" aria-controls="tab-demandes" aria-selected="false" tabindex="-1" class="dash-tab" id="tabBtnDemandes" style="display:none" onclick="ProApp.switchTab('demandes')"><span aria-hidden="true">📥</span> Demandes</button>
+            <button type="button" role="tab" aria-controls="tab-classification" aria-selected="false" tabindex="-1" class="dash-tab" id="tabBtnClassification" style="display:none" onclick="ProApp.switchTab('classification')"><span aria-hidden="true">🛡️</span> Classification du catalogue</button>
         </div>
 
         <!-- TAB: Stocks -->
-        <div class="tab-panel active" id="tab-stocks">
+        <div class="tab-panel active" id="tab-stocks" role="tabpanel" aria-labelledby="tabbtn-stocks" tabindex="0">
             <div class="section-card">
                 <div class="section-header">
-                    <h3>📦 Gestion des Stocks</h3>
+                    <h3><span aria-hidden="true">📦</span> Gestion des Stocks</h3>
                     <div style="display:flex;gap:8px;flex-wrap:wrap">
                         <button class="btn btn-import" id="btnConfirmerStocks" onclick="ProApp.confirmerStocks()">✅ Je confirme mes stocks aujourd'hui</button>
                         <button class="btn btn-add" onclick="ProApp.openAddStock()">+ Ajouter un médicament</button>
@@ -322,15 +367,16 @@
                     <input type="text" id="stockSearchInput" placeholder="Rechercher dans mes stocks..." oninput="ProApp.filterStocks()">
                 </div>
                 <div style="overflow-x:auto">
-                    <table class="stock-table">
+                    <table class="stock-table ng-tableau-cartes">
+                        <caption class="ng-visuellement-masque">Mes stocks</caption>
                         <thead>
                             <tr>
-                                <th>Médicament</th>
-                                <th>Dosage</th>
-                                <th>Prix (FCFA)</th>
-                                <th>Statut</th>
-                                <th>Dernière MAJ</th>
-                                <th>Actions</th>
+                                <th scope="col">Médicament</th>
+                                <th scope="col">Dosage</th>
+                                <th scope="col">Prix (FCFA)</th>
+                                <th scope="col">Statut</th>
+                                <th scope="col">Dernière MAJ</th>
+                                <th scope="col">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="stockTableBody">
@@ -342,15 +388,15 @@
         </div>
 
         <!-- TAB: Import CSV -->
-        <div class="tab-panel" id="tab-import">
+        <div class="tab-panel" id="tab-import" role="tabpanel" aria-labelledby="tabBtnImport" tabindex="0">
             <div id="importRoot"></div>
         </div>
 
         <!-- TAB: Pharmacy Info -->
-        <div class="tab-panel" id="tab-pharmacy">
+        <div class="tab-panel" id="tab-pharmacy" role="tabpanel" aria-labelledby="tabbtn-pharmacy" tabindex="0">
             <div class="section-card">
                 <div class="section-header">
-                    <h3>🏥 Ma Pharmacie</h3>
+                    <h3><span aria-hidden="true">🏥</span> Ma Pharmacie</h3>
                 </div>
                 <div class="pharmacy-info-grid" id="pharmacyInfoGrid">
                     <div class="spinner"></div>
@@ -359,27 +405,27 @@
         </div>
 
         <!-- TAB: Console admin des alertes (admin seul) -->
-        <div class="tab-panel" id="tab-console">
+        <div class="tab-panel" id="tab-console" role="tabpanel" aria-labelledby="tabBtnConsole" tabindex="0">
             <div class="section-card">
-                <div class="section-header"><h3>🛰️ Supervision des alertes</h3><button class="btn btn-secondary" onclick="AdminAlertes.chargerTout()">↻ Actualiser</button></div>
+                <div class="section-header"><h3><span aria-hidden="true">🛰️</span> Supervision des alertes</h3><button class="btn btn-secondary" onclick="AdminAlertes.chargerTout()">↻ Actualiser</button></div>
                 <div id="consoleBandeau"></div>
             </div>
             <div class="section-card" style="margin-top:16px">
-                <div class="section-header"><h3>📊 Indicateurs</h3>
+                <div class="section-header"><h3><span aria-hidden="true">📊</span> Indicateurs</h3>
                     <select id="consolePeriode" onchange="AdminAlertes.chargerIndicateurs()"><option value="7">7 jours</option><option value="30" selected>30 jours</option><option value="90">90 jours</option></select></div>
                 <div id="consoleIndicateurs"></div>
             </div>
             <div class="section-card" style="margin-top:16px">
-                <div class="section-header"><h3>📋 File des alertes</h3>
+                <div class="section-header"><h3><span aria-hidden="true">📋</span> File des alertes</h3>
                     <select id="consoleFiltre" onchange="AdminAlertes.chargerFile()"><option value="">Toutes</option><option value="needs_review">À examiner</option><option value="new,routing,escalated">En cours</option><option value="answered">Répondues</option><option value="fulfilled,expired,cancelled">Terminées</option></select></div>
                 <div id="consoleFile"><div class="spinner"></div></div>
             </div>
             <div class="section-card" style="margin-top:16px">
-                <div class="section-header"><h3>🔎 Détail et actions</h3></div>
+                <div class="section-header"><h3><span aria-hidden="true">🔎</span> Détail et actions</h3></div>
                 <div id="consoleDetail"><p class="console-note">Choisissez une alerte dans la file.</p></div>
             </div>
             <div class="section-card" style="margin-top:16px">
-                <div class="section-header"><h3>🧪 Comptes de test (mode démo)</h3></div>
+                <div class="section-header"><h3><span aria-hidden="true">🧪</span> Comptes de test (mode démo)</h3></div>
                 <p class="console-note">En mode démo, un message n'est envoyé en vrai que vers un compte de cette liste blanche (le vôtre et ceux des pharmaciens qui participent et ont activé le bot eux-mêmes). Les autres destinataires voient « aurait été envoyé » ci-dessous.</p>
                 <div id="consoleContacts"></div>
                 <div class="console-formulaire">
@@ -398,37 +444,37 @@
                 </div>
             </div>
             <div class="section-card" style="margin-top:16px">
-                <div class="section-header"><h3>⚙️ Réglages du routage</h3></div>
+                <div class="section-header"><h3><span aria-hidden="true">⚙️</span> Réglages du routage</h3></div>
                 <div id="consoleReglages"></div>
             </div>
         </div>
 
         <!-- TAB: Pharmacies : création en masse, vérification, invitation (admin seul) -->
-        <div class="tab-panel" id="tab-pharmacies">
+        <div class="tab-panel" id="tab-pharmacies" role="tabpanel" aria-labelledby="tabBtnPharmacies" tabindex="0">
             <div class="section-card">
-                <div class="section-header"><h3>📄 Créer des pharmacies depuis un fichier</h3></div>
+                <div class="section-header"><h3><span aria-hidden="true">📄</span> Créer des pharmacies depuis un fichier</h3></div>
                 <div id="pharmaciesImport"></div>
             </div>
             <div class="section-card" style="margin-top:16px">
-                <div class="section-header"><h3>🔍 Pharmacies à vérifier</h3><input type="text" id="pharmaciesRecherche" placeholder="Rechercher…" oninput="AdminPharmacies.chargerAVerifier()" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px"></div>
+                <div class="section-header"><h3><span aria-hidden="true">🔍</span> Pharmacies à vérifier</h3><input type="text" id="pharmaciesRecherche" placeholder="Rechercher…" oninput="AdminPharmacies.chargerAVerifier()" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px"></div>
                 <p class="console-note">Aucune pharmacie ne passe « vérifiée » sans les 5 cases de la checklist : la base de données le refuse, même par écriture directe.</p>
                 <div id="pharmaciesAVerifier"><div class="spinner"></div></div>
             </div>
             <div class="section-card" style="margin-top:16px">
-                <div class="section-header"><h3>🔎 Dossier</h3></div>
+                <div class="section-header"><h3><span aria-hidden="true">🔎</span> Dossier</h3></div>
                 <div id="pharmaciesDetail"><p class="console-note">Choisissez une pharmacie dans la liste.</p></div>
             </div>
             <div class="section-card" style="margin-top:16px">
-                <div class="section-header"><h3>✉️ Pharmacies vérifiées à inviter</h3></div>
+                <div class="section-header"><h3><span aria-hidden="true">✉️</span> Pharmacies vérifiées à inviter</h3></div>
                 <p class="console-note">Le titulaire reçoit un lien personnel (72 h, usage unique) pour activer son compte, puis suit la mise en route (la pharmacie est publiée automatiquement une fois la checklist terminée).</p>
                 <div id="pharmaciesAInviter"></div><div id="pharmaciesLienInvitation" class="console-note"></div>
             </div>
         </div>
 
         <!-- TAB: Demandes de pré-inscription (admin seul) -->
-        <div class="tab-panel" id="tab-demandes">
+        <div class="tab-panel" id="tab-demandes" role="tabpanel" aria-labelledby="tabBtnDemandes" tabindex="0">
             <div class="section-card">
-                <div class="section-header"><h3>📥 Demandes de partenariat</h3>
+                <div class="section-header"><h3><span aria-hidden="true">📥</span> Demandes de partenariat</h3>
                     <select id="demandesFiltre" onchange="AdminDemandes.chargerFile()"><option value="">Toutes</option><option value="submitted">Soumises</option><option value="in_review">En revue</option><option value="needs_info">Compléments demandés</option><option value="approved">Approuvées</option><option value="rejected">Refusées</option><option value="doublons">Doublons suspects</option></select></div>
                 <p class="console-note">Cible de traitement : 48 h. Les justificatifs sont dans un espace privé ; chaque consultation est journalisée. En mode démo, aucune pièce réelle ne doit être déposée.</p>
                 <div id="demandesFile"><div class="spinner"></div></div>
@@ -439,17 +485,17 @@
                 <div id="demandesRetard"><div class="spinner"></div></div>
             </div>
             <div class="section-card" style="margin-top:16px">
-                <div class="section-header"><h3>🔎 Dossier</h3></div>
+                <div class="section-header"><h3><span aria-hidden="true">🔎</span> Dossier</h3></div>
                 <div id="demandesDetail"><p class="console-note">Choisissez une demande dans la liste.</p></div>
             </div>
         </div>
 
         <!-- TAB: Classification du catalogue (admin seul) -->
-        <div class="tab-panel" id="tab-classification">
+        <div class="tab-panel" id="tab-classification" role="tabpanel" aria-labelledby="tabBtnClassification" tabindex="0">
             <div class="section-card">
                 <div class="section-header">
-                    <h3>🚦 Passage en production</h3>
-                    <span id="modeBadge" style="font-size:12px;font-weight:600"></span>
+                    <h3><span aria-hidden="true">🚦</span> Passage en production</h3>
+                    <span id="modeBadge" style="font-size:13px;font-weight:600"></span>
                 </div>
                 <p style="font-size:13px;color:var(--text-muted);margin-bottom:10px">Le routage automatique ne passe en mode production que si les cinq conditions ci-dessous sont remplies. La base de données refuse le changement sinon.</p>
                 <ul id="conditionsList" style="list-style:none;padding:0;margin:0 0 12px"></ul>
@@ -457,8 +503,8 @@
             </div>
             <div class="section-card" style="margin-top:16px">
                 <div class="section-header">
-                    <h3>🛡️ Classification du catalogue</h3>
-                    <span style="font-size:12px;color:var(--text-muted)">Médicaments restreints et sur ordonnance</span>
+                    <h3><span aria-hidden="true">🛡️</span> Classification du catalogue</h3>
+                    <span style="font-size:13px;color:var(--text-muted)">Médicaments restreints et sur ordonnance</span>
                 </div>
                 <div style="background:#fff8e1;border:1px solid #ffe08a;border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:12px">
                     <strong>Cette classification n'est pas décidée par l'application.</strong> Toute fiche est <em>restreinte</em> tant qu'elle n'a pas été classée :
@@ -467,13 +513,13 @@
                 </div>
                 <div style="overflow-x:auto">
                     <table class="stock-table" id="classifTable">
-                        <thead><tr><th></th><th>Médicament</th><th>Dosage</th><th>Forme</th><th>Restreint</th><th>Sur ordonnance</th><th>Validation</th></tr></thead>
+                        <thead><tr><th></th><th scope="col">Médicament</th><th scope="col">Dosage</th><th>Forme</th><th>Restreint</th><th>Sur ordonnance</th><th>Validation</th></tr></thead>
                         <tbody id="classifBody"><tr><td colspan="7"><div class="spinner"></div></td></tr></tbody>
                     </table>
                 </div>
                 <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
                     <button class="btn btn-add" id="btnSaveClassif" onclick="ProApp.enregistrerClassification()">💾 Enregistrer les modifications (décision du propriétaire)</button>
-                    <span id="classifDirty" style="font-size:12px;color:var(--text-muted)"></span>
+                    <span id="classifDirty" style="font-size:13px;color:var(--text-muted)"></span>
                 </div>
                 <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:14px">
                     <h4 style="margin-bottom:8px">Validation par un pharmacien</h4>
@@ -487,12 +533,12 @@
         </div>
 
         <!-- TAB: Alerts -->
-        <div class="tab-panel" id="tab-alerts">
+        <div class="tab-panel" id="tab-alerts" role="tabpanel" aria-labelledby="tabbtn-alerts" tabindex="0">
             <!-- Admin : alertes de stock héritées (lecture) -->
             <div class="section-card" id="blocAlertesAdmin">
                 <div class="section-header">
-                    <h3>🔔 Alertes de disponibilité</h3>
-                    <span style="font-size:12px;color:var(--text-muted)">Demandes des patients pour vos médicaments</span>
+                    <h3><span aria-hidden="true">🔔</span> Alertes de disponibilité</h3>
+                    <span style="font-size:13px;color:var(--text-muted)">Demandes des patients pour vos médicaments</span>
                 </div>
                 <div id="alertsList">
                     <div class="spinner"></div>
@@ -502,22 +548,22 @@
             <div id="blocAlertesPharmacie" style="display:none">
                 <div class="section-card">
                     <div class="section-header">
-                        <h3>🔔 Demandes de patients</h3>
+                        <h3><span aria-hidden="true">🔔</span> Demandes de patients</h3>
                         <button class="btn btn-secondary" onclick="ProApp.chargerAlertesPharmacie()">↻ Actualiser</button>
                     </div>
-                    <p style="font-size:12px;color:var(--text-muted);margin-bottom:8px">Aucune donnée du patient n'est transmise. Votre réponse met aussi à jour votre stock.</p>
+                    <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px">Aucune donnée du patient n'est transmise. Votre réponse met aussi à jour votre stock.</p>
                     <div id="alertesEnAttente"><div class="spinner"></div></div>
                 </div>
                 <div class="section-card" style="margin-top:16px">
                     <div class="section-header">
-                        <h3>🕘 Historique</h3>
-                        <span id="tempsMoyenReponse" style="font-size:12px;color:var(--text-muted)"></span>
+                        <h3><span aria-hidden="true">🕘</span> Historique</h3>
+                        <span id="tempsMoyenReponse" style="font-size:13px;color:var(--text-muted)"></span>
                     </div>
                     <div id="alertesHistorique"></div>
                 </div>
                 <div class="section-card" style="margin-top:16px">
-                    <div class="section-header"><h3>📡 Canaux de réception</h3></div>
-                    <p style="font-size:12px;color:var(--text-muted);margin-bottom:8px">Telegram est le canal principal ; le SMS prend le relais si Telegram est indisponible.</p>
+                    <div class="section-header"><h3><span aria-hidden="true">📡</span> Canaux de réception</h3></div>
+                    <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px">Telegram est le canal principal ; le SMS prend le relais si Telegram est indisponible.</p>
                     <div id="listeContacts"></div>
                     <div style="margin-top:14px;padding-top:12px;border-top:1px solid #f0f0f0">
                         <strong style="font-size:13px">Activer Telegram (jusqu'à 3 comptes)</strong>
@@ -545,26 +591,28 @@
     </div>
 </div>
 
+</main>
+
 <!-- ===== MODAL: Add/Edit Stock ===== -->
 <div class="modal-overlay" id="stockModal">
-    <div class="modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="stockModalTitle">
         <h3 id="stockModalTitle">Ajouter un médicament</h3>
         <div class="form-group">
-            <label>Médicament</label>
+            <label for="modalMedSearch">Médicament</label>
             <input type="text" id="modalMedSearch" placeholder="Rechercher un médicament..." oninput="ProApp.searchMedsForModal()">
             <select id="modalMedSelect" size="4" style="display:none;margin-top:8px;width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;" onchange="ProApp.selectMedFromList()"></select>
             <input type="hidden" id="modalMedId">
             <div id="modalMedSelected" style="margin-top:6px;font-size:13px;color:var(--primary);font-weight:500;display:none"></div>
         </div>
         <div class="form-group">
-            <label>Prix (FCFA)</label>
-            <input type="number" id="modalPrix" placeholder="Ex: 1500" min="0">
+            <label for="modalPrix">Prix (FCFA)</label>
+            <input type="number" id="modalPrix" inputmode="numeric" placeholder="Ex: 1500" min="0">
         </div>
         <div class="form-group">
-            <label style="margin-bottom:8px">Disponibilité</label>
+            <span id="modalDispoTitre" style="display:block;font-size:13px;font-weight:600;margin-bottom:8px">Disponibilité</span>
             <div class="toggle-wrap">
                 <label class="toggle">
-                    <input type="checkbox" id="modalEnStock" checked>
+                    <input type="checkbox" id="modalEnStock" checked aria-labelledby="modalDispoTitre modalStockLabel">
                     <span class="toggle-slider"></span>
                 </label>
                 <span id="modalStockLabel" style="font-size:13px">En stock</span>
@@ -579,16 +627,18 @@
 </div>
 
 <!-- ===== TOAST ===== -->
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <!-- ===== Supabase SDK ===== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
 <!-- ===== SheetJS for Excel ===== -->
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<!-- Librairie Excel : chargée seulement à l'ouverture de l'import (public/import-ui.js), plus à la connexion -->
 
 <script src="/alerte-config.js"></script>
 <script src="/demo-banner.js"></script>
+<script src="/ui-mouvement.js"></script>
+<script src="/ui-icones.js"></script>
 <script src="/pro-utils.js"></script>
 <script src="/admin-utils.js"></script>
 <script src="/onboarding-utils.js"></script>
@@ -614,6 +664,7 @@ var ProApp = (function() {
 
     // ── Helpers ──
     function esc(s) { var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+    function ic(nom) { return window.NgIcones ? window.NgIcones.icone(nom) : ''; }
 
     function showToast(msg, type) {
         var t = document.getElementById('toast');
@@ -719,6 +770,24 @@ var ProApp = (function() {
         });
     }
 
+    // Onglets au clavier : ← → passent d'un onglet visible à l'autre, Début et Fin vont aux extrémités.
+    function initOngletsClavier() {
+        var liste = document.querySelector('.dash-tabs[role="tablist"]');
+        if (!liste) return;
+        liste.addEventListener('keydown', function(e) {
+            var onglets = [].slice.call(liste.querySelectorAll('[role="tab"]')).filter(function(t) { return t.style.display !== 'none'; });
+            var i = onglets.indexOf(document.activeElement);
+            if (i < 0) return;
+            var j = e.key === 'ArrowRight' ? (i + 1) % onglets.length : e.key === 'ArrowLeft' ? (i - 1 + onglets.length) % onglets.length :
+                e.key === 'Home' ? 0 : e.key === 'End' ? onglets.length - 1 : -1;
+            if (j < 0) return;
+            e.preventDefault();
+            onglets[i].setAttribute('tabindex', '-1');
+            onglets[j].setAttribute('tabindex', '0');
+            onglets[j].focus();
+        });
+    }
+
     // ── Dashboard ──
     function showDashboard() {
         document.getElementById('loginSection').style.display = 'none';
@@ -747,7 +816,10 @@ var ProApp = (function() {
     function switchTab(tabName) {
         document.querySelectorAll('.dash-tab').forEach(function(t) {
             var m = /switchTab\('([a-z]+)'\)/.exec(t.getAttribute('onclick') || '');
-            t.classList.toggle('active', !!m && m[1] === tabName);
+            var actif = !!m && m[1] === tabName;
+            t.classList.toggle('active', actif);
+            t.setAttribute('aria-selected', actif ? 'true' : 'false');
+            t.setAttribute('tabindex', actif ? '0' : '-1');
         });
         document.querySelectorAll('.tab-panel').forEach(function(p) {
             p.classList.toggle('active', p.id === 'tab-' + tabName);
@@ -798,7 +870,7 @@ var ProApp = (function() {
             taches.map(function(t) {
                 var montrer = prochaine && prochaine.cle === t.cle;
                 return '<div class="onb-tache' + (t.fait ? ' fait' : '') + '"><div class="pastille">' + (t.fait ? '✓' : '') + '</div><div class="corps">' +
-                    '<strong>' + esc(t.titre) + '</strong>' + (t.detail ? ' <span style="font-size:12px">— ' + esc(t.detail) + '</span>' : '') +
+                    '<strong>' + esc(t.titre) + '</strong>' + (t.detail ? ' <span style="font-size:13px">— ' + esc(t.detail) + '</span>' : '') +
                     '<div class="aide">' + esc(t.aide) + '</div>' +
                     ((montrer || (!t.fait && t.cle === 'telegram')) && !t.fait ? '<div class="actions">' + (actions[t.cle] || '') + '</div>' : '') +
                     (t.fait && t.cle === 'telegram' && etat.items[2] && etat.items[2].sans_telegram ? '<div class="actions"><button class="btn btn-secondary" onclick="ProApp.avecTelegram()">Finalement, activer Telegram</button></div>' : '') +
@@ -879,9 +951,9 @@ var ProApp = (function() {
                     var id = esc(m.id);
                     return '<tr>' +
                         '<td><input type="checkbox" class="classif-check" data-id="' + id + '" aria-label="Fiche validée"></td>' +
-                        '<td><strong>' + esc(m.nom) + '</strong>' + (m.est_demo ? ' <span style="font-size:10px;background:#eee;border-radius:4px;padding:1px 5px">démo</span>' : '') +
-                            (m.statut_catalogue === 'archive' ? ' <span style="font-size:10px;background:#eee;border-radius:4px;padding:1px 5px">archivée</span>' : '') + '</td>' +
-                        '<td>' + esc(m.dosage || '—') + '</td><td>' + esc(m.forme || '—') + (m.conditionnement ? '<br><span style="font-size:11px;color:var(--text-muted)">' + esc(m.conditionnement) + '</span>' : '') + '</td>' +
+                        '<td><strong>' + esc(m.nom) + '</strong>' + (m.est_demo ? ' <span style="font-size:13px;background:#eee;border-radius:4px;padding:1px 5px">démo</span>' : '') +
+                            (m.statut_catalogue === 'archive' ? ' <span style="font-size:13px;background:#eee;border-radius:4px;padding:1px 5px">archivée</span>' : '') + '</td>' +
+                        '<td>' + esc(m.dosage || '—') + '</td><td>' + esc(m.forme || '—') + (m.conditionnement ? '<br><span style="font-size:13px;color:var(--text-muted)">' + esc(m.conditionnement) + '</span>' : '') + '</td>' +
                         '<td><select class="classif-sel" data-id="' + id + '" data-champ="restreint"><option value="true"' + (m.restreint ? ' selected' : '') + '>Oui (restreint)</option><option value="false"' + (!m.restreint ? ' selected' : '') + '>Non</option></select></td>' +
                         '<td><select class="classif-sel" data-id="' + id + '" data-champ="ordonnance"><option value="true"' + (m.ordonnance ? ' selected' : '') + '>Oui</option><option value="false"' + (!m.ordonnance ? ' selected' : '') + '>Non</option></select></td>' +
                         '<td>' + validationLabel(m) + '</td></tr>';
@@ -918,7 +990,7 @@ var ProApp = (function() {
             var conds = r[0].data || [];
             list.innerHTML = conds.map(function(c) {
                 return '<li style="padding:4px 0">' + (c.ok ? '✅ ' : '❌ ') + esc(libelles[c.cle] || c.cle) +
-                    ' <span style="font-size:12px;color:var(--text-muted)">— ' + esc(c.detail) + '</span></li>';
+                    ' <span style="font-size:13px;color:var(--text-muted)">— ' + esc(c.detail) + '</span></li>';
             }).join('');
             var tout = conds.length > 0 && conds.every(function(c) { return c.ok; });
             document.getElementById('btnProduction').disabled = !(tout && mode !== 'production');
@@ -1015,18 +1087,19 @@ var ProApp = (function() {
         }
         tbody.innerHTML = stocks.map(function(s) {
             var med = s.medicaments || {};
+            var nom = esc(med.nom || '—');
             return '<tr>' +
-                '<td><strong>' + esc(med.nom || '—') + '</strong>' +
-                    (med.dci ? '<br><span style="font-size:11px;color:var(--text-muted)">DCI: ' + esc(med.dci) + '</span>' : '') +
+                '<td data-label="Médicament"><strong>' + nom + '</strong>' +
+                    (med.dci ? '<br><span style="font-size:13px;color:var(--text-muted)">DCI : ' + esc(med.dci) + '</span>' : '') +
                 '</td>' +
-                '<td>' + esc(med.dosage || '—') + (med.conditionnement ? '<br><span style="font-size:11px;color:var(--text-muted)">' + esc(med.conditionnement) + '</span>' : '') + '</td>' +
-                '<td style="font-weight:600">' + fmtPrice(s.prix_fcfa) + '</td>' +
-                '<td><span class="stock-badge ' + (s.en_stock ? 'in-stock' : 'out-stock') + '">' +
-                    (s.en_stock ? '✅ En stock' : '❌ Rupture') + '</span></td>' +
-                '<td style="font-size:12px;font-weight:600;color:' + OnboardingUtils.couleurCss(OnboardingUtils.couleurFraicheur(s.confirme_le || s.date_maj)) + '">' + timeAgo(s.confirme_le || s.date_maj) + '</td>' +
-                '<td><div class="stock-actions">' +
-                    '<button class="btn btn-edit" onclick="ProApp.editStock(\'' + s.id + '\')">✏️</button>' +
-                    '<button class="btn btn-delete" onclick="ProApp.deleteStock(\'' + s.id + '\', \'' + esc(med.nom || '') + '\')">🗑️</button>' +
+                '<td data-label="Dosage">' + esc(med.dosage || '—') + (med.conditionnement ? '<br><span style="font-size:13px;color:var(--text-muted)">' + esc(med.conditionnement) + '</span>' : '') + '</td>' +
+                '<td data-label="Prix" class="stock-prix" style="font-weight:600">' + fmtPrice(s.prix_fcfa) + '</td>' +
+                '<td data-label="Statut"><span class="stock-badge ' + (s.en_stock ? 'in-stock' : 'out-stock') + '">' +
+                    ic(s.en_stock ? 'dispo' : 'rupture') + (s.en_stock ? 'En stock' : 'Rupture') + '</span></td>' +
+                '<td data-label="Dernière MAJ" style="font-size:13px;font-weight:600;color:' + OnboardingUtils.couleurCss(OnboardingUtils.couleurFraicheur(s.confirme_le || s.date_maj)) + '">' + ic('horloge') + ' ' + timeAgo(s.confirme_le || s.date_maj) + '</td>' +
+                '<td data-label="Actions"><div class="stock-actions">' +
+                    '<button type="button" class="btn btn-edit" aria-label="Modifier ' + nom + '" title="Modifier" onclick="ProApp.editStock(\'' + s.id + '\')"><span aria-hidden="true">✏️</span></button>' +
+                    '<button type="button" class="btn btn-delete" aria-label="Supprimer ' + nom + '" title="Supprimer" onclick="ProApp.deleteStock(\'' + s.id + '\', \'' + esc(med.nom || '') + '\')"><span aria-hidden="true">🗑️</span></button>' +
                 '</div></td>' +
             '</tr>';
         }).join('');
@@ -1055,7 +1128,7 @@ var ProApp = (function() {
         document.getElementById('modalEnStock').checked = true;
         document.getElementById('modalStockLabel').textContent = 'En stock';
         document.getElementById('modalStockId').value = '';
-        document.getElementById('stockModal').classList.add('active');
+        ouvrirFenetreStock('modalMedSearch');
     }
 
     function editStock(stockId) {
@@ -1073,12 +1146,28 @@ var ProApp = (function() {
         document.getElementById('modalEnStock').checked = stock.en_stock;
         document.getElementById('modalStockLabel').textContent = stock.en_stock ? 'En stock' : 'Rupture';
         document.getElementById('modalStockId').value = stockId;
-        document.getElementById('stockModal').classList.add('active');
+        ouvrirFenetreStock('modalPrix');
     }
 
+    // Fenêtre de stock : focus sur le premier champ utile, Tab gardé dedans, Échap ferme, focus rendu au bouton d'origine.
+    var _ouvreurStock = null;
+    function ouvrirFenetreStock(idChamp) {
+        _ouvreurStock = document.activeElement;
+        document.getElementById('stockModal').classList.add('active');
+        var champ = document.getElementById(idChamp);
+        if (champ) champ.focus();
+    }
     function closeModal() {
         document.getElementById('stockModal').classList.remove('active');
+        if (_ouvreurStock && _ouvreurStock.focus && document.body.contains(_ouvreurStock)) _ouvreurStock.focus();
+        _ouvreurStock = null;
     }
+    document.addEventListener('keydown', function(e) {
+        var fenetre = document.getElementById('stockModal');
+        if (!fenetre || !fenetre.classList.contains('active')) return;
+        if (e.key === 'Escape') { closeModal(); return; }
+        if (window.NgMouvement) window.NgMouvement.pieger(fenetre.querySelector('.modal'), e, document);
+    });
 
     function searchMedsForModal() {
         var q = document.getElementById('modalMedSearch').value.trim();
@@ -1273,7 +1362,7 @@ var ProApp = (function() {
             return '<div class="alert-item" style="flex-direction:column;align-items:stretch;gap:8px">' +
                 '<div><strong>' + esc(nomMedicament(l)) + '</strong>' + (l.urgence === 'urgent' ? ' <span class="badge-suspended">URGENT</span>' : '') +
                 '<br><span style="color:var(--text-muted)">' + esc(l.quartier) + ' · reçue il y a ' + timeAgo(l.envoye_le) + '</span>' +
-                (l.sur_ordonnance ? '<br><span style="font-size:12px">📋 Sur ordonnance : à présenter au comptoir lors de l\'achat ou du retrait.</span>' : '') + '</div>' +
+                (l.sur_ordonnance ? '<br><span style="font-size:13px">📋 Sur ordonnance : à présenter au comptoir lors de l\'achat ou du retrait.</span>' : '') + '</div>' +
                 '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">' +
                     '<input type="text" inputmode="numeric" placeholder="Prix (FCFA)" id="prix-' + id + '" value="' + esc(l.prix_stock || '') + '" style="width:130px;padding:8px 10px;border:1px solid var(--border);border-radius:8px">' +
                     '<button class="btn btn-import" onclick="ProApp.repondreAlerte(\'' + id + '\', \'available\')">✅ Disponible</button>' +
@@ -1323,7 +1412,7 @@ var ProApp = (function() {
                     var st = ProUtils.statutContact(c), id = esc(c.id);
                     var actifs = st.cle === 'actif';
                     return '<div class="alert-item"><div><strong>' + (icones[c.canal] || esc(c.canal)) + '</strong> <span style="color:var(--text-muted)">' + esc(ProUtils.masquerAdresse(c.canal, c.adresse)) + '</span><br>' +
-                        '<span style="font-size:12px">' + esc(st.libelle) + '</span></div><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">' +
+                        '<span style="font-size:13px">' + esc(st.libelle) + '</span></div><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">' +
                         (actifs ? '<button class="btn btn-secondary" onclick="ProApp.testerContact(\'' + id + '\')">Test d\'envoi</button>' : '') +
                         (st.cle === 'desabonne' ? '<button class="btn btn-secondary" onclick="ProApp.changerAbonnement(\'' + id + '\', true)">Se réabonner</button>' : '') +
                         (actifs || st.cle === 'attente' ? '<button class="btn btn-delete" onclick="ProApp.changerAbonnement(\'' + id + '\', false)">Se désabonner</button>' : '') +
@@ -1405,12 +1494,14 @@ var ProApp = (function() {
     });
 
     // ── Init ──
+    initOngletsClavier();
     checkSession();
 
     return {
         login: login,
         logout: logout,
         switchTab: switchTab,
+        _initOngletsClavier: initOngletsClavier,
         chargerAlertesPharmacie: chargerAlertesPharmacie,
         repondreAlerte: repondreAlerte,
         activerTelegram: activerTelegram,
