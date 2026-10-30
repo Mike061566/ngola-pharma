@@ -196,7 +196,7 @@
             text-decoration: none;
             border-left: 1px solid rgba(0,51,102,0.15);
             white-space: nowrap;
-            transition: gap 0.25s;
+            transition: transform var(--ng-d-rapide) var(--ng-courbe-sortie), opacity var(--ng-d-rapide) var(--ng-courbe-sortie);
         }
 
         .promo-cta:hover {
@@ -253,7 +253,7 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 2px 6px rgba(0,51,102,0.25);
-            transition: transform 0.3s;
+            transition: transform var(--ng-d-rapide) var(--ng-courbe-sortie), opacity var(--ng-d-rapide) var(--ng-courbe-sortie);
         }
 
         .logo:hover .logo-mark {
@@ -301,7 +301,7 @@
         nav a {
             color: #666;
             text-decoration: none;
-            transition: color 0.3s;
+            transition: transform var(--ng-d-rapide) var(--ng-courbe-sortie), opacity var(--ng-d-rapide) var(--ng-courbe-sortie);
         }
 
         nav a:hover {
@@ -322,7 +322,7 @@
             cursor: pointer;
             font-size: 13px;
             font-weight: 500;
-            transition: all 0.3s;
+            transition: transform var(--ng-d-rapide) var(--ng-courbe-sortie), opacity var(--ng-d-rapide) var(--ng-courbe-sortie);
         }
 
         .btn-login {
@@ -357,7 +357,7 @@
             font-weight: 600;
             cursor: pointer;
             color: #5A6B7D;
-            transition: all 0.25s;
+            transition: transform var(--ng-d-rapide) var(--ng-courbe-sortie), opacity var(--ng-d-rapide) var(--ng-courbe-sortie);
             letter-spacing: 0.3px;
         }
 
@@ -437,7 +437,7 @@
         .search-dropdown-section { padding: 6px 0; border-bottom: 1px solid #eee; }
         .search-dropdown-section:last-child { border-bottom: none; }
         .search-dropdown-label { padding: 6px 20px; font-size: 13px; font-weight: 700; text-transform: uppercase; color: var(--ng-texte-2); letter-spacing: .5px; }
-        .search-dropdown-item { padding: 10px 20px; cursor: pointer; display: flex; align-items: center; gap: 12px; color: #333; font-size: 14px; transition: background .15s; }
+        .search-dropdown-item { padding: 10px 20px; cursor: pointer; display: flex; align-items: center; gap: 12px; color: #333; font-size: 14px; transition: transform var(--ng-d-rapide) var(--ng-courbe-sortie), opacity var(--ng-d-rapide) var(--ng-courbe-sortie); }
         .search-dropdown-item:hover { background: #f5f7fa; }
         .search-dropdown-item .item-icon { width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
         .search-dropdown-item .item-icon.med { background: #e8f4fd; color: #003366; }
@@ -454,10 +454,10 @@
         .results-container { max-width: 900px; margin: 0 auto; }
         .results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
         .results-header h2 { margin: 0; font-size: 22px; color: #1a1a1a; }
-        .results-back { background: none; border: 1px solid #ccc; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; color: #555; transition: all .2s; }
+        .results-back { background: none; border: 1px solid #ccc; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; color: #555; transition: transform var(--ng-d-rapide) var(--ng-courbe-sortie), opacity var(--ng-d-rapide) var(--ng-courbe-sortie); }
         .results-back:hover { border-color: #003366; color: #003366; }
         .results-count { font-size: 14px; color: var(--ng-texte-2); margin-bottom: 16px; }
-        .pharmacy-result { background: white; border-radius: 8px; padding: 20px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.06); display: flex; gap: 16px; align-items: flex-start; transition: box-shadow .2s; cursor: pointer; }
+        .pharmacy-result { background: white; border-radius: 8px; padding: 20px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.06); display: flex; gap: 16px; align-items: flex-start; transition: transform var(--ng-d-rapide) var(--ng-courbe-sortie), opacity var(--ng-d-rapide) var(--ng-courbe-sortie); cursor: pointer; }
         .pharmacy-result:hover { box-shadow: 0 4px 12px rgba(0,0,0,.1); }
         .pharmacy-result-icon { width: 48px; height: 48px; border-radius: 10px; background: #003366; color: white; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
         .pharmacy-result-icon.garde { background: #28a745; }
@@ -478,7 +478,7 @@
         .badge-garde-confirmee { background: #c3e6cb; color: #155724; font-weight: 700; }
         .med-reliability { display: flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 13px; }
         .reliability-bar { width: 60px; height: 6px; border-radius: 3px; background: #e9ecef; overflow: hidden; flex-shrink: 0; }
-        .reliability-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+        .reliability-fill { height: 100%; border-radius: 3px; transition: transform var(--ng-d-rapide) var(--ng-courbe-sortie), opacity var(--ng-d-rapide) var(--ng-courbe-sortie); }
         .reliability-fill.high { background: #28a745; }
         .reliability-fill.medium { background: #fd7e14; }
         .reliability-fill.low { background: #dc3545; }
@@ -487,7 +487,7 @@
         .ngola-alert-box h3 { margin: 0 0 8px; color: #003366; font-size: 15px; }
         .ngola-alert-box p { margin: 0 0 12px; color: #666; font-size: 13px; }
         .ngola-alert-channel-tabs { display: flex; justify-content: center; gap: 0; margin-bottom: 14px; border-radius: 8px; overflow: hidden; border: 1px solid #b3d4fc; display: inline-flex; }
-        .ngola-alert-channel-tab { padding: 8px 16px; background: #fff; color: #003366; border: none; font-size: 13px; cursor: pointer; transition: background 0.2s; font-weight: 500; }
+        .ngola-alert-channel-tab { padding: 8px 16px; background: #fff; color: #003366; border: none; font-size: 13px; cursor: pointer; transition: transform var(--ng-d-rapide) var(--ng-courbe-sortie), opacity var(--ng-d-rapide) var(--ng-courbe-sortie); font-weight: 500; }
         .ngola-alert-channel-tab.active { background: #003366; color: #fff; }
         .ngola-alert-channel-tab:not(:last-child) { border-right: 1px solid #b3d4fc; }
         .ngola-alert-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
@@ -498,12 +498,12 @@
         .ngola-alert-success { color: #155724; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 8px; padding: 12px; margin-top: 10px; font-size: 13px; }
         .ngola-alert-error { color: #721c24; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px; padding: 12px; margin-top: 10px; font-size: 13px; }
         .ngola-alert-hint { font-size: 13px; color: var(--ng-texte-2); margin-top: 6px; }
-        .med-alert-btn { display: inline-block; margin-top: 8px; padding: 6px 14px; background: #f0f7ff; color: #003366; border: 1px solid #b3d4fc; border-radius: 8px; font-size: 13px; cursor: pointer; transition: background 0.2s; }
+        .med-alert-btn { display: inline-block; margin-top: 8px; padding: 6px 14px; background: #f0f7ff; color: #003366; border: 1px solid #b3d4fc; border-radius: 8px; font-size: 13px; cursor: pointer; transition: transform var(--ng-d-rapide) var(--ng-courbe-sortie), opacity var(--ng-d-rapide) var(--ng-courbe-sortie); }
         .med-alert-btn:hover { background: #dceafb; }
         .pharmacy-result-price { text-align: right; flex-shrink: 0; }
         .pharmacy-result-price .price { font-size: 18px; font-weight: 700; color: #003366; }
         .pharmacy-result-price .price-label { font-size: 13px; color: var(--ng-texte-2); }
-        .med-result { background: white; border-radius: 8px; padding: 20px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.06); cursor: pointer; transition: box-shadow .2s; }
+        .med-result { background: white; border-radius: 8px; padding: 20px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.06); cursor: pointer; transition: transform var(--ng-d-rapide) var(--ng-courbe-sortie), opacity var(--ng-d-rapide) var(--ng-courbe-sortie); }
         .med-result:hover { box-shadow: 0 4px 12px rgba(0,0,0,.1); }
         .med-result-header { display: flex; justify-content: space-between; align-items: flex-start; }
         .med-result-name { font-weight: 600; font-size: 16px; color: #1a1a1a; }
@@ -577,7 +577,7 @@
             font-weight: 600;
             cursor: pointer;
             font-size: 14px;
-            transition: all 0.3s;
+            transition: transform var(--ng-d-rapide) var(--ng-courbe-sortie), opacity var(--ng-d-rapide) var(--ng-courbe-sortie);
             border-radius: 0 6px 6px 0;
         }
 
@@ -606,7 +606,7 @@
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: transform var(--ng-d-rapide) var(--ng-courbe-sortie), opacity var(--ng-d-rapide) var(--ng-courbe-sortie);
             backdrop-filter: blur(4px);
             text-decoration: none;
             white-space: nowrap;
@@ -673,7 +673,7 @@
             font-size: 13px;
             opacity: 0.9;
             border-bottom: 1px solid white;
-            transition: opacity 0.3s;
+            transition: transform var(--ng-d-rapide) var(--ng-courbe-sortie), opacity var(--ng-d-rapide) var(--ng-courbe-sortie);
         }
 
         .search-popular a:hover {
@@ -724,7 +724,7 @@
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: all 0.3s;
+            transition: transform var(--ng-d-rapide) var(--ng-courbe-sortie), opacity var(--ng-d-rapide) var(--ng-courbe-sortie);
         }
 
         .featured-card:hover {
@@ -806,7 +806,7 @@
             font-weight: 600;
             cursor: pointer;
             font-size: 13px;
-            transition: all 0.3s;
+            transition: transform var(--ng-d-rapide) var(--ng-courbe-sortie), opacity var(--ng-d-rapide) var(--ng-courbe-sortie);
         }
 
         .featured-card-btn:hover {
@@ -846,7 +846,7 @@
             text-align: center;
             cursor: pointer;
             border: 1px solid #e0e0e0;
-            transition: all 0.3s;
+            transition: transform var(--ng-d-rapide) var(--ng-courbe-sortie), opacity var(--ng-d-rapide) var(--ng-courbe-sortie);
         }
 
         .quartier-card:hover {
@@ -863,7 +863,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s;
+            transition: transform var(--ng-d-rapide) var(--ng-courbe-sortie), opacity var(--ng-d-rapide) var(--ng-courbe-sortie);
         }
 
         .quartier-card-icon svg {
@@ -874,7 +874,7 @@
             stroke-width: 1;
             stroke-linecap: round;
             stroke-linejoin: round;
-            transition: stroke 0.3s;
+            transition: transform var(--ng-d-rapide) var(--ng-courbe-sortie), opacity var(--ng-d-rapide) var(--ng-courbe-sortie);
         }
 
         .quartier-card:hover .quartier-card-icon {
@@ -927,7 +927,7 @@
             padding: 24px;
             position: relative;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: transform var(--ng-d-rapide) var(--ng-courbe-sortie), opacity var(--ng-d-rapide) var(--ng-courbe-sortie);
             overflow: hidden;
         }
 
@@ -1140,7 +1140,7 @@
             color: #999;
             text-decoration: none;
             font-size: 13px;
-            transition: color 0.3s;
+            transition: transform var(--ng-d-rapide) var(--ng-courbe-sortie), opacity var(--ng-d-rapide) var(--ng-courbe-sortie);
         }
 
         .footer-section ul a:hover {
@@ -1296,6 +1296,29 @@
         .ng-etat-titre { display: block; font-weight: 600; color: var(--ng-texte); margin-bottom: 6px; }
         .ng-btn-reessayer { min-height: 44px; margin-top: 14px; padding: 10px 20px; border: 0; border-radius: var(--ng-r-sm); background: var(--ng-action); color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
         .ng-btn-reessayer:hover { background: #0B5752; }
+
+        /* ===== PR 3 : micro-interactions (CSS seulement, transform et opacity, 300 ms au plus) ===== */
+        /* Cartes de résultat : apparition en cascade des 6 premières (100 ms de décalage + 200 ms = 300 ms au total) */
+        #resultsList > article { animation: ng-apparition var(--ng-d-moyen) var(--ng-courbe-sortie) both; }
+        #resultsList > article:nth-of-type(2) { animation-delay: 20ms; }
+        #resultsList > article:nth-of-type(3) { animation-delay: 40ms; }
+        #resultsList > article:nth-of-type(4) { animation-delay: 60ms; }
+        #resultsList > article:nth-of-type(5) { animation-delay: 80ms; }
+        #resultsList > article:nth-of-type(6) { animation-delay: 100ms; }
+        #resultsList > article:nth-of-type(n+7) { animation: none; }
+        /* Panneau de résultats et suggestions : apparition courte, sans saut de mise en page (liste en position absolue) */
+        .results-panel.active { animation: ng-apparition var(--ng-d-moyen) var(--ng-courbe-sortie) both; }
+        .search-dropdown.active { animation: ng-apparition-courte var(--ng-d-rapide) var(--ng-courbe-sortie) both; }
+        /* Fenêtre de détail : entrée 200 ms, sortie 140 ms */
+        .modal-overlay.active { animation: ng-fondu var(--ng-d-moyen) var(--ng-courbe-sortie) both; }
+        .modal-overlay.active .modal-content { animation: ng-apparition var(--ng-d-moyen) var(--ng-courbe-sortie) both; }
+        .modal-overlay.ng-sortie { animation: ng-fondu-sortie 140ms var(--ng-courbe-entree) both; }
+        .modal-overlay.ng-sortie .modal-content { animation: ng-depart 140ms var(--ng-courbe-entree) both; }
+        .modal-close { min-width: 44px; min-height: 44px; top: 4px; right: 4px; }
+        /* Retour tactile : légère compression à l'appui */
+        .featured-card-btn:active, .quartier-card:active, .med-action-btn:active, .ng-btn-reessayer:active,
+        .quick-action-btn:active, .search-bar button:active, .results-back:active, .med-alert-btn:active,
+        .btn-login:active, .lang-toggle button:active, .ngola-alert-form button:active { transform: scale(.97); }
     </style>
 </head>
 <body>
@@ -1492,7 +1515,7 @@
     </div>
 
     <!-- Quartiers -->
-    <div class="quartiers-section">
+    <div class="quartiers-section" data-ng-reveler>
         <h2 data-i18n="browse_district">Parcourir par quartier</h2>
 
         <div class="quartiers-grid" id="quartiersGrid">
@@ -1568,7 +1591,7 @@
     </div>
 
     <!-- Offres Exclusives -->
-    <div class="offres-section" id="offresSection">
+    <div class="offres-section" id="offresSection" data-ng-reveler>
         <h2 data-i18n="exclusive_offers_title">Exemples d'offres</h2>
         <div class="offres-grid">
             <!-- Offre 1 -->
@@ -1614,7 +1637,7 @@
     <div class="results-panel" id="resultsPanel">
         <div class="results-container">
             <div class="results-header">
-                <h2 id="resultsTitle">Résultats</h2>
+                <h2 id="resultsTitle" tabindex="-1">Résultats</h2>
                 <button type="button" class="results-back" id="resultsBack" data-i18n="back">&#8592; Retour</button>
             </div>
             <div class="results-count" id="resultsCount" role="status" aria-live="polite"></div>
@@ -1624,8 +1647,8 @@
 
     <!-- Detail Modal -->
     <div class="modal-overlay" id="detailModal">
-        <div class="modal-content">
-            <button class="modal-close" id="modalClose">&times;</button>
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalTitre">
+            <button type="button" class="modal-close" id="modalClose" aria-label="Fermer" data-i18n-aria-label="fermer">&times;</button>
             <div id="modalBody"></div>
         </div>
     </div>
@@ -1737,6 +1760,10 @@
                 // Quartiers
                 browse_district: "Browse by district",
                 ph_voir: "See pharmacies",
+                // Fenêtre de détail et confirmation (PR 3)
+                fermer: "Close",
+                detail: "Details",
+                alerte_enregistree: "Alert saved: you will be notified as soon as the medication is available.",
                 // Recherche, résultats et états (PR 2)
                 skip_link: "Skip to content",
                 back: "← Back",
@@ -1848,6 +1875,10 @@
 
                 browse_district: "Parcourir par quartier",
                 ph_voir: "Voir les pharmacies",
+                // Fenêtre de détail et confirmation (PR 3)
+                fermer: "Fermer",
+                detail: "Détail",
+                alerte_enregistree: "Alerte enregistrée : vous serez prévenu(e) dès que le médicament sera disponible.",
                 // Recherche, résultats et états (PR 2)
                 skip_link: "Aller au contenu",
                 back: "← Retour",
@@ -1957,6 +1988,9 @@
         window.NGOLA_T = T;   // lu par NGolaApp pour les textes générés en JS
     })();
     </script>
+
+    <!-- Micro-interactions partagées (sans dépendance) -->
+    <script src="/ui-mouvement.js"></script>
 
     <!-- Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2212,6 +2246,7 @@
                             ? 'You will be notified via ' + channelName + ' ' + channelIcon + ' at <strong>' + esc(contact) + '</strong> when <strong>' + esc(medName) + '</strong> is available.'
                             : 'Vous serez prévenu(e) par ' + channelName + ' ' + channelIcon + ' à <strong>' + esc(contact) + '</strong> quand <strong>' + esc(medName) + '</strong> sera disponible.') +
                         '</div>';
+                    if (window.NgMouvement) window.NgMouvement.toast(document, tr('alerte_enregistree'), { libelleFermer: tr('fermer') });
                 }
             });
         }
@@ -2862,12 +2897,12 @@
                         html += '</div>';
                     }
 
-                    document.getElementById('modalBody').innerHTML = html;
+                    remplirModal(html);
                 })
                 .catch(function() {
-                    document.getElementById('modalBody').innerHTML =
+                    remplirModal(
                         '<div style="text-align:center;padding:30px;color:#dc3545">' +
-                        (currentLang === 'en' ? 'Unable to load details' : 'Impossible de charger les détails') + '</div>';
+                        (currentLang === 'en' ? 'Unable to load details' : 'Impossible de charger les détails') + '</div>');
                 });
         }
 
@@ -2923,12 +2958,12 @@
                             (currentLang === 'en' ? 'No availability data yet' : 'Pas encore de données de disponibilité') + '</div>';
                     }
 
-                    document.getElementById('modalBody').innerHTML = html;
+                    remplirModal(html);
                 })
                 .catch(function() {
-                    document.getElementById('modalBody').innerHTML =
+                    remplirModal(
                         '<div style="text-align:center;padding:30px;color:#dc3545">' +
-                        (currentLang === 'en' ? 'Unable to load details' : 'Impossible de charger les détails') + '</div>';
+                        (currentLang === 'en' ? 'Unable to load details' : 'Impossible de charger les détails') + '</div>');
                 });
         }
 
@@ -2939,23 +2974,54 @@
             document.getElementById('resultsList').innerHTML = '';
             document.getElementById('resultsPanel').classList.add('active');
             scrollTo(document.getElementById('resultsPanel'));
+            // Le focus suit le contenu : le titre des résultats est annoncé et la touche Tab continue dans la liste
+            document.getElementById('resultsTitle').focus({ preventScroll: true });
         }
 
         function hideResultsPanel() {
             document.getElementById('resultsPanel').classList.remove('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.getElementById('searchInput').focus({ preventScroll: true });
         }
 
         // ── Modal ───────────────────────────────────────────
-        function openModal(html) {
+        // Fenêtre de détail : le focus y entre à l'ouverture, y reste (Tab boucle) et revient à l'élément d'origine.
+        var _modalOuvreur = null;
+        function remplirModal(html) {
+            var dialogue = document.querySelector('#detailModal .modal-content');
             document.getElementById('modalBody').innerHTML = html;
-            document.getElementById('detailModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
+            var titre = document.querySelector('#modalBody .modal-title');
+            if (titre) {
+                titre.id = 'modalTitre';
+                dialogue.setAttribute('aria-labelledby', 'modalTitre');
+                dialogue.removeAttribute('aria-label');
+            } else {
+                dialogue.removeAttribute('aria-labelledby');
+                dialogue.setAttribute('aria-label', tr('detail'));
+            }
+        }
+        function openModal(html) {
+            var overlay = document.getElementById('detailModal');
+            var dejaOuverte = overlay.classList.contains('active');
+            remplirModal(html);
+            if (!dejaOuverte) {
+                _modalOuvreur = document.activeElement;
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                document.getElementById('modalClose').focus();
+            }
         }
 
         function closeModal() {
-            document.getElementById('detailModal').classList.remove('active');
-            document.body.style.overflow = '';
+            var overlay = document.getElementById('detailModal');
+            if (!overlay.classList.contains('active')) return;
+            var fin = function() {
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+                if (_modalOuvreur && _modalOuvreur.focus && document.body.contains(_modalOuvreur)) _modalOuvreur.focus();
+                _modalOuvreur = null;
+            };
+            if (window.NgMouvement) window.NgMouvement.fermerAvecSortie(overlay, window, fin); else fin();
         }
 
         // ── Footer info (À propos / Support / Légal) ─────────
@@ -3146,6 +3212,9 @@
             });
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') closeModal();
+            });
+            document.getElementById('detailModal').addEventListener('keydown', function(e) {
+                if (window.NgMouvement && this.classList.contains('active')) window.NgMouvement.pieger(this.querySelector('.modal-content'), e, document);
             });
 
             // Track lang changes for dynamic content
