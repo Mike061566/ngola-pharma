@@ -216,10 +216,14 @@ Ordre du prompt conservé. Chaque PR inclut captures avant/après (360 et 1280 p
 
 ---
 
-## Décisions qui vous appartiennent
+## Décisions du propriétaire (validées le 30/10/2026)
 
-1. Section « Offres exclusives », bandeau promo et chiffres en dur : garder et étiqueter « exemple », relier aux vraies données, ou retirer (avis du pharmacien pour les promotions de médicaments).
-2. Motion : pas de dépendance au départ (mon avis), ou `motion/mini` à la demande, ou Motion complet (25 Ko gzip).
-3. Couleur « santé » : bleu-vert `#0F6E68` comme couleur d'action en gardant le marine comme marque (mon avis), ou changement de couleur primaire.
-4. Branches : accord pour créer `ui/*` (une PR par étape), et point de départ (`main` après fusion de la PR #4, mon avis).
-5. PR 0 « contenus réels » : à ajouter en tête, ou à fondre dans la PR 2.
+| # | Question | Décision | Conséquence pour les PR |
+|---|---|---|---|
+| 1 | Section « Offres », bandeau promo, promotions fictives | **Garder, avec une étiquette « Exemple »** | PR 0 : étiquette « Exemple » visible (texte, pas seulement couleur) sur chaque offre et sur le bandeau, ajoutée aux dictionnaires FR/EN. Le défilement en boucle du bandeau reste supprimé en PR 1 (interdit par le prompt et WCAG 2.2.2) : le bandeau devient statique ou défilable à la main. |
+| 2 | Motion | **Aucune dépendance au départ** | PR 3 en CSS + `IntersectionObserver`, 0 Ko ajouté. Motion n'est réévalué que si un effet ne peut pas se faire en CSS, avec une nouvelle validation. |
+| 3 | Couleur « santé » | **Bleu-vert `#0F6E68` pour les boutons d'action, marine `#003366` conservé comme marque** | Tokens de la section 2 adoptés tels quels. |
+| 4 | Branches | **`ui/*` à partir de `main`, après la fusion de la PR #4** | Aucune branche `ui/*` créée tant que la PR #4 n'est pas fusionnée. |
+| 5 | PR 0 « contenus réels » | **En tête, avant tout travail de design** (ou fondue dans la PR 2) | PR 0 en premier : `ui/contenus-reels`. |
+
+**Périmètre retenu pour la PR 0 (« textes seulement »)** : les chiffres en dur (« 52 pharmacies », « 8 pharmacies ouvertes », « DISPONIBLES 24/7 », « 15 médicaments en promotion », « Jusqu'à dimanche 23:59 », compteurs de quartier) sont remplacés par des **formulations sans chiffre** (par exemple « Pharmacies de Yaoundé », « Voir les pharmacies ouvertes maintenant »). Ils ne sont **pas** remplacés par des valeurs lues dans Supabase : cela ajouterait des requêtes, contraire à « ne touche pas à la logique Supabase ». Si vous voulez de vrais compteurs, ce sera une PR séparée, à valider. Changements limités au HTML et aux dictionnaires `T.fr` / `T.en`, sans mise en page ni JS de logique.
