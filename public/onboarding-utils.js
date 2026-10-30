@@ -70,7 +70,7 @@
     var jours = ((maintenant || Date.now()) - new Date(confirmeLe).getTime()) / 86400000;
     return jours <= 3 ? 'vert' : jours <= 7 ? 'orange' : 'rouge';
   }
-  var COULEURS = { vert: '#1b7a3d', orange: '#b26a00', rouge: '#b42318' };
+  var COULEURS = { vert: '#1b7a3d', orange: '#8A4B00', rouge: '#b42318' };
   function couleurCss(cle) { return COULEURS[cle] || COULEURS.rouge; }
 
   /** Mot de passe : 10 caractères au moins, confirmation identique. Renvoie un message d'erreur ou null. */

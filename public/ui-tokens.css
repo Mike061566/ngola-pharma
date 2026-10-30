@@ -1,0 +1,81 @@
+/* ============================================================
+   N'Gola Pharma — variables de design partagées (docs/design/AUDIT-UI.md, section 2)
+   Fichier statique, sans étape de build. Contrastes calculés (WCAG 2.x) indiqués en commentaire.
+   Préfixe --ng- : aucune collision avec les variables propres aux pages (--primary, --accent…).
+   ============================================================ */
+:root {
+  /* Marque (inchangée) */
+  --ng-marine:        #003366;  /* blanc dessus : 12,61:1 */
+  --ng-marine-clair:  #004488;
+  --ng-or:            #FFD700;  /* uniquement avec --ng-marine dessus : 8,99:1 (jamais de texte blanc : 1,40:1) */
+
+  /* Rôles */
+  --ng-action:        #0F6E68;  /* boutons d'action « santé » et liens : blanc 6,09:1 */
+  --ng-garde:         #B42318;  /* réservé aux pharmacies de garde : blanc 6,57:1 */
+  --ng-garde-fond:    #FEE4E2;
+
+  /* Statuts du stock : toujours couleur + icône + texte */
+  --ng-dispo:   #166534;  --ng-dispo-fond:   #DCFCE7;  /* 6,49:1 */
+  --ng-faible:  #854D0E;  --ng-faible-fond:  #FEF3C7;  /* 6,15:1 */
+  --ng-rupture: #374151;  --ng-rupture-fond: #F3F4F6;  /* 9,37:1 : gris neutre, le rouge reste à la garde */
+  --ng-verifie: #0C5460;  --ng-verifie-fond: #D1ECF1;  /* 6,92:1 */
+  --ng-demo:    #8A4B00;  /* bandeau démo : blanc 6,80:1 */
+
+  /* Texte et surfaces */
+  --ng-texte:       #1F2937;  /* 14,68:1 sur blanc */
+  --ng-texte-2:     #4B5563;  /* 7,56:1 sur blanc, 7,17:1 sur --ng-fond (remplace #999 et #888) */
+  --ng-texte-3:     #6B7280;  /* 4,83:1 : minimum pour du texte */
+  --ng-fond:        #F8F9FA;
+  --ng-surface:     #FFFFFF;
+  --ng-bord:        #E5E7EB;  /* décoratif */
+  --ng-bord-champ:  #6B7280;  /* bord de champ : 4,83:1 (WCAG 1.4.11 : 3:1) */
+  --ng-focus:       #1D4ED8;  /* anneau de focus sur fond clair : 6,70:1 ; sur fond marine utiliser --ng-or */
+
+  /* Typographie : police système, aucun téléchargement */
+  --ng-police: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", sans-serif;
+  --ng-t-xs:  0.8125rem;  /* 13 px : plancher */
+  --ng-t-sm:  0.875rem;   /* 14 px */
+  --ng-t-md:  1rem;       /* 16 px */
+  --ng-t-lg:  1.125rem;   /* 18 px */
+  --ng-t-xl:  1.375rem;   /* 22 px */
+  --ng-t-2xl: clamp(1.75rem, 1.2rem + 2.5vw, 2.5rem);
+  --ng-interligne: 1.5;
+
+  /* Espacements (base 4 px) */
+  --ng-e-1: 4px; --ng-e-2: 8px; --ng-e-3: 12px; --ng-e-4: 16px; --ng-e-5: 24px; --ng-e-6: 32px; --ng-e-7: 48px;
+  --ng-cible: 44px;  /* taille minimale d'un élément tactile */
+
+  /* Rayons et ombres */
+  --ng-r-sm: 6px; --ng-r-md: 10px; --ng-r-lg: 16px; --ng-r-pilule: 999px;
+  --ng-ombre-1: 0 1px 2px rgb(16 24 40 / .06), 0 1px 3px rgb(16 24 40 / .10);
+  --ng-ombre-2: 0 4px 12px rgb(16 24 40 / .10);
+
+  /* Mouvement : plafond 300 ms */
+  --ng-d-rapide: 120ms;
+  --ng-d-moyen:  200ms;
+  --ng-d-lent:   300ms;
+  --ng-courbe-sortie: cubic-bezier(.2, 0, 0, 1);
+  --ng-courbe-entree: cubic-bezier(.3, 0, 1, 1);
+}
+
+/* Focus visible partout (WCAG 2.4.7) ; les pages précisent la couleur sur fond sombre */
+:focus-visible {
+  outline: 3px solid var(--ng-focus);
+  outline-offset: 2px;
+}
+
+/* Prix et compteurs : chiffres de même largeur pour comparer d'un coup d'œil */
+[class*="prix"], [class*="price"], .ng-chiffres {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Mouvement réduit : aucune animation ni transition, défilement instantané */
+@media (prefers-reduced-motion: reduce) {
+  :root { --ng-d-rapide: 0ms; --ng-d-moyen: 0ms; --ng-d-lent: 0ms; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -33,7 +33,7 @@ window.AdminAlertes = (function () {
         Promise.all([sb.rpc('etat_budget_messages'), sb.from('config_routage').select('valeur').eq('cle', 'mode_application').maybeSingle(),
             sb.rpc('file_alertes_admin', { p_statuts: ['needs_review'], p_limite: 100 })]).then(function (r) {
             var b = r[0].data, mode = r[1].data ? r[1].data.valeur : 'demo', nbRevue = (r[2].data || []).length;
-            var niveau = U.niveauBudget(b), couleurs = { ok: '#155724', alerte: '#b26a00', depasse: '#b42318' };
+            var niveau = U.niveauBudget(b), couleurs = { ok: '#155724', alerte: '#8A4B00', depasse: '#b42318' };
             $('consoleBandeau').innerHTML =
                 '<span class="console-pastille" style="background:' + (mode === 'production' ? '#d4edda' : '#fff3cd') + '">' + (mode === 'production' ? 'PRODUCTION' : 'MODE DÉMO') + '</span>' +
                 '<span class="console-pastille" style="background:' + (nbRevue ? '#fde8e8' : '#eef0f2') + '">' + nbRevue + ' alerte(s) à examiner</span>' +
