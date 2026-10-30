@@ -109,7 +109,7 @@ window.AdminPharmacies = (function () {
             if (!d.lignes.length) { corps.innerHTML = '<tr><td colspan="4"><div class="empty-state"><p>Aucune ligne dans cette catégorie.</p></div></td></tr>'; return; }
             corps.innerHTML = d.lignes.map(function (l) {
                 var e = U.libelleEtat(l.etat), cree = l.resolution === 'create';
-                var pb = (l.problemes || []).map(function (p) { return '<div class="console-note" style="color:' + (p.niveau === 'bloquant' ? '#b42318' : '#b26a00') + '">' + esc(U.libelleProbleme(p)) + '</div>'; }).join('');
+                var pb = (l.problemes || []).map(function (p) { return '<div class="console-note" style="color:' + (p.niveau === 'bloquant' ? '#b42318' : '#8A4B00') + '">' + esc(U.libelleProbleme(p)) + '</div>'; }).join('');
                 var action = l.etat === 'erreur' ? '<span class="console-note">à corriger dans le fichier</span>'
                     : cree ? '<span class="console-note">✔ sera créée</span> <button class="btn btn-secondary" onclick="AdminPharmacies.corriger(' + l.numero + ',\'ignorer\')">Ignorer</button>'
                     : '<span class="console-note">ignorée</span> <button class="btn btn-secondary" onclick="AdminPharmacies.corriger(' + l.numero + ',\'creer\')">Créer quand même</button>';

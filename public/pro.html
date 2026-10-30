@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>N'Gola Pharma Pro — Espace Pharmacien</title>
+    <link rel="stylesheet" href="/ui-tokens.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f4f6f9; color: #333; min-height: 100vh; }
 
         /* ===== Variables ===== */
         :root {
-            --primary: #003366;
-            --primary-light: #004488;
+            --primary: var(--ng-marine);
+            --primary-light: var(--ng-marine-clair);
             --accent: #f5c842;
             --accent-dark: #e6b800;
             --success: #28a745;
@@ -20,7 +21,7 @@
             --bg: #f4f6f9;
             --card-bg: #fff;
             --text: #333;
-            --text-muted: #888;
+            --text-muted: var(--ng-texte-2);  /* était #888 (3,54:1), désormais 7,56:1 */
             --border: #e0e0e0;
             --shadow: 0 2px 8px rgba(0,0,0,.08);
         }
@@ -45,7 +46,7 @@
         .form-group { margin-bottom: 16px; text-align: left; }
         .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
         .form-group input { width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; transition: border .2s; }
-        .form-group input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,51,102,.1); }
+        .form-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,51,102,.1); }
         .btn-primary { width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background .2s; }
         .btn-primary:hover { background: var(--primary-light); }
         .btn-primary:disabled { background: #999; cursor: not-allowed; }
@@ -111,7 +112,7 @@
         /* Search bar */
         .stock-search { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
         .stock-search input { flex: 1; min-width: 200px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; }
-        .stock-search input:focus { outline: none; border-color: var(--primary); }
+        .stock-search input:focus { border-color: var(--primary); }
 
         /* Modal */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.5); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
@@ -316,7 +317,7 @@
                         <button class="btn btn-add" onclick="ProApp.openAddStock()">+ Ajouter un médicament</button>
                     </div>
                 </div>
-                <p class="console-note">Dernière mise à jour : <span style="color:#1b7a3d;font-weight:600">verte</span> ≤ 3 jours, <span style="color:#b26a00;font-weight:600">orange</span> ≤ 7 jours, <span style="color:#b42318;font-weight:600">rouge</span> au-delà. Un clic sur « Je confirme mes stocks » confirme les lignes sans rien modifier.</p>
+                <p class="console-note">Dernière mise à jour : <span style="color:#1b7a3d;font-weight:600">verte</span> ≤ 3 jours, <span style="color:#8A4B00;font-weight:600">orange</span> ≤ 7 jours, <span style="color:#b42318;font-weight:600">rouge</span> au-delà. Un clic sur « Je confirme mes stocks » confirme les lignes sans rien modifier.</p>
                 <div class="stock-search">
                     <input type="text" id="stockSearchInput" placeholder="Rechercher dans mes stocks..." oninput="ProApp.filterStocks()">
                 </div>
@@ -912,7 +913,7 @@ var ProApp = (function() {
             var mode = r[1].data ? r[1].data.valeur : 'demo';
             var badge = document.getElementById('modeBadge');
             badge.textContent = mode === 'production' ? 'Mode : PRODUCTION' : 'Mode : DÉMONSTRATION';
-            badge.style.color = mode === 'production' ? '#155724' : '#b26a00';
+            badge.style.color = mode === 'production' ? '#155724' : '#8A4B00';
             if (r[0].error) { list.innerHTML = '<li>Erreur : ' + esc(r[0].error.message) + '</li>'; return; }
             var conds = r[0].data || [];
             list.innerHTML = conds.map(function(c) {

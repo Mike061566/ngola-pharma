@@ -137,7 +137,7 @@ window.ImportUI = (function () {
     function ligneHtml(l) {
         var e = U.libelleEtat(l.etat), b = l.brut || {};
         var retenue = l.resolution === 'accepted' || l.resolution === 'mapped_manually';
-        var pb = (l.problemes || []).map(function (p) { return '<div class="console-note" style="color:' + (p.niveau === 'bloquant' ? '#b42318' : '#b26a00') + '">' + esc(U.libelleProbleme(p)) + '</div>'; }).join('');
+        var pb = (l.problemes || []).map(function (p) { return '<div class="console-note" style="color:' + (p.niveau === 'bloquant' ? '#b42318' : '#8A4B00') + '">' + esc(U.libelleProbleme(p)) + '</div>'; }).join('');
         var cand = (l.candidats || []).map(function (c) { return '<button class="btn btn-secondary" style="margin:2px 4px 2px 0" onclick="ImportUI.mapper(' + l.numero + ',\'' + esc(c.id) + '\')">' + esc(c.libelle) + ' · ' + Math.round(c.score * 100) + ' %</button>'; }).join('');
         var actions = '';
         if (l.etat !== 'erreur') {

@@ -18,7 +18,7 @@
     b.id = 'bandeau-demo';
     b.setAttribute('role', 'status');
     b.textContent = TEXTE;
-    b.style.cssText = 'position:sticky;top:0;z-index:2147483000;background:#b26a00;color:#fff;text-align:center;padding:6px 10px;font:600 13px/1.3 system-ui,sans-serif;letter-spacing:.2px';
+    b.style.cssText = 'position:sticky;top:0;z-index:2147483000;background:#8A4B00;color:#fff;text-align:center;padding:6px 10px;font:600 13px/1.3 system-ui,sans-serif;letter-spacing:.2px';
     doc.body.insertBefore(b, doc.body.firstChild);
   }
 
