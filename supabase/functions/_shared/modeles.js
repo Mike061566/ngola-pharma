@@ -1,0 +1,306 @@
+// Modèles de messages (SPEC 2 §7). Fonctions pures : (variables) -> { texte, sujet?, boutons?, format }.
+// Règles : variables échappées en HTML pour Telegram ; SMS sans accents ni emojis ; aucune donnée personnelle du
+// patient ; aucun conseil médical ; aucune ordonnance demandée ou acceptée (simple mention « à présenter sur place »).
+import { ErreurModele } from './erreurs.js';
+
+const BASE_URL_DEFAUT = 'https://ngola-pharma.com';
+
+export function echapperHtml(s) {
+  return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+/** Texte compatible SMS GSM 7 bits : accents retirés, ligatures et ponctuation typographique remplacées. */
+export function versAscii(s) {
+  return String(s ?? '')
+    .replace(/œ/g, 'oe').replace(/Œ/g, 'OE').replace(/æ/g, 'ae').replace(/Æ/g, 'AE')
+    .replace(/[’‘`]/g, "'").replace(/[“”«»]/g, '"').replace(/[–—]/g, '-').replace(/…/g, '...')
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^\x20-\x7e\n]/g, '')
+    .replace(/[ \t]+/g, ' ').trim();
+}
+
+function exiger(vars, champs) {
+  const manquants = champs.filter((c) => vars == null || vars[c] === undefined || vars[c] === null || vars[c] === '');
+  if (manquants.length) throw new ErreurModele('Variables manquantes : ' + manquants.join(', '));
+}
+
+const lienSansSchema = (vars, chemin) => {
+  const base = String(vars.base_url || BASE_URL_DEFAUT).replace(/^https?:\/\//, '').replace(/\/+$/, '');
+  return `${base}${chemin}`;
+};
+const lienAvecSchema = (vars, chemin) => `https://${lienSansSchema(vars, chemin)}`;
+const prix = (n) => String(Math.round(Number(n))).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+
+const LIGNE_ORDO_PHARMACIE = '📋 Médicament sur ordonnance : à présenter au comptoir lors de l\'achat ou du retrait.';
+const LIGNE_ORDO_PATIENT = '📋 Ce médicament est délivré sur ordonnance : présentez-la à la pharmacie lors de l\'achat ou du retrait.';
+
+/** Raccourcit sans casser : au plus `max` caractères, terminé par un point si coupé. */
+function couper(s, max) {
+  const t = String(s ?? '');
+  return t.length <= max ? t : t.slice(0, Math.max(0, max - 1)) + '.';
+}
+
+function smsDemande(vars) {
+  exiger(vars, ['drug', 'quartier', 'code']);
+  const lien = lienSansSchema(vars, `/r/${encodeURIComponent(vars.code)}`);
+  const construire = (d, q) => `NGola: demande patient ${d} a ${q}. Dispo? Repondez: ${lien}`;
+  let drug = versAscii(vars.drug), quartier = versAscii(vars.quartier);
+  if (construire(drug, quartier).length > 160) {
+    if (construire('', quartier).length > 150) quartier = couper(quartier, 15);
+    const place = 160 - construire('', quartier).length;
+    drug = couper(drug, Math.max(place, 4));
+  }
+  return { texte: construire(drug, quartier), format: 'texte' };
+}
+
+export const MODELES = {
+  // ── Vers les pharmacies ──
+  alerte_demande: {
+    canaux: {
+      telegram: (v) => {
+        exiger(v, ['drug', 'quartier', 'heure', 'code', 'envoi_court']);
+        const lignes = [
+          '🔔 <b>N\'Gola Pharma — Demande d\'un patient</b>',
+          `Médicament : <b>${echapperHtml(v.drug)}</b>${v.form ? ` (${echapperHtml(v.form)})` : ''}`,
+          `Quartier : ${echapperHtml(v.quartier)}`,
+          `Reçue à ${echapperHtml(v.heure)}`,
+        ];
+        if (v.sur_ordonnance) lignes.push(LIGNE_ORDO_PHARMACIE);
+        lignes.push('Avez-vous ce médicament en stock maintenant ?');
+        return {
+          format: 'html',
+          texte: lignes.join('\n'),
+          // callback_data : r:<envoi_court>:a|u, 64 octets au plus (limite Telegram)
+          boutons: [
+            [{ texte: '✅ Disponible', donnees: `r:${v.envoi_court}:a` }, { texte: '❌ Indisponible', donnees: `r:${v.envoi_court}:u` }],
+            [{ texte: '💰 Préciser le prix', url: lienAvecSchema(v, `/r/${encodeURIComponent(v.code)}`) }],
+          ],
+        };
+      },
+    },
+  },
+  alerte_demande_sms: { canaux: { sms: smsDemande } },
+  alerte_demande_email: {
+    canaux: {
+      email: (v) => {
+        exiger(v, ['drug', 'quartier', 'heure', 'code']);
+        const lien = lienAvecSchema(v, `/r/${encodeURIComponent(v.code)}`);
+        const corps = [
+          'Bonjour,',
+          `un patient recherche ${v.drug} dans le quartier ${v.quartier} (demande reçue à ${v.heure}).`,
+          v.sur_ordonnance ? 'Médicament sur ordonnance : à présenter au comptoir lors de l\'achat ou du retrait.' : null,
+          `Merci de confirmer la disponibilité (Disponible / Indisponible) : ${lien}`,
+          'Ces boutons mettent aussi à jour vos stocks.',
+          v.lien_desabonnement ? `Ne plus recevoir ces demandes : ${v.lien_desabonnement}` : null,
+        ].filter(Boolean).join('\n\n');
+        return { format: 'texte', sujet: `Demande patient : ${v.drug} à ${v.quartier}`, texte: corps };
+      },
+    },
+  },
+  telegram_activation: {
+    canaux: {
+      telegram: (v) => {
+        exiger(v, ['nom', 'pharmacie']);
+        return { format: 'html', texte: `Bienvenue sur N'Gola Pharma, ${echapperHtml(v.nom)} 👋\n` +
+          `Ce compte Telegram recevra les demandes de patients pour ${echapperHtml(v.pharmacie)}.\n` +
+          'Envoyez /stop à tout moment pour ne plus les recevoir.' };
+      },
+    },
+  },
+  // ── Onboarding (SPEC 1 §8) : email d'abord (le bot Telegram ne peut pas écrire en premier). Pas de délai promis,
+  //    aucune donnée personnelle hors nom d'officine. ──
+  onboarding_recu: {
+    canaux: {
+      email: (v) => {
+        exiger(v, ['nom_officine']);
+        return { format: 'texte', sujet: 'N\'Gola Pharma : demande reçue',
+          texte: `Bonjour,\n\nnous avons bien reçu la demande de partenariat de « ${v.nom_officine} ». Notre équipe l'examine ; nous reviendrons vers vous par email.\n\nL'équipe N'Gola Pharma` };
+      },
+    },
+  },
+  onboarding_complements: {
+    canaux: {
+      email: (v) => {
+        exiger(v, ['nom_officine', 'motif', 'lien']);
+        return { format: 'texte', sujet: 'N\'Gola Pharma : informations complémentaires',
+          texte: `Bonjour,\n\npour poursuivre l'examen de la demande de « ${v.nom_officine} », nous avons besoin d'un complément :\n\n${v.motif}\n\nRépondez ici (aucun compte nécessaire) : ${v.lien}\n\nL'équipe N'Gola Pharma` };
+      },
+    },
+  },
+  onboarding_approuve: {
+    canaux: {
+      email: (v) => {
+        exiger(v, ['nom_officine', 'lien']);
+        return { format: 'texte', sujet: 'N\'Gola Pharma : votre demande est approuvée',
+          texte: `Bonjour,\n\nla demande de « ${v.nom_officine} » est approuvée. Activez votre compte avec ce lien personnel (valable ${v.validite_h || 72} h, usage unique) :\n\n${v.lien}\n\nVous pourrez ensuite compléter votre fiche, activer Telegram et importer vos stocks.\n\nL'équipe N'Gola Pharma` };
+      },
+    },
+  },
+  // Invitation d'une pharmacie DÉJÀ référencée et vérifiée par l'équipe (création en masse) : pas de « demande approuvée ».
+  onboarding_invitation: {
+    canaux: {
+      email: (v) => {
+        exiger(v, ['nom_officine', 'lien']);
+        return { format: 'texte', sujet: 'N\'Gola Pharma : activez le compte de votre pharmacie',
+          texte: `Bonjour,\n\n« ${v.nom_officine} » est référencée et vérifiée sur N'Gola Pharma. Activez votre compte avec ce lien personnel (valable ${v.validite_h || 72} h, usage unique) :\n\n${v.lien}\n\nVous pourrez ensuite compléter votre fiche, activer Telegram et importer vos stocks.\n\nL'équipe N'Gola Pharma` };
+      },
+    },
+  },
+  onboarding_refuse: {
+    canaux: {
+      email: (v) => {
+        exiger(v, ['nom_officine', 'motif']);
+        return { format: 'texte', sujet: 'N\'Gola Pharma : réponse à votre demande',
+          texte: `Bonjour,\n\nnous ne pouvons pas donner suite à la demande de « ${v.nom_officine} » pour le motif suivant :\n\n${v.motif}\n\nVous pouvez nous écrire pour toute précision.\n\nL'équipe N'Gola Pharma` };
+      },
+    },
+  },
+  // Rappel d'onboarding (J+1 / J+3 / J+7) : une seule étape à la fois, sans promesse ni pression ; email et, si le contact est activé, Telegram.
+  onboarding_rappel: {
+    canaux: {
+      email: (v) => {
+        exiger(v, ['nom_officine', 'etape_libelle', 'lien']);
+        return { format: 'texte', sujet: 'N\'Gola Pharma : finalisez la mise en route de votre pharmacie',
+          texte: `Bonjour,\n\nla mise en route de « ${v.nom_officine} » n'est pas terminée. Prochaine étape : ${v.etape_libelle}.\n\n${v.lien}\n\nL'équipe N'Gola Pharma` };
+      },
+      telegram: (v) => {
+        exiger(v, ['nom_officine', 'etape_libelle', 'lien']);
+        return { format: 'html',
+          texte: `La mise en route de <b>${echapperHtml(v.nom_officine)}</b> n'est pas terminée.\nProchaine étape : ${echapperHtml(v.etape_libelle)}.`,
+          boutons: [[{ texte: 'Continuer', url: v.lien }]] };
+      },
+    },
+  },
+  onboarding_dormante_admin: {
+    canaux: {
+      email: (v) => {
+        exiger(v, ['nom_officine', 'jours']);
+        return { format: 'texte', sujet: `Pharmacie dormante : ${v.nom_officine}`,
+          texte: `« ${v.nom_officine} » est approuvée depuis ${v.jours} jours et n'est toujours pas publiée (étape en attente : ${v.etape_libelle || 'inconnue'}). Aucune donnée n'est supprimée.` +
+            (v.lien ? `\n${v.lien}` : '') };
+      },
+    },
+  },
+  rappel_confirmation_stock: {
+    canaux: {
+      telegram: (v) => {
+        exiger(v, ['nom', 'jours', 'token']);
+        return { format: 'html',
+          texte: `Bonjour ${echapperHtml(v.nom)}, vos stocks N'Gola Pharma datent de ${echapperHtml(v.jours)} jours.\nConfirmez-les en un clic.`,
+          boutons: [[{ texte: 'Confirmer mes stocks', url: lienAvecSchema(v, `/c/${encodeURIComponent(v.token)}`) }]] };
+      },
+    },
+  },
+  // ── Vers le patient (une seule clé, rendu adapté au canal choisi par le patient) ──
+  reponse_patient: {
+    canaux: {
+      telegram: (v) => {
+        exiger(v, ['drug', 'heure']);
+        const liste = Array.isArray(v.pharmacies) ? v.pharmacies.slice(0, 3) : [];
+        if (liste.length === 0) throw new ErreurModele('Variables manquantes : pharmacies');
+        const lignes = liste.map((p, i) => {
+          exiger(p, ['nom', 'prix', 'quartier', 'tel']);
+          return `${i + 1}) ${echapperHtml(p.nom)} — ${prix(p.prix)} FCFA — ${echapperHtml(p.quartier)} — Tél ${echapperHtml(p.tel)}`;
+        });
+        const sortie = [`✅ <b>${echapperHtml(v.drug)}</b> est disponible :`, ...lignes,
+          `Prix confirmés par les pharmacies à ${echapperHtml(v.heure)}. Appelez avant de vous déplacer.`];
+        if (v.sur_ordonnance) sortie.push(LIGNE_ORDO_PATIENT);
+        return { format: 'html', texte: sortie.join('\n') };
+      },
+    },
+  },
+  reponse_patient_sms: {
+    canaux: {
+      sms: (v) => {
+        exiger(v, ['drug', 'pharmacie', 'quartier', 'prix', 'tel']);
+        const ordo = v.sur_ordonnance ? 'Ordonnance a presenter sur place. ' : '';
+        return { format: 'texte', texte: versAscii(`NGola: ${v.drug} dispo chez ${v.pharmacie} (${v.quartier}) env. ${prix(v.prix)} FCFA. Tel ${v.tel}. ${ordo}Appelez avant de vous deplacer.`) };
+      },
+    },
+  },
+  attente_patient: {
+    canaux: {
+      telegram: (v) => { exiger(v, ['drug']); return { format: 'html', texte: `Nous cherchons encore ${echapperHtml(v.drug)} près de vous. Nous revenons vers vous dès qu'une pharmacie confirme.` }; },
+      sms: (v) => { exiger(v, ['drug']); return { format: 'texte', texte: versAscii(`NGola: nous cherchons encore ${v.drug} pres de vous. Nous revenons vers vous des qu'une pharmacie confirme.`) }; },
+    },
+  },
+  expiration_patient: {
+    canaux: {
+      telegram: (v) => { exiger(v, ['drug']); return { format: 'html', texte: `Aucune pharmacie n'a confirmé ${echapperHtml(v.drug)} pour le moment. Pharmacies de garde : ${lienSansSchema(v, '/garde')}` }; },
+      sms: (v) => { exiger(v, ['drug']); return { format: 'texte', texte: versAscii(`NGola: aucune pharmacie n'a confirme ${v.drug} pour le moment. Pharmacies de garde: ${lienSansSchema(v, '/garde')}`) }; },
+    },
+  },
+  restricted_attente: {
+    canaux: {
+      telegram: (v) => ({ format: 'html', texte: 'Ce médicament est soumis à une réglementation stricte. Votre demande sera examinée par notre équipe avant toute transmission. ' +
+        `En cas d'urgence, rendez-vous directement dans une pharmacie de garde : ${lienSansSchema(v || {}, '/garde')}` }),
+      sms: (v) => ({ format: 'texte', texte: versAscii('NGola: ce medicament est soumis a une reglementation stricte. Votre demande sera examinee par notre equipe avant toute transmission. ' +
+        `En cas d'urgence, allez directement dans une pharmacie de garde: ${lienSansSchema(v || {}, '/garde')}`) }),
+    },
+  },
+  restricted_refus: {
+    canaux: {
+      telegram: (v) => ({ format: 'html', texte: 'Ce médicament ne peut pas être recherché via N\'Gola Pharma. Rapprochez-vous directement d\'une pharmacie, avec votre ordonnance. ' +
+        `Pharmacies de garde : ${lienSansSchema(v || {}, '/garde')}` }),
+      sms: (v) => ({ format: 'texte', texte: versAscii('NGola: ce medicament ne peut pas etre recherche via N\'Gola Pharma. Rapprochez-vous directement d\'une pharmacie, avec votre ordonnance. ' +
+        `Pharmacies de garde: ${lienSansSchema(v || {}, '/garde')}`) }),
+    },
+  },
+  // ── Réponses du bot Telegram (webhook, PR 5) ──
+  lien_invalide: {
+    canaux: { telegram: () => ({ format: 'html', texte: 'Ce lien n\'est plus valable. Demandez-en un nouveau depuis votre Espace Pro N\'Gola Pharma.' }) },
+  },
+  limite_contacts: {
+    canaux: { telegram: () => ({ format: 'html', texte: 'Le nombre maximal de comptes Telegram est atteint pour cette pharmacie. Retirez un compte depuis l\'Espace Pro, puis recommencez.' }) },
+  },
+  aide_bot: {
+    canaux: { telegram: () => ({ format: 'html', texte: 'N\'Gola Pharma : vous recevez ici les demandes de patients. Répondez avec les boutons ✅ Disponible / ❌ Indisponible.\nEnvoyez /stop pour ne plus recevoir de demandes.' }) },
+  },
+  desabonnement_ok: {
+    canaux: { telegram: () => ({ format: 'html', texte: 'C\'est noté : vous ne recevrez plus de messages sur ce compte. Les demandes restent visibles dans votre Espace Pro.' }) },
+  },
+  ordonnance_refus: {
+    canaux: { telegram: () => ({ format: 'html', texte: 'Aucune ordonnance n\'est à envoyer à N\'Gola Pharma : elle se présente à la pharmacie, lors de l\'achat ou du retrait. Votre fichier n\'a pas été conservé.' }) },
+  },
+  patient_lie: {
+    canaux: { telegram: () => ({ format: 'html', texte: 'C\'est noté : nous vous écrirons ici dès qu\'une pharmacie confirme la disponibilité. Envoyez /stop pour ne plus recevoir de messages.' }) },
+  },
+  // ── Test d'envoi demandé depuis l'Espace Pro (PR 5) ──
+  test_envoi: {
+    canaux: {
+      telegram: () => ({ format: 'html', texte: 'Test N\'Gola Pharma : ce compte recevra bien les demandes de patients. ✅' }),
+      sms: () => ({ format: 'texte', texte: 'NGola: test reussi, ce numero recevra les demandes de patients.' }),
+      email: () => ({ format: 'texte', sujet: 'Test N\'Gola Pharma', texte: 'Test réussi : cette adresse recevra les demandes de patients.' }),
+    },
+  },
+  // ── Vers l'admin ──
+  alerte_budget: {
+    canaux: {
+      email: (v) => {
+        exiger(v, ['utilises', 'plafond', 'niveau']);
+        return { format: 'texte', sujet: `Budget de messages : ${v.niveau} % atteint`,
+          texte: `Le budget quotidien de messages payants (SMS, email) est atteint à ${v.niveau} % : ${v.utilises} sur ${v.plafond}.` +
+            (String(v.niveau) === '100' ? '\nLes SMS de relance sont suspendus, sauf alertes urgentes des pharmacies de garde.' : '') };
+      },
+    },
+  },
+  escalade_admin: {
+    canaux: {
+      email: (v) => {
+        exiger(v, ['id', 'drug', 'quartier', 'n']);
+        return { format: 'texte', sujet: `Alerte ${v.id} sans réponse depuis 30 min`,
+          texte: `Alerte ${v.id} sans réponse depuis 30 min — ${v.drug} à ${v.quartier} — ${v.n} pharmacies sollicitées.` +
+            (v.lien ? `\n${v.lien}` : '') };
+      },
+    },
+  },
+};
+
+/** Rend un modèle pour un canal. Lève ErreurModele (modèle ou canal inconnu, variable manquante). */
+export function rendre(modele, canal, variables) {
+  const def = MODELES[modele];
+  if (!def) throw new ErreurModele(`Modèle inconnu : ${modele}`);
+  const rendu = def.canaux[canal];
+  if (!rendu) throw new ErreurModele(`Le modèle ${modele} n'existe pas pour le canal ${canal}`);
+  return rendu(variables || {});
+}

@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const { supabaseAdmin, supabase: supabaseAnon } = require('../config/supabase');
+const { sanitizeSearchTerm } = require('../utils/search');
 const supabase = supabaseAdmin || supabaseAnon;
 
 const router = Router();
@@ -52,7 +53,11 @@ router.get('/', async (req, res, next) => {
     }
 
     if (q) {
-      query = query.ilike('nom', `%${q}%`);
+      const term = sanitizeSearchTerm(q);
+      if (!term) {
+        return res.json({ data: [], total: 0, page: pageNum, limit: limitNum });
+      }
+      query = query.ilike('nom', `%${term}%`);
     }
 
     query = query.order('nom').range(from, to);

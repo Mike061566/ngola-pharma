@@ -7,6 +7,18 @@
   publish = "public"
   # Pas de commande de build nécessaire — site statique
 
+# Page de suivi d'une alerte : /alerte/NG-XXXXXXXX -> alerte.html (l'identifiant est lu dans l'URL)
+[[redirects]]
+  from = "/alerte/*"
+  to = "/alerte.html"
+  status = 200
+
+# Lien de réponse d'une pharmacie : /r/<code> -> reponse.html (le code est lu dans l'URL)
+[[redirects]]
+  from = "/r/*"
+  to = "/reponse.html"
+  status = 200
+
 # SPA : redirige toutes les routes vers index.html
 [[redirects]]
   from = "/*"

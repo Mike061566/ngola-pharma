@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <title>Compléments de dossier — N'Gola Pharma</title>
+    <style>
+        :root { --primary:#003366; --bg:#f4f6f9; --text:#1c2733; --muted:#5d6b7a; --border:#d9e0e8; --danger:#b3261e; --ok:#1b7a3d; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+        header { background: var(--primary); color: #fff; padding: 14px 16px; font-weight: 700; }
+        main { max-width: 560px; margin: 0 auto; padding: 16px; }
+        .carte { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+        h1 { font-size: 20px; margin-bottom: 8px; } p { color: var(--muted); margin-bottom: 12px; font-size: 14px; }
+        label { display: block; font-weight: 600; font-size: 14px; margin: 12px 0 4px; }
+        textarea, input[type=file] { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 16px; font-family: inherit; }
+        textarea { min-height: 110px; }
+        button { width: 100%; margin-top: 16px; padding: 14px; background: var(--primary); color: #fff; border: 0; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; }
+        button:disabled { background: #8a97a5; } .erreur { color: var(--danger); margin-top: 10px; font-size: 14px; } .ok { color: var(--ok); font-weight: 700; } .masque { display: none; }
+    </style>
+</head>
+<body>
+<header>N'Gola Pharma</header>
+<main>
+    <div class="carte">
+        <h1>Compléments de dossier</h1>
+        <div id="vueFormulaire">
+            <p>Répondez à la demande de notre équipe. Aucun compte n'est nécessaire. N'envoyez ni ordonnance ni donnée de patient.</p>
+            <label for="message">Votre message</label>
+            <textarea id="message" maxlength="1000"></textarea>
+            <label for="fichier">Document (PDF, JPG ou PNG, 5 Mo max, facultatif)</label>
+            <input id="fichier" type="file" accept="application/pdf,image/jpeg,image/png">
+            <button id="bouton">Envoyer</button>
+        </div>
+        <div id="succes" class="masque"><p class="ok" id="texteSucces"></p></div>
+        <div id="erreur" class="erreur masque" role="alert"></div>
+    </div>
+</main>
+<script src="/alerte-config.js"></script>
+<script src="/demo-banner.js"></script>
+<script src="/demande-utils.js"></script>
+<script>
+(function () {
+    var U = window.DemandeUtils, C = window.NGOLA_ALERTE, $ = function (id) { return document.getElementById(id); };
+    var jeton = U.jetonDuFragment(window.location.hash);
+    function erreur(m) { $('erreur').textContent = m; $('erreur').classList.remove('masque'); }
+    if (!jeton) { $('vueFormulaire').classList.add('masque'); erreur(U.messageErreur('lien_invalide')); return; }
+    $('bouton').addEventListener('click', function () {
+        $('erreur').classList.add('masque');
+        var f = $('fichier').files[0], m = $('message').value.trim();
+        var e = U.erreurFichier(f); if (e) { erreur(e); return; }
+        if (!m && !f) { erreur(U.messageErreur('reponse_vide')); return; }
+        var form = new FormData();
+        form.append('donnees', JSON.stringify({ jeton: jeton })); form.append('message', m); if (f) form.append('autre', f);
+        $('bouton').disabled = true; $('bouton').textContent = 'Envoi…';
+        fetch(C.apiBase + '/functions/v1/repondre-complements', { method: 'POST', headers: { apikey: C.anonKey }, body: form })
+            .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, j: j }; }); })
+            .then(function (r) {
+                if (r.ok) { $('vueFormulaire').classList.add('masque'); $('texteSucces').textContent = r.j.message || 'Merci.'; $('succes').classList.remove('masque'); return; }
+                erreur(U.messageErreur(r.j.erreur)); $('bouton').disabled = false; $('bouton').textContent = 'Envoyer';
+            })
+            .catch(function () { erreur('Connexion impossible. Réessayez.'); $('bouton').disabled = false; $('bouton').textContent = 'Envoyer'; });
+    });
+}());
+</script>
+</body>
+</html>

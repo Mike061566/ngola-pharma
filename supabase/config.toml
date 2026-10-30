@@ -1,0 +1,111 @@
+# Supabase local (Docker) — utilisé par la CI (pgTAP) et pour le développement.
+# Aucun lien avec un projet hébergé : ne contient ni clé ni URL de production.
+project_id = "ngola-pharma"
+
+[api]
+enabled = true
+
+[db]
+port = 54322
+# À aligner sur la version Postgres du projet de production (Settings > Infrastructure).
+major_version = 17
+
+[db.seed]
+enabled = false
+
+# Services inutiles pour les tests de base de données : désactivés pour accélérer la CI.
+[studio]
+enabled = false
+[inbucket]
+enabled = false
+[realtime]
+enabled = false
+[storage]
+enabled = false
+[edge_runtime]
+enabled = false
+[analytics]
+enabled = false
+
+[auth]
+enabled = true
+
+# Edge Function de l'outbox (PR 2). Appelée par pg_cron/pg_net SANS jeton Supabase : elle s'authentifie elle-même
+# avec l'en-tête x-cron-secret (secret CRON_SECRET), d'où verify_jwt = false.
+[functions.traiter-outbox]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/traiter-outbox/index.js"
+
+# PR 4 : création publique d'alertes et suivi (publics : captcha, liste blanche de champs, limites en base),
+# planificateur (appelé par pg_cron avec x-cron-secret).
+[functions.creer-alerte]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/creer-alerte/index.js"
+
+[functions.suivi-alerte]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/suivi-alerte/index.js"
+
+[functions.planifier-alertes]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/planifier-alertes/index.js"
+
+# PR 5 : réponses des pharmacies. webhook-telegram (secret_token Telegram) et repondre-lien (code secret) sont publics ;
+# tester-contact vérifie lui-même le jeton de session du pharmacien.
+[functions.webhook-telegram]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/webhook-telegram/index.js"
+
+[functions.repondre-lien]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/repondre-lien/index.js"
+
+[functions.tester-contact]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/tester-contact/index.js"
+
+# Onboarding des officines (SPEC 1) : pré-inscription et compléments publics (captcha / jeton signé) ;
+# décisions et URL de justificatif réservées à l'admin (jeton vérifié dans le code) ; activation par jeton à usage unique.
+[functions.creer-demande]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/creer-demande/index.js"
+
+[functions.decider-demande]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/decider-demande/index.js"
+
+[functions.url-document]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/url-document/index.js"
+
+[functions.activer-compte]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/activer-compte/index.js"
+
+[functions.repondre-complements]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/repondre-complements/index.js"
+
+# Rappels d'onboarding (J+1 / J+3 / J+7, alerte dormante) : appelée une fois par jour par pg_cron avec x-cron-secret.
+[functions.rappels-onboarding]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/rappels-onboarding/index.js"
+
+# Invitation d'une pharmacie déjà référencée et vérifiée (création en masse) : admin seul (jeton vérifié dans le code).
+[functions.inviter-pharmacie]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/inviter-pharmacie/index.js"

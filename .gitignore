@@ -7,3 +7,7 @@ npm-debug.log*
 coverage/
 .DS_Store
 dist/
+
+# Supabase CLI
+supabase/.temp/
+supabase/.branches/
