@@ -89,7 +89,7 @@ WITH controles(migration, controle, ok) AS (
     UNION ALL
     SELECT '20261004020000', 'verrou du passage en production (déclencheur sur config_routage)', (to_regclass('public.config_routage') IS NOT NULL AND EXISTS (SELECT 1 FROM pg_trigger t WHERE t.tgrelid = to_regclass('public.config_routage') AND NOT t.tgisinternal AND pg_get_triggerdef(t.oid) ILIKE '%config_routage_verrou%'))
     UNION ALL
-    SELECT '20261004020000', 'mode_application = demo (état attendu avant le passage en production)', (CASE WHEN to_regclass('public.config_routage') IS NOT NULL THEN COALESCE((xpath('/row/v/text()', query_to_xml('SELECT valeur::text AS v FROM public.config_routage WHERE cle = ''mode_application''', false, true, '')))[1]::text, '') = '"demo"' ELSE false END)
+    SELECT '20261004020000', 'mode_application = demo (état attendu avant le passage en production)', (CASE WHEN to_regclass('public.config_routage') IS NOT NULL THEN COALESCE((xpath('/row/v/text()', query_to_xml('SELECT (SELECT valeur::text FROM public.config_routage WHERE cle = ''mode_application'') AS v', false, true, '')))[1]::text, '') = '"demo"' ELSE false END)
     UNION ALL
     SELECT '20261004020000', 'conditions de passage en production : 5 conditions listées', (CASE WHEN to_regprocedure('public.conditions_passage_production()') IS NOT NULL THEN COALESCE((xpath('/row/v/text()', query_to_xml('SELECT count(*) AS v FROM public.conditions_passage_production()', false, true, '')))[1]::text, '0') = '5' ELSE false END)
     UNION ALL
@@ -299,7 +299,7 @@ WITH controles(migration, controle, ok) AS (
     UNION ALL
     SELECT '20261011000000', 'fonction utilisateur_par_email_interne : réservée au serveur (fermée aux utilisateurs connectés)', (NOT EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace WHERE n.nspname = 'public' AND p.proname = 'utilisateur_par_email_interne' AND has_function_privilege('authenticated', p.oid, 'EXECUTE')))
     UNION ALL
-    SELECT '20261011000000', 'bucket documents-demandes présent et PRIVÉ', (CASE WHEN to_regclass('storage.buckets') IS NOT NULL THEN COALESCE((xpath('/row/v/text()', query_to_xml('SELECT (NOT public)::text AS v FROM storage.buckets WHERE id = ''documents-demandes''', false, true, '')))[1]::text, 'false') = 'true' ELSE false END)
+    SELECT '20261011000000', 'bucket documents-demandes présent et PRIVÉ', (CASE WHEN to_regclass('storage.buckets') IS NOT NULL THEN COALESCE((xpath('/row/v/text()', query_to_xml('SELECT (SELECT (NOT public)::text FROM storage.buckets WHERE id = ''documents-demandes'') AS v', false, true, '')))[1]::text, 'false') = 'true' ELSE false END)
     UNION ALL
     SELECT '20261012000000', 'fonction erreur_valeur_config présente', (EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace WHERE n.nspname = 'public' AND p.proname = 'erreur_valeur_config'))
     UNION ALL
@@ -616,7 +616,7 @@ SELECT 0 AS n, 'BILAN' AS migration,
 UNION ALL
 SELECT row_number() OVER (ORDER BY migration, controle), migration, controle, ok FROM controles
 UNION ALL
-SELECT 10000, 'info', 'mode_application : ' || (CASE WHEN to_regclass('public.config_routage') IS NOT NULL THEN COALESCE((xpath('/row/v/text()', query_to_xml('SELECT valeur::text AS v FROM public.config_routage WHERE cle = ''mode_application''', false, true, '')))[1]::text, '?') ELSE 'config_routage absente' END), NULL::boolean
+SELECT 10000, 'info', 'mode_application : ' || (CASE WHEN to_regclass('public.config_routage') IS NOT NULL THEN COALESCE((xpath('/row/v/text()', query_to_xml('SELECT (SELECT valeur::text FROM public.config_routage WHERE cle = ''mode_application'') AS v', false, true, '')))[1]::text, '?') ELSE 'config_routage absente' END), NULL::boolean
 UNION ALL
 SELECT 10001, 'info', 'fiches du catalogue : total / restreintes / non restreintes / archivées : ' || (CASE WHEN EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='medicaments' AND column_name='restreint') AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='medicaments' AND column_name='statut_catalogue') THEN COALESCE((xpath('/row/v/text()', query_to_xml('SELECT count(*) || '' / '' || count(*) FILTER (WHERE restreint) || '' / '' || count(*) FILTER (WHERE NOT restreint) || '' / '' || count(*) FILTER (WHERE statut_catalogue = ''archive'') AS v FROM public.medicaments', false, true, '')))[1]::text, '?') ELSE 'migration 20261004000000 pas encore appliquée' END), NULL::boolean
 UNION ALL
