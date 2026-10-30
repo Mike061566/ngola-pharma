@@ -79,3 +79,23 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* ===== Micro-interactions partagées (public/ui-mouvement.js) : transform et opacity seulement, 300 ms au plus ===== */
+@keyframes ng-apparition { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes ng-apparition-courte { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+@keyframes ng-fondu { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ng-fondu-sortie { from { opacity: 1; } to { opacity: 0; } }
+@keyframes ng-depart { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(8px); } }
+@keyframes ng-coche { from { opacity: 0; transform: scale(.6); } to { opacity: 1; transform: none; } }
+
+/* Révélation au défilement : posée par le script seulement sur les éléments sous l'écran */
+.ng-revelable { transition: opacity var(--ng-d-lent) var(--ng-courbe-sortie), transform var(--ng-d-lent) var(--ng-courbe-sortie); }
+.ng-a-reveler { opacity: 0; transform: translateY(12px); }
+
+/* Message de confirmation (toast) : annoncé par la zone role="status" */
+.ng-toasts { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 2147483002; display: flex; flex-direction: column; gap: 8px; width: min(92vw, 440px); pointer-events: none; }
+.ng-toast { pointer-events: auto; display: flex; align-items: center; gap: 10px; background: var(--ng-texte); color: #fff; border-radius: var(--ng-r-md); padding: 4px 4px 4px 12px; box-shadow: var(--ng-ombre-2); font-size: var(--ng-t-sm); line-height: 1.4; animation: ng-apparition var(--ng-d-moyen) var(--ng-courbe-sortie) both; }
+.ng-toast-icone { display: inline-flex; width: 24px; height: 24px; border-radius: 50%; background: var(--ng-action); color: #fff; align-items: center; justify-content: center; flex-shrink: 0; animation: ng-coche var(--ng-d-moyen) var(--ng-courbe-sortie) 80ms both; }
+.ng-toast-texte { flex: 1; padding: 8px 0; }
+.ng-toast-fermer { min-width: 44px; min-height: 44px; background: none; border: 0; color: #fff; font-size: 22px; line-height: 1; cursor: pointer; }
+.ng-toast :focus-visible { outline-color: var(--ng-or); }
