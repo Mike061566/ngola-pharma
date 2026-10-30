@@ -484,7 +484,7 @@
         .reliability-fill.low { background: #dc3545; }
         /* Phase 3 — Alert form */
         .ngola-alert-box { background: #f0f7ff; border: 1px solid #b3d4fc; border-radius: 12px; padding: 20px; margin-top: 16px; text-align: center; }
-        .ngola-alert-box h4 { margin: 0 0 8px; color: #003366; font-size: 15px; }
+        .ngola-alert-box h3 { margin: 0 0 8px; color: #003366; font-size: 15px; }
         .ngola-alert-box p { margin: 0 0 12px; color: #666; font-size: 13px; }
         .ngola-alert-channel-tabs { display: flex; justify-content: center; gap: 0; margin-bottom: 14px; border-radius: 8px; overflow: hidden; border: 1px solid #b3d4fc; display: inline-flex; }
         .ngola-alert-channel-tab { padding: 8px 16px; background: #fff; color: #003366; border: none; font-size: 13px; cursor: pointer; transition: background 0.2s; font-weight: 500; }
@@ -520,10 +520,10 @@
         .med-result-freshness { font-size: 13px; color: var(--ng-texte-2); margin-top: 4px; }
         .med-result-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
         .med-action-btn { display: inline-flex; align-items: center; gap: 4px; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; text-decoration: none; border: none; cursor: pointer; }
-        .med-action-btn.route { background: #1a73e8; color: white; }
-        .med-action-btn.call { background: #28a745; color: white; }
-        .med-action-btn.route:hover { background: #1557b0; }
-        .med-action-btn.call:hover { background: #218838; }
+        .med-action-btn.route { background: #fff; color: var(--ng-action); box-shadow: inset 0 0 0 2px var(--ng-action); }
+        .med-action-btn.call { background: var(--ng-action); color: #fff; }
+        .med-action-btn.route:hover { background: #E6F2F1; }
+        .med-action-btn.call:hover { background: #0B5752; }
 
         /* Filtres meilleurs prix */
         .prix-filters { background: #f8f9fa; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 18px; margin-bottom: 18px; }
@@ -752,7 +752,7 @@
             color: #003366;
         }
 
-        .featured-card-header h3 {
+        .featured-card-header h2 {
             margin: 0 0 12px;
             font-size: 18px;
             font-weight: 600;
@@ -836,6 +836,10 @@
         }
 
         .quartier-card {
+            display: block;
+            width: 100%;
+            font: inherit;
+            color: inherit;
             background: rgba(255,255,255,0.94);
             border-radius: 6px;
             padding: 20px;
@@ -881,14 +885,16 @@
             stroke: #FFD700;
         }
 
-        .quartier-card h4 {
+        .quartier-card .quartier-nom {
+            display: block;
             margin: 0 0 4px;
             font-size: 15px;
             font-weight: 600;
             color: #333;
         }
 
-        .quartier-card p {
+        .quartier-card .quartier-count {
+            display: block;
             margin: 0;
             font-size: 13px;
             color: var(--ng-texte-2);
@@ -960,7 +966,7 @@
             justify-content: center;
         }
 
-        .offre-details h4 {
+        .offre-details h3 {
             margin: 0 0 6px;
             font-size: 17px;
             font-weight: 700;
@@ -1042,7 +1048,7 @@
             z-index: 1;
         }
 
-        .info-banner h3 {
+        .info-banner h2 {
             margin: 0 0 12px;
             font-size: 20px;
             font-weight: 600;
@@ -1258,9 +1264,42 @@
                 background-position: center;
             }
         }
+
+        /* ===== PR 2 : accessibilité de la recherche, des cartes et des états (docs/design/AUDIT-UI.md) ===== */
+        .ng-visuellement-masque { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+        .ng-lien-evitement { position: absolute; left: -9999px; top: 8px; z-index: 2147483001; background: var(--ng-marine); color: #fff; padding: 12px 16px; border-radius: var(--ng-r-sm); font-weight: 600; text-decoration: none; }
+        .ng-lien-evitement:focus { left: 16px; outline-color: var(--ng-or); }
+        main:focus { outline: none; }
+        .ng-hors-ligne { background: var(--ng-texte); color: #fff; text-align: center; padding: 10px 16px; font-size: 14px; }
+        .ng-hors-ligne[hidden] { display: none; }
+        /* Cibles tactiles : zone de clic portée à 44 px de haut sans changer l'apparence */
+        .lang-toggle button, .btn-login, .search-popular a { position: relative; }
+        .lang-toggle button::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 44px; transform: translateY(-50%); }
+        .btn-login::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 44px; transform: translateY(-50%); }
+        .search-popular a::after { content: ""; position: absolute; left: -4px; right: -4px; top: 50%; height: 44px; transform: translateY(-50%); }
+        .search-popular { row-gap: 20px; }
+        /* Suggestions : option active au clavier */
+        .search-dropdown-item[aria-selected="true"] { background: #E6F2F1; box-shadow: inset 3px 0 0 var(--ng-action); }
+        /* Cartes de résultat : le nom est un vrai bouton (clavier) ; toute la carte reste cliquable à la souris et au doigt */
+        .carte-titre { background: none; border: 0; padding: 0; margin: 0; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+        .carte-titre:hover { text-decoration: underline; }
+        .med-action-btn { min-height: 44px; padding: 10px 16px; }
+        .carte-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+        /* Squelettes : même hauteur que les cartes, sans animation (pas de boucle) */
+        .ng-squelette { background: #fff; border-radius: 8px; padding: 20px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+        .ng-squelette-ligne { height: 14px; border-radius: 7px; background: #E5E7EB; margin: 10px 0; }
+        .ng-squelette-ligne.l1 { width: 55%; height: 18px; margin-top: 0; }
+        .ng-squelette-ligne.l2 { width: 80%; }
+        .ng-squelette-ligne.l3 { width: 35%; }
+        /* États vide et erreur */
+        .ng-etat { text-align: center; padding: 32px 20px; color: var(--ng-texte-2); font-size: 15px; }
+        .ng-etat-titre { display: block; font-weight: 600; color: var(--ng-texte); margin-bottom: 6px; }
+        .ng-btn-reessayer { min-height: 44px; margin-top: 14px; padding: 10px 20px; border: 0; border-radius: var(--ng-r-sm); background: var(--ng-action); color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
+        .ng-btn-reessayer:hover { background: #0B5752; }
     </style>
 </head>
 <body>
+    <a class="ng-lien-evitement" href="#contenu" data-i18n="skip_link">Aller au contenu</a>
     <!-- Bannière Animée Promotions -->
     <div class="promo-banner">
         <div class="promo-banner-container">
@@ -1329,7 +1368,7 @@
     <!-- Header -->
     <header>
         <div class="header-container">
-            <a href="#" class="logo" aria-label="N'Gola Pharma, accueil">
+            <a href="#" class="logo" aria-label="N'Gola Pharma Yaoundé, accueil">
                 <span class="logo-mark">
                     <!-- Croix de pharmacie bicolore : barre verticale or, barre horizontale blanche -->
                     <svg viewBox="0 0 14 14" aria-hidden="true">
@@ -1351,12 +1390,17 @@
             <div class="header-buttons">
                 <a href="/pro.html" class="btn-login" data-i18n="login">Espace Pro</a>
             </div>
-            <div class="lang-toggle" aria-label="Language selector">
-                <button class="active" onclick="setLang('fr')" aria-label="Français">FR</button>
-                <button onclick="setLang('en')" aria-label="English">EN</button>
+            <div class="lang-toggle" role="group" aria-label="Langue · Language">
+                <button type="button" class="active" onclick="setLang('fr')" aria-label="FR, Français" aria-pressed="true" lang="fr">FR</button>
+                <button type="button" onclick="setLang('en')" aria-label="EN, English" aria-pressed="false" lang="en">EN</button>
             </div>
         </div>
     </header>
+
+    <div id="horsLigne" class="ng-hors-ligne" role="status" hidden data-i18n="offline_msg">Vous êtes hors ligne. Les résultats s'afficheront dès le retour de la connexion.</div>
+
+    <!-- Contenu principal (repère pour les lecteurs d'écran et le lien d'évitement) -->
+    <main id="contenu" tabindex="-1">
 
     <!-- Hero -->
     <div class="hero">
@@ -1364,10 +1408,12 @@
             <h1 data-i18n-html="hero_title">Quel médicament<br/>recherchez-vous ?</h1>
             <p data-i18n="hero_sub">Disponibilités déclarées par les pharmacies · Prix comparés · Pharmacies de Yaoundé</p>
 
+            <label for="searchInput" id="searchLabel" class="ng-visuellement-masque" data-i18n="search_label">Rechercher un médicament ou une pharmacie</label>
             <div class="search-bar" id="searchBar">
-                <input type="text" id="searchInput" placeholder="Nom, marque ou principe actif…" data-i18n-placeholder="search_placeholder" autocomplete="off">
-                <button id="searchBtn"><svg viewBox="0 0 14 14" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="4"/><path d="m9 9 3.5 3.5"/></svg></button>
-                <div class="search-dropdown" id="searchDropdown"></div>
+                <input type="search" id="searchInput" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="searchDropdown" placeholder="Nom, marque ou principe actif…" data-i18n-placeholder="search_placeholder" autocomplete="off">
+                <button type="button" id="searchBtn" aria-label="Lancer la recherche" data-i18n-aria-label="search_btn"><svg viewBox="0 0 14 14" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="4"/><path d="m9 9 3.5 3.5"/></svg></button>
+                <div class="search-dropdown" id="searchDropdown" role="listbox" aria-labelledby="searchLabel"></div>
+                <div id="searchStatut" class="ng-visuellement-masque" role="status" aria-live="polite"></div>
             </div>
 
             <div class="quick-actions">
@@ -1398,7 +1444,7 @@
             <!-- Card 1 -->
             <div class="featured-card">
                 <div class="featured-card-header blue">
-                    <h3 data-i18n="card1_title">Trouvez les prix bas</h3>
+                    <h2 data-i18n="card1_title">Trouvez les prix bas</h2>
                     <p data-i18n="card1_desc">Comparez les prix des pharmacies de Yaoundé</p>
                 </div>
                 <div class="featured-card-body">
@@ -1414,7 +1460,7 @@
             <!-- Card 2 -->
             <div class="featured-card">
                 <div class="featured-card-header black">
-                    <h3 data-i18n="card2_title">Pharmacies de garde</h3>
+                    <h2 data-i18n="card2_title">Pharmacies de garde</h2>
                     <p data-i18n="card2_desc">Voir les pharmacies ouvertes maintenant</p>
                 </div>
                 <div class="featured-card-body">
@@ -1430,7 +1476,7 @@
             <!-- Card 3 -->
             <div class="featured-card">
                 <div class="featured-card-header gold">
-                    <h3 data-i18n="card3_title">Offres exclusives</h3>
+                    <h2 data-i18n="card3_title">Offres exclusives</h2>
                     <p data-i18n="card3_desc">Exemples de promotions en pharmacie</p>
                 </div>
                 <div class="featured-card-body">
@@ -1450,60 +1496,48 @@
         <h2 data-i18n="browse_district">Parcourir par quartier</h2>
 
         <div class="quartiers-grid" id="quartiersGrid">
-            <div class="quartier-card" data-quartier="centre-ville" onclick="NGolaApp.showQuartier('centre-ville')">
-                <div class="quartier-card-icon">
-                    <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M1.5 12.5h11"/><path d="M3 12.5V5.5l4-2.5v9.5"/><path d="M7 12.5V6.5l4.5-1.5v7.5"/><circle cx="5" cy="7" r=".4"/><circle cx="5" cy="9" r=".4"/><circle cx="5" cy="11" r=".4"/><circle cx="9.5" cy="7.5" r=".4"/><circle cx="9.5" cy="9.5" r=".4"/><circle cx="9.5" cy="11.5" r=".4"/></svg>
-                </div>
-                <h4>Centre-Ville</h4>
-                <p class="quartier-count" data-i18n="ph_voir">Voir les pharmacies</p>
-            </div>
+            <button type="button" class="quartier-card" data-quartier="centre-ville" onclick="NGolaApp.showQuartier('centre-ville')">
+                <span class="quartier-card-icon"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M1.5 12.5h11"/><path d="M3 12.5V5.5l4-2.5v9.5"/><path d="M7 12.5V6.5l4.5-1.5v7.5"/><circle cx="5" cy="7" r=".4"/><circle cx="5" cy="9" r=".4"/><circle cx="5" cy="11" r=".4"/><circle cx="9.5" cy="7.5" r=".4"/><circle cx="9.5" cy="9.5" r=".4"/><circle cx="9.5" cy="11.5" r=".4"/></svg></span>
+                <span class="quartier-nom">Centre-Ville</span>
+                <span class="quartier-count" data-i18n="ph_voir">Voir les pharmacies</span>
+            </button>
 
-            <div class="quartier-card" data-quartier="bastos" onclick="NGolaApp.showQuartier('bastos')">
-                <div class="quartier-card-icon">
-                    <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7.5 7 3.5l5 4"/><path d="M3.5 6.5v5.5h7V6.5"/><path d="M5.75 12V9.25h2.5V12"/></svg>
-                </div>
-                <h4>Bastos</h4>
-                <p class="quartier-count" data-i18n="ph_voir">Voir les pharmacies</p>
-            </div>
+            <button type="button" class="quartier-card" data-quartier="bastos" onclick="NGolaApp.showQuartier('bastos')">
+                <span class="quartier-card-icon"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7.5 7 3.5l5 4"/><path d="M3.5 6.5v5.5h7V6.5"/><path d="M5.75 12V9.25h2.5V12"/></svg></span>
+                <span class="quartier-nom">Bastos</span>
+                <span class="quartier-count" data-i18n="ph_voir">Voir les pharmacies</span>
+            </button>
 
-            <div class="quartier-card" data-quartier="essos" onclick="NGolaApp.showQuartier('essos')">
-                <div class="quartier-card-icon">
-                    <svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="5.25" cy="4.5" r="1.75"/><path d="M1.75 11a3.5 3.5 0 0 1 7 0"/><path d="M9.63 3.6a1.75 1.75 0 0 1 0 3.27"/><path d="M10.5 11a3.5 3.5 0 0 0-1.4-2.8"/></svg>
-                </div>
-                <h4>Essos</h4>
-                <p class="quartier-count" data-i18n="ph_voir">Voir les pharmacies</p>
-            </div>
+            <button type="button" class="quartier-card" data-quartier="essos" onclick="NGolaApp.showQuartier('essos')">
+                <span class="quartier-card-icon"><svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="5.25" cy="4.5" r="1.75"/><path d="M1.75 11a3.5 3.5 0 0 1 7 0"/><path d="M9.63 3.6a1.75 1.75 0 0 1 0 3.27"/><path d="M10.5 11a3.5 3.5 0 0 0-1.4-2.8"/></svg></span>
+                <span class="quartier-nom">Essos</span>
+                <span class="quartier-count" data-i18n="ph_voir">Voir les pharmacies</span>
+            </button>
 
-            <div class="quartier-card" data-quartier="mvan" onclick="NGolaApp.showQuartier('mvan')">
-                <div class="quartier-card-icon">
-                    <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M1.5 5.5 7 3l5.5 2.5L7 8z"/><path d="M4 6.8v2.7c0 .8 1.3 1.5 3 1.5s3-.7 3-1.5V6.8"/><path d="M12.5 5.5v3.25"/></svg>
-                </div>
-                <h4>Mvan</h4>
-                <p class="quartier-count" data-i18n="ph_voir">Voir les pharmacies</p>
-            </div>
+            <button type="button" class="quartier-card" data-quartier="mvan" onclick="NGolaApp.showQuartier('mvan')">
+                <span class="quartier-card-icon"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M1.5 5.5 7 3l5.5 2.5L7 8z"/><path d="M4 6.8v2.7c0 .8 1.3 1.5 3 1.5s3-.7 3-1.5V6.8"/><path d="M12.5 5.5v3.25"/></svg></span>
+                <span class="quartier-nom">Mvan</span>
+                <span class="quartier-count" data-i18n="ph_voir">Voir les pharmacies</span>
+            </button>
 
-            <div class="quartier-card" data-quartier="ngousso" onclick="NGolaApp.showQuartier('ngousso')">
-                <div class="quartier-card-icon">
-                    <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M1.5 11.5 5 7l2.5 2.5L12.5 3"/><polyline points="9 3 12.5 3 12.5 6.5"/></svg>
-                </div>
-                <h4>Ngousso</h4>
-                <p class="quartier-count" data-i18n="ph_voir">Voir les pharmacies</p>
-            </div>
+            <button type="button" class="quartier-card" data-quartier="ngousso" onclick="NGolaApp.showQuartier('ngousso')">
+                <span class="quartier-card-icon"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M1.5 11.5 5 7l2.5 2.5L12.5 3"/><polyline points="9 3 12.5 3 12.5 6.5"/></svg></span>
+                <span class="quartier-nom">Ngousso</span>
+                <span class="quartier-count" data-i18n="ph_voir">Voir les pharmacies</span>
+            </button>
 
-            <div class="quartier-card" data-quartier="odza" onclick="NGolaApp.showQuartier('odza')">
-                <div class="quartier-card-icon">
-                    <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 12.5s4-3.3 4-6.5a4 4 0 1 0-8 0c0 3.2 4 6.5 4 6.5z"/><circle cx="7" cy="6" r="1.5"/></svg>
-                </div>
-                <h4>Odza</h4>
-                <p class="quartier-count" data-i18n="ph_voir">Voir les pharmacies</p>
-            </div>
+            <button type="button" class="quartier-card" data-quartier="odza" onclick="NGolaApp.showQuartier('odza')">
+                <span class="quartier-card-icon"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 12.5s4-3.3 4-6.5a4 4 0 1 0-8 0c0 3.2 4 6.5 4 6.5z"/><circle cx="7" cy="6" r="1.5"/></svg></span>
+                <span class="quartier-nom">Odza</span>
+                <span class="quartier-count" data-i18n="ph_voir">Voir les pharmacies</span>
+            </button>
         </div>
     </div>
 
     <!-- Info Banner -->
     <div class="info-banner">
         <div class="info-banner-container">
-            <h3 data-i18n="how_it_works">Comment ça marche ?</h3>
+            <h2 data-i18n="how_it_works">Comment ça marche ?</h2>
             <div class="info-grid">
                 <div>
                     <div class="info-card-icon">
@@ -1544,7 +1578,7 @@
                     <div class="offre-icon">&#128138;</div>
                     <div class="offre-details">
                         <span class="badge badge-demo" data-i18n="example_badge">Exemple</span>
-                        <h4>Pack Famille Paracétamol</h4>
+                        <h3>Pack Famille Paracétamol</h3>
                         <p class="offre-desc" data-i18n="offer1_desc">Paracétamol 500mg — Lot de 3 boîtes</p>
                         <div class="offre-prix">
                             <span class="offre-prix-old">4 500 FCFA</span>
@@ -1562,7 +1596,7 @@
                     <div class="offre-icon">&#128138;</div>
                     <div class="offre-details">
                         <span class="badge badge-demo" data-i18n="example_badge">Exemple</span>
-                        <h4>Vitamines Boost Immunité</h4>
+                        <h3>Vitamines Boost Immunité</h3>
                         <p class="offre-desc" data-i18n="offer2_desc">Vitamine C 500mg + Multivitamines — Cure 1 mois</p>
                         <div class="offre-prix">
                             <span class="offre-prix-old">7 000 FCFA</span>
@@ -1581,10 +1615,10 @@
         <div class="results-container">
             <div class="results-header">
                 <h2 id="resultsTitle">Résultats</h2>
-                <button class="results-back" id="resultsBack">&#8592; Retour</button>
+                <button type="button" class="results-back" id="resultsBack" data-i18n="back">&#8592; Retour</button>
             </div>
-            <div class="results-count" id="resultsCount"></div>
-            <div id="resultsList"></div>
+            <div class="results-count" id="resultsCount" role="status" aria-live="polite"></div>
+            <div id="resultsList" aria-live="polite"></div>
         </div>
     </div>
 
@@ -1595,6 +1629,8 @@
             <div id="modalBody"></div>
         </div>
     </div>
+
+    </main>
 
     <!-- Footer -->
     <footer>
@@ -1701,6 +1737,36 @@
                 // Quartiers
                 browse_district: "Browse by district",
                 ph_voir: "See pharmacies",
+                // Recherche, résultats et états (PR 2)
+                skip_link: "Skip to content",
+                back: "← Back",
+                offline_msg: "You are offline. Results will appear as soon as the connection is back.",
+                search_label: "Search for a medication or a pharmacy",
+                search_btn: "Search",
+                etat_chargement: "Loading results…",
+                etat_erreur_titre: "Unable to load results",
+                etat_erreur_aide: "Check your internet connection, then try again.",
+                reessayer: "Try again",
+                aucun_resultat_pour: "No results for",
+                aucun_resultat_aide: "Try a different spelling or a broader term.",
+                resultats_pour: "Results for",
+                res_un: "1 result",
+                res_n: "{n} results",
+                sugg_un: "1 suggestion",
+                sugg_n: "{n} suggestions",
+                sugg_aucune: "No suggestions",
+                medicaments_label: "Medications",
+                pharmacies_label: "Pharmacies",
+                badge_garde: "On duty",
+                appeler: "Call",
+                itineraire: "Directions",
+                pharmacies_a: "Pharmacies in",
+                aucune_pharmacie: "No pharmacies found",
+                quartier_compte_un: "1 pharmacy",
+                quartier_compte_n: "{n} pharmacies",
+                quartier_compte_zero: "No pharmacy yet",
+                garde_compte_un: "1 on-duty pharmacy",
+                garde_compte_n: "{n} on-duty pharmacies",
 
                 // How it works
                 how_it_works: "How does it work?",
@@ -1782,6 +1848,36 @@
 
                 browse_district: "Parcourir par quartier",
                 ph_voir: "Voir les pharmacies",
+                // Recherche, résultats et états (PR 2)
+                skip_link: "Aller au contenu",
+                back: "← Retour",
+                offline_msg: "Vous êtes hors ligne. Les résultats s'afficheront dès le retour de la connexion.",
+                search_label: "Rechercher un médicament ou une pharmacie",
+                search_btn: "Lancer la recherche",
+                etat_chargement: "Chargement des résultats…",
+                etat_erreur_titre: "Impossible de charger les résultats",
+                etat_erreur_aide: "Vérifiez votre connexion internet, puis réessayez.",
+                reessayer: "Réessayer",
+                aucun_resultat_pour: "Aucun résultat pour",
+                aucun_resultat_aide: "Essayez une autre orthographe ou un terme plus large.",
+                resultats_pour: "Résultats pour",
+                res_un: "1 résultat",
+                res_n: "{n} résultats",
+                sugg_un: "1 suggestion",
+                sugg_n: "{n} suggestions",
+                sugg_aucune: "Aucune suggestion",
+                medicaments_label: "Médicaments",
+                pharmacies_label: "Pharmacies",
+                badge_garde: "Garde",
+                appeler: "Appeler",
+                itineraire: "Itinéraire",
+                pharmacies_a: "Pharmacies à",
+                aucune_pharmacie: "Aucune pharmacie trouvée",
+                quartier_compte_un: "1 pharmacie",
+                quartier_compte_n: "{n} pharmacies",
+                quartier_compte_zero: "Aucune pharmacie pour l'instant",
+                garde_compte_un: "1 pharmacie de garde",
+                garde_compte_n: "{n} pharmacies de garde",
 
                 how_it_works: "Comment ça marche ?",
                 step1: "Recherchez un médicament",
@@ -1819,7 +1915,15 @@
             // Toggle active class on buttons
             var btns = document.querySelectorAll(".lang-toggle button");
             btns.forEach(function(b) {
-                b.classList.toggle("active", b.textContent.trim().toLowerCase() === lang);
+                var actif = b.textContent.trim().toLowerCase() === lang;
+                b.classList.toggle("active", actif);
+                b.setAttribute("aria-pressed", actif ? "true" : "false");
+            });
+
+            // Update aria-label (data-i18n-aria-label)
+            document.querySelectorAll("[data-i18n-aria-label]").forEach(function(el) {
+                var key = el.getAttribute("data-i18n-aria-label");
+                if (dict[key] !== undefined) el.setAttribute("aria-label", dict[key]);
             });
 
             // Update text content (data-i18n)
@@ -1846,10 +1950,11 @@
             // Update aria-label on logo
             var logo = document.querySelector(".logo");
             if (logo) logo.setAttribute("aria-label",
-                lang === "en" ? "N\'Gola Pharma, home" : "N\'Gola Pharma, accueil");
+                lang === "en" ? "N\'Gola Pharma Yaoundé, home" : "N\'Gola Pharma Yaoundé, accueil");
         }
 
         window.setLang = setLang;
+        window.NGOLA_T = T;   // lu par NGolaApp pour les textes générés en JS
     })();
     </script>
 
@@ -1870,6 +1975,37 @@
         var currentLang = 'fr';
         var _geoLat = null;
         var _geoLng = null;
+
+        // ── Textes (dictionnaires T.fr / T.en du premier script) ──
+        function tr(cle, n) {
+            var T = window.NGOLA_T || {};
+            var v = (T[currentLang] && T[currentLang][cle]) || (T.fr && T.fr[cle]) || cle;
+            return n === undefined ? v : v.replace('{n}', n);
+        }
+        function trCompte(base, n) { return tr(n === 1 ? base + '_un' : base + '_n', n); }
+
+        // ── États des listes : chargement, vide, erreur avec nouvel essai ──
+        var _dernierEssai = null;
+        function etatChargement(nb) {
+            var h = '<p class="ng-visuellement-masque">' + tr('etat_chargement') + '</p>';
+            for (var i = 0; i < (nb || 3); i++) {
+                h += '<div class="ng-squelette" aria-hidden="true"><div class="ng-squelette-ligne l1"></div>' +
+                    '<div class="ng-squelette-ligne l2"></div><div class="ng-squelette-ligne l3"></div></div>';
+            }
+            return h;
+        }
+        function etatVide(titre, aide) {
+            return '<div class="ng-etat"><span class="ng-etat-titre">' + titre + '</span>' + (aide ? '<span>' + aide + '</span>' : '') + '</div>';
+        }
+        function etatErreur(relancer) {
+            _dernierEssai = relancer;
+            return '<div class="ng-etat" role="alert"><span class="ng-etat-titre">' + tr('etat_erreur_titre') + '</span>' +
+                '<span>' + tr(navigator.onLine === false ? 'offline_msg' : 'etat_erreur_aide') + '</span><br>' +
+                '<button type="button" class="ng-btn-reessayer" onclick="NGolaApp.reessayer()">' + tr('reessayer') + '</button></div>';
+        }
+        function reessayer() { if (typeof _dernierEssai === 'function') _dernierEssai(); }
+        function afficherListe(list, html) { list.innerHTML = html; list.setAttribute('aria-busy', 'false'); }
+        function chargerListe(list) { list.setAttribute('aria-busy', 'true'); list.innerHTML = etatChargement(); }
 
         // Try to get user position early for distance calculations
         if (navigator.geolocation) {
@@ -1969,7 +2105,7 @@
             var escName = esc(medName).replace(/'/g, '&#39;');
             var midParam = medId ? '\'' + medId + '\'' : 'null';
             return '<div class="ngola-alert-box" id="' + uid + '">' +
-                '<h4>🔔 ' + (currentLang === 'en' ? 'Get notified' : 'Me prévenir') + '</h4>' +
+                '<h3>🔔 ' + (currentLang === 'en' ? 'Get notified' : 'Me prévenir') + '</h3>' +
                 '<p>' + (currentLang === 'en'
                     ? 'Receive an alert when <strong>' + esc(medName) + '</strong> becomes available near you.'
                     : 'Recevez une alerte quand <strong>' + esc(medName) + '</strong> sera disponible près de chez vous.') + '</p>' +
@@ -2100,13 +2236,25 @@
             input.addEventListener('input', function() {
                 clearTimeout(searchTimer);
                 var q = input.value.trim();
-                if (q.length < 2) { dropdown.classList.remove('active'); return; }
+                if (q.length < 2) { fermerSuggestions(); return; }
                 searchTimer = setTimeout(function() { liveSearch(q); }, 300);
             });
 
             input.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
+                var options = [].slice.call(dropdown.querySelectorAll('[role="option"]:not([aria-disabled="true"])'));
+                var ouvert = dropdown.classList.contains('active');
+                if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && ouvert && options.length) {
                     e.preventDefault();
+                    var i = options.findIndex(function(o) { return o.getAttribute('aria-selected') === 'true'; });
+                    i = e.key === 'ArrowDown' ? (i + 1) % options.length : (i <= 0 ? options.length - 1 : i - 1);
+                    choisirOption(options, i);
+                } else if (e.key === 'Escape' && ouvert) {
+                    e.preventDefault();
+                    fermerSuggestions();
+                } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    var actif = options.find(function(o) { return o.getAttribute('aria-selected') === 'true'; });
+                    if (actif && ouvert) { fermerSuggestions(); actif.click(); return; }
                     var q = input.value.trim();
                     if (q.length >= 2) fullSearch(q);
                 }
@@ -2119,9 +2267,26 @@
 
             document.addEventListener('click', function(e) {
                 if (!document.getElementById('searchBar').contains(e.target)) {
-                    dropdown.classList.remove('active');
+                    fermerSuggestions();
                 }
             });
+        }
+
+        function choisirOption(options, i) {
+            var input = document.getElementById('searchInput');
+            options.forEach(function(o, j) { o.setAttribute('aria-selected', j === i ? 'true' : 'false'); });
+            input.setAttribute('aria-activedescendant', options[i].id);
+            options[i].scrollIntoView({ block: 'nearest' });
+        }
+        function ouvrirSuggestions() {
+            document.getElementById('searchDropdown').classList.add('active');
+            document.getElementById('searchInput').setAttribute('aria-expanded', 'true');
+        }
+        function fermerSuggestions() {
+            var input = document.getElementById('searchInput');
+            document.getElementById('searchDropdown').classList.remove('active');
+            input.setAttribute('aria-expanded', 'false');
+            input.removeAttribute('aria-activedescendant');
         }
 
         function liveSearch(q) {
@@ -2150,28 +2315,32 @@
                     });
                     renderDropdown(meds, pharmas, q);
                 });
-            });
+            }).catch(function() { fermerSuggestions(); });
         }
 
         function renderDropdown(meds, pharmas, q) {
             var dropdown = document.getElementById('searchDropdown');
+            var input;
+            var statut = document.getElementById('searchStatut');
+            input = document.getElementById('searchInput');
+            input.removeAttribute('aria-activedescendant');
             if (meds.length === 0 && pharmas.length === 0) {
-                dropdown.innerHTML = '<div class="search-dropdown-empty">' +
-                    (currentLang === 'en' ? 'No results for' : 'Aucun résultat pour') +
-                    ' "' + esc(q) + '"</div>';
-                dropdown.classList.add('active');
+                dropdown.innerHTML = '<div class="search-dropdown-empty" role="option" aria-disabled="true" aria-selected="false">' +
+                    tr('aucun_resultat_pour') + ' "' + esc(q) + '"</div>';
+                statut.textContent = tr('sugg_aucune');
+                ouvrirSuggestions();
                 return;
             }
 
             var html = '';
+            var n = 0;
 
             if (meds.length > 0) {
-                html += '<div class="search-dropdown-section">';
-                html += '<div class="search-dropdown-label">' +
-                    (currentLang === 'en' ? 'Medications' : 'Médicaments') + '</div>';
+                html += '<div class="search-dropdown-section" role="group" aria-labelledby="sugg-grp-med">';
+                html += '<div class="search-dropdown-label" id="sugg-grp-med" role="presentation">' + tr('medicaments_label') + '</div>';
                 meds.forEach(function(m) {
-                    html += '<div class="search-dropdown-item" onclick="NGolaApp.showMedDetail(\'' + m.id + '\')">' +
-                        '<div class="item-icon med">&#128138;</div>' +
+                    html += '<div class="search-dropdown-item" role="option" aria-selected="false" id="sugg-' + (n++) + '" onclick="NGolaApp.showMedDetail(\'' + m.id + '\')">' +
+                        '<div class="item-icon med" aria-hidden="true">&#128138;</div>' +
                         '<div class="item-details">' +
                             '<div class="item-name">' + nomAvecDosage(m.nom, m.dosage) + '</div>' +
                             '<div class="item-sub">' + esc(m.forme || '') + (m.dci ? ' &bull; ' + esc(m.dci) : '') +
@@ -2185,33 +2354,33 @@
             }
 
             if (pharmas.length > 0) {
-                html += '<div class="search-dropdown-section">';
-                html += '<div class="search-dropdown-label">Pharmacies</div>';
+                html += '<div class="search-dropdown-section" role="group" aria-labelledby="sugg-grp-ph">';
+                html += '<div class="search-dropdown-label" id="sugg-grp-ph" role="presentation">' + tr('pharmacies_label') + '</div>';
                 pharmas.forEach(function(p) {
-                    html += '<div class="search-dropdown-item" onclick="NGolaApp.showPharmacyDetail(\'' + p.id + '\')">' +
-                        '<div class="item-icon ph">&#127973;</div>' +
+                    html += '<div class="search-dropdown-item" role="option" aria-selected="false" id="sugg-' + (n++) + '" onclick="NGolaApp.showPharmacyDetail(\'' + p.id + '\')">' +
+                        '<div class="item-icon ph" aria-hidden="true">&#127973;</div>' +
                         '<div class="item-details">' +
                             '<div class="item-name">' + esc(p.nom) + '</div>' +
                             '<div class="item-sub">' + esc(p.adresse || p.quartier_nom || '') + '</div>' +
                         '</div>' +
-                        (p.est_de_garde ? '<span class="badge badge-garde">Garde</span>' : '') +
+                        (p.est_de_garde ? '<span class="badge badge-garde">' + tr('badge_garde') + '</span>' : '') +
                     '</div>';
                 });
                 html += '</div>';
             }
 
             dropdown.innerHTML = html;
-            dropdown.classList.add('active');
+            statut.textContent = trCompte('sugg', n);
+            ouvrirSuggestions();
         }
 
         // ── Full Search (shows results panel) ───────────────
         function fullSearch(q) {
-            document.getElementById('searchDropdown').classList.remove('active');
-            showResultsPanel(
-                (currentLang === 'en' ? 'Results for' : 'Résultats pour') + ' "' + esc(q) + '"'
-            );
+            fermerSuggestions();
+            showResultsPanel(tr('resultats_pour') + ' « ' + q + ' »');
             var list = document.getElementById('resultsList');
-            list.innerHTML = '<div style="text-align:center;padding:40px"><div class="spinner"></div></div>';
+            chargerListe(list);
+            var erreur = function() { afficherListe(list, etatErreur(function() { fullSearch(q); })); };
 
             var pattern = '%' + q + '%';
             var nq = normalizeText(q);
@@ -2223,16 +2392,11 @@
                 var pharmas = results[1].data || [];
                 var total = meds.length + pharmas.length;
 
-                document.getElementById('resultsCount').textContent =
-                    total + (currentLang === 'en' ? ' result(s)' : ' résultat(s)');
+                document.getElementById('resultsCount').textContent = total === 0 ? '' : trCompte('res', total);
 
                 if (total === 0) {
-                    list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--ng-texte-2)">' +
-                        (currentLang === 'en' ? 'No results found for' : 'Aucun résultat trouvé pour') +
-                        ' "' + esc(q) + '"<br><small style="color:var(--ng-texte-2);margin-top:8px;display:block">' +
-                        (currentLang === 'en' ? 'Try a different spelling or a broader term' : 'Essayez une autre orthographe ou un terme plus large') +
-                        '</small></div>' +
-                        buildAlertFormHtml(q, null);
+                    afficherListe(list, etatVide(tr('aucun_resultat_pour') + ' « ' + esc(q) + ' »', tr('aucun_resultat_aide')) +
+                        buildAlertFormHtml(q, null));
                     return;
                 }
 
@@ -2287,14 +2451,14 @@
                             var html = '';
                             meds.forEach(function(m) { html += renderMedCard(m); });
                             pharmas.forEach(function(p) { html += renderPharmacyCard(p); });
-                            list.innerHTML = html;
-                        });
+                            afficherListe(list, html);
+                        }).catch(erreur);
                 } else {
                     var html = '';
                     pharmas.forEach(function(p) { html += renderPharmacyCard(p); });
-                    list.innerHTML = html;
+                    afficherListe(list, html);
                 }
-            });
+            }).catch(erreur);
         }
 
         // ── Render Cards ────────────────────────────────────
@@ -2311,27 +2475,30 @@
                 badges += freshnessBadge(p._freshestDate);
             }
 
-            var mapsLink = '';
+            var actions = '';
+            if (p.telephone) {
+                actions += '<a href="tel:' + esc(p.telephone) + '" onclick="event.stopPropagation()" class="med-action-btn call">' +
+                    '<span aria-hidden="true">📞</span> ' + tr('appeler') + '<span class="ng-visuellement-masque"> ' + esc(p.nom) + ', ' + esc(p.telephone) + '</span></a>';
+            }
             if (p.latitude && p.longitude) {
-                mapsLink = '<a href="https://www.google.com/maps/search/?api=1&query=' + p.latitude + ',' + p.longitude +
-                    '" target="_blank" rel="noopener" onclick="event.stopPropagation()" ' +
-                    'style="display:inline-flex;align-items:center;gap:4px;margin-top:6px;padding:5px 12px;background:#1a73e8;color:white;border-radius:20px;font-size:13px;font-weight:600;text-decoration:none">' +
-                    '📍 ' + (currentLang === 'en' ? 'Directions' : 'Itinéraire') + '</a>';
+                actions += '<a href="https://www.google.com/maps/search/?api=1&query=' + p.latitude + ',' + p.longitude +
+                    '" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="med-action-btn route">' +
+                    '<span aria-hidden="true">📍</span> ' + tr('itineraire') + '<span class="ng-visuellement-masque"> ' + esc(p.nom) + '</span></a>';
             }
 
-            return '<div class="pharmacy-result" onclick="NGolaApp.showPharmacyDetail(\'' + p.id + '\')">' +
-                '<div class="pharmacy-result-icon' + (p.est_de_garde ? ' garde' : '') + '">&#127973;</div>' +
+            return '<article class="pharmacy-result" onclick="NGolaApp.showPharmacyDetail(\'' + p.id + '\')">' +
+                '<div class="pharmacy-result-icon' + (p.est_de_garde ? ' garde' : '') + '" aria-hidden="true">&#127973;</div>' +
                 '<div class="pharmacy-result-body">' +
-                    '<div class="pharmacy-result-name">' + esc(p.nom) + '</div>' +
+                    '<h3 class="pharmacy-result-name"><button type="button" class="carte-titre" onclick="event.stopPropagation();NGolaApp.showPharmacyDetail(\'' + p.id + '\')">' + esc(p.nom) + '</button></h3>' +
                     '<div class="pharmacy-result-meta">' +
                         esc(p.adresse || '') +
                         (p.quartier_nom ? ' &bull; ' + esc(p.quartier_nom) : (p.quartier && p.quartier.nom ? ' &bull; ' + esc(p.quartier.nom) : '')) +
-                        (p.telephone ? ' &bull; <a href="tel:' + esc(p.telephone) + '" onclick="event.stopPropagation()" style="color:#1a73e8">' + esc(p.telephone) + '</a>' : '') +
+                        (p.telephone ? ' &bull; ' + esc(p.telephone) : '') +
                     '</div>' +
                     (badges ? '<div class="pharmacy-result-badges">' + badges + '</div>' : '') +
-                    mapsLink +
+                    (actions ? '<div class="carte-actions">' + actions + '</div>' : '') +
                 '</div>' +
-            '</div>';
+            '</article>';
         }
 
         function renderMedCard(m) {
@@ -2408,14 +2575,14 @@
             var actionsHtml = '';
             if (m._nearestStock && m._nearestStock.pharmacies) {
                 var nph = m._nearestStock.pharmacies;
+                if (nph.telephone) {
+                    actionsHtml += '<a href="tel:' + esc(nph.telephone) + '" onclick="event.stopPropagation()" class="med-action-btn call">' +
+                        '<span aria-hidden="true">📞</span> ' + tr('appeler') + '<span class="ng-visuellement-masque"> ' + esc(nph.nom) + '</span></a>';
+                }
                 if (nph.latitude && nph.longitude) {
                     actionsHtml += '<a href="https://www.google.com/maps/search/?api=1&query=' + nph.latitude + ',' + nph.longitude +
                         '" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="med-action-btn route">' +
-                        '📍 ' + (currentLang === 'en' ? 'Directions' : 'Itinéraire') + '</a>';
-                }
-                if (nph.telephone) {
-                    actionsHtml += '<a href="tel:' + esc(nph.telephone) + '" onclick="event.stopPropagation()" class="med-action-btn call">' +
-                        '📞 ' + (currentLang === 'en' ? 'Call' : 'Appeler') + '</a>';
+                        '<span aria-hidden="true">📍</span> ' + tr('itineraire') + '<span class="ng-visuellement-masque"> ' + esc(nph.nom) + '</span></a>';
                 }
             }
 
@@ -2424,10 +2591,10 @@
                 ? '<div class="med-result-price">' + (currentLang === 'en' ? 'From ' : 'Dès ') + fmt(m._minPrice) + '</div>'
                 : '';
 
-            return '<div class="med-result" onclick="NGolaApp.showMedDetail(\'' + m.id + '\')">' +
+            return '<article class="med-result" onclick="NGolaApp.showMedDetail(\'' + m.id + '\')">' +
                 '<div class="med-result-header">' +
                     '<div>' +
-                        '<div class="med-result-name">' + nomAvecDosage(m.nom, m.dosage) + '</div>' +
+                        '<h3 class="med-result-name"><button type="button" class="carte-titre" onclick="event.stopPropagation();NGolaApp.showMedDetail(\'' + m.id + '\')">' + nomAvecDosage(m.nom, m.dosage) + '</button></h3>' +
                         '<div class="med-result-form">' + esc(m.forme || '') + '</div>' +
                         (m.dci ? '<div class="med-result-dci">DCI: ' + esc(m.dci) + '</div>' : '') +
                     '</div>' +
@@ -2442,34 +2609,28 @@
                 nearestHtml +
                 freshHtml +
                 (actionsHtml ? '<div class="med-result-actions">' + actionsHtml + '</div>' : '') +
-            '</div>';
+            '</article>';
         }
 
         // ── Show Quartier Pharmacies ────────────────────────
         function showQuartier(slug) {
-            showResultsPanel(
-                (currentLang === 'en' ? 'Pharmacies in ' : 'Pharmacies à ') + slug.charAt(0).toUpperCase() + slug.slice(1)
-            );
+            var nomEl = document.querySelector('[data-quartier="' + slug + '"] .quartier-nom');
+            showResultsPanel(tr('pharmacies_a') + ' ' + (nomEl ? nomEl.textContent.trim() : slug.charAt(0).toUpperCase() + slug.slice(1)));
             var list = document.getElementById('resultsList');
-            list.innerHTML = '<div style="text-align:center;padding:40px"><div class="spinner"></div></div>';
+            chargerListe(list);
 
             _sb.from('v_pharmacies').select('*').eq('quartier_slug', slug).limit(50)
                 .then(function(res) {
                     var data = res.data || [];
-                    document.getElementById('resultsCount').textContent =
-                        data.length + ' pharmacie(s)';
+                    document.getElementById('resultsCount').textContent = data.length ? trCompte('quartier_compte', data.length) : '';
                     if (data.length === 0) {
-                        list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--ng-texte-2)">' +
-                            (currentLang === 'en' ? 'No pharmacies found' : 'Aucune pharmacie trouvée') + '</div>';
+                        afficherListe(list, etatVide(tr('aucune_pharmacie')));
                         return;
                     }
-                    list.innerHTML = data.map(renderPharmacyCard).join('');
+                    afficherListe(list, data.map(renderPharmacyCard).join(''));
                 })
-                .catch(function(err) {
-                    console.error('showQuartier error:', err);
-                    list.innerHTML = '<div style="text-align:center;padding:40px;color:#dc3545">' +
-                        (currentLang === 'en' ? 'Connection error' : 'Erreur de connexion') +
-                        '<br><small style="color:var(--ng-texte-2)">' + esc(err.message || '') + '</small></div>';
+                .catch(function() {
+                    afficherListe(list, etatErreur(function() { showQuartier(slug); }));
                 });
         }
 
@@ -2503,7 +2664,7 @@
             '</div>';
 
             list.innerHTML = filtersHtml +
-                '<div id="prixResultsList"><div style="text-align:center;padding:40px"><div class="spinner"></div></div></div>';
+                '<div id="prixResultsList">' + etatChargement() + '</div>';
 
             // Charger les DCI uniques
             var dciPromise = _bestPricesDciList
@@ -2575,8 +2736,7 @@
                     })
                     .catch(function() {
                         var inner = document.getElementById('prixResultsList');
-                        if (inner) inner.innerHTML = '<div style="text-align:center;padding:40px;color:#dc3545">' +
-                            (currentLang === 'en' ? 'Connection error' : 'Erreur de connexion') + '</div>';
+                        if (inner) inner.innerHTML = etatErreur(function() { showBestPrices(opts); });
                     });
             } else {
                 // Utiliser la vue v_meilleurs_prix
@@ -2588,8 +2748,7 @@
                 })
                 .catch(function() {
                     var inner = document.getElementById('prixResultsList');
-                    if (inner) inner.innerHTML = '<div style="text-align:center;padding:40px;color:#dc3545">' +
-                        (currentLang === 'en' ? 'Connection error' : 'Erreur de connexion') + '</div>';
+                    if (inner) inner.innerHTML = etatErreur(function() { showBestPrices(opts); });
                 });
             }
         }
@@ -2935,13 +3094,28 @@
         }
 
         // ── Dynamic data on load ────────────────────────────
+        // Les vrais compteurs sont gardés ici et réécrits après chaque changement de langue
+        // (setLang réapplique les dictionnaires sur les éléments data-i18n).
+        var _compteurs = { garde: null, quartiers: {} };
+        function afficherCompteurs() {
+            if (_compteurs.garde !== null) {
+                var el = document.querySelector('[data-i18n="card2_open"]');
+                if (el) el.textContent = trCompte('garde_compte', _compteurs.garde);
+            }
+            Object.keys(_compteurs.quartiers).forEach(function(slug) {
+                var countEl = document.querySelector('[data-quartier="' + slug + '"] .quartier-count');
+                var n = _compteurs.quartiers[slug];
+                if (countEl) countEl.textContent = n === 0 ? tr('quartier_compte_zero') : trCompte('quartier_compte', n);
+            });
+        }
+
         function loadDynamicData() {
             // Compter les pharmacies de garde
             _sb.from('pharmacies').select('id', { count: 'exact', head: true }).eq('est_de_garde', true)
                 .then(function(res) {
-                    var count = res.count || 0;
-                    var el = document.querySelector('[data-i18n="card2_open"]');
-                    if (el) el.textContent = count + (currentLang === 'en' ? (count > 1 ? ' on-duty pharmacies' : ' on-duty pharmacy') : (count > 1 ? ' pharmacies de garde' : ' pharmacie de garde'));
+                    if (res.error) return;
+                    _compteurs.garde = res.count || 0;
+                    afficherCompteurs();
                 })
                 .catch(function() {});
 
@@ -2950,15 +3124,9 @@
                 .then(function(res) {
                     var quartiers = res.data || [];
                     quartiers.forEach(function(q) {
-                        var card = document.querySelector('[data-quartier="' + q.slug + '"]');
-                        if (card) {
-                            var countEl = card.querySelector('.quartier-count');
-                            var pCount = q.pharmacies && q.pharmacies[0] ? q.pharmacies[0].count : 0;
-                            if (countEl) {
-                                countEl.textContent = pCount + ' pharmacie' + (pCount > 1 ? 's' : '');
-                            }
-                        }
+                        _compteurs.quartiers[q.slug] = q.pharmacies && q.pharmacies[0] ? q.pharmacies[0].count : 0;
                     });
+                    afficherCompteurs();
                 })
                 .catch(function() {});
         }
@@ -2985,7 +3153,15 @@
             window.setLang = function(lang) {
                 currentLang = lang;
                 origSetLang(lang);
+                afficherCompteurs();
             };
+
+            // Hors ligne : message visible et annoncé
+            var bandeauHorsLigne = document.getElementById('horsLigne');
+            function majHorsLigne() { if (bandeauHorsLigne) bandeauHorsLigne.hidden = navigator.onLine !== false; }
+            window.addEventListener('online', majHorsLigne);
+            window.addEventListener('offline', majHorsLigne);
+            majHorsLigne();
         });
 
         // ── Geolocation: Nearby Garde Pharmacies ────────────
@@ -3017,28 +3193,31 @@
                 var awayText = currentLang === 'en' ? ' away' : '';
                 distHtml = '<span class="pharmacy-distance">📍 ' + formatDistance(p._distance) + awayText + '</span> ';
             }
-            var mapsLink = '';
+            var actions = '';
+            if (p.telephone) {
+                actions += '<a href="tel:' + esc(p.telephone) + '" onclick="event.stopPropagation()" class="med-action-btn call">' +
+                    '<span aria-hidden="true">📞</span> ' + tr('appeler') + '<span class="ng-visuellement-masque"> ' + esc(p.nom) + ', ' + esc(p.telephone) + '</span></a>';
+            }
             if (p.latitude && p.longitude) {
-                mapsLink = '<a href="https://www.google.com/maps/search/?api=1&query=' + p.latitude + ',' + p.longitude +
-                    '" target="_blank" rel="noopener" onclick="event.stopPropagation()" ' +
-                    'style="display:inline-flex;align-items:center;gap:4px;margin-top:6px;padding:5px 12px;background:#1a73e8;color:white;border-radius:20px;font-size:13px;font-weight:600;text-decoration:none">' +
-                    '📍 ' + (currentLang === 'en' ? 'Directions' : 'Itinéraire') + '</a>';
+                actions += '<a href="https://www.google.com/maps/search/?api=1&query=' + p.latitude + ',' + p.longitude +
+                    '" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="med-action-btn route">' +
+                    '<span aria-hidden="true">📍</span> ' + tr('itineraire') + '<span class="ng-visuellement-masque"> ' + esc(p.nom) + '</span></a>';
             }
 
-            return '<div class="pharmacy-result" onclick="NGolaApp.showPharmacyDetail(\'' + p.id + '\')">' +
-                '<div class="pharmacy-result-icon' + (p.est_de_garde ? ' garde' : '') + '">&#127973;</div>' +
+            return '<article class="pharmacy-result" onclick="NGolaApp.showPharmacyDetail(\'' + p.id + '\')">' +
+                '<div class="pharmacy-result-icon' + (p.est_de_garde ? ' garde' : '') + '" aria-hidden="true">&#127973;</div>' +
                 '<div class="pharmacy-result-body">' +
-                    '<div class="pharmacy-result-name">' + esc(p.nom) + '</div>' +
+                    '<h3 class="pharmacy-result-name"><button type="button" class="carte-titre" onclick="event.stopPropagation();NGolaApp.showPharmacyDetail(\'' + p.id + '\')">' + esc(p.nom) + '</button></h3>' +
                     '<div class="pharmacy-result-meta">' +
                         distHtml +
                         esc(p.adresse || '') +
                         (p.quartier_nom ? ' &bull; ' + esc(p.quartier_nom) : (p.quartier && p.quartier.nom ? ' &bull; ' + esc(p.quartier.nom) : '')) +
-                        (p.telephone ? ' &bull; <a href="tel:' + esc(p.telephone) + '" onclick="event.stopPropagation()" style="color:#1a73e8">' + esc(p.telephone) + '</a>' : '') +
+                        (p.telephone ? ' &bull; ' + esc(p.telephone) : '') +
                     '</div>' +
                     (badges ? '<div class="pharmacy-result-badges">' + badges + '</div>' : '') +
-                    mapsLink +
+                    (actions ? '<div class="carte-actions">' + actions + '</div>' : '') +
                 '</div>' +
-            '</div>';
+            '</article>';
         }
 
         function showNearbyGarde() {
@@ -3170,8 +3349,7 @@
                     list.innerHTML = html;
                 })
                 .catch(function() {
-                    list.innerHTML = '<div style="text-align:center;padding:40px;color:#dc3545">' +
-                        (currentLang === 'en' ? 'Connection error' : 'Erreur de connexion') + '</div>';
+                    list.innerHTML = etatErreur(showNearbyGarde);
                 });
         }
 
@@ -3210,8 +3388,7 @@
                     list.innerHTML = html;
                 })
                 .catch(function() {
-                    list.innerHTML = '<div style="text-align:center;padding:40px;color:#dc3545">' +
-                        (currentLang === 'en' ? 'Connection error' : 'Erreur de connexion') + '</div>';
+                    list.innerHTML = etatErreur(showNearbyGarde);
                 });
         }
 
@@ -3227,7 +3404,8 @@
             submitAlert: submitStockAlert,
             showInlineAlert: showInlineAlertForm,
             switchAlertChannel: switchAlertChannel,
-            showFooterInfo: showFooterInfo
+            showFooterInfo: showFooterInfo,
+            reessayer: reessayer
         };
     })();
     </script>
