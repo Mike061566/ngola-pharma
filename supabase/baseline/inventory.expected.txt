@@ -337,6 +337,7 @@ column|stocks.pharmacie_id|uuid NOT NULL
 column|stocks.prix_fcfa|integer NOT NULL
 column|stocks.source|source_donnee NOT NULL DEFAULT 'admin'::source_donnee
 column|stocks.statut_stock|text NOT NULL DEFAULT 'en_stock'::text
+column|v_meilleurs_prix.date_maj|timestamp with time zone
 column|v_meilleurs_prix.dci|text
 column|v_meilleurs_prix.dosage|text
 column|v_meilleurs_prix.en_stock|boolean
@@ -908,6 +909,6 @@ trigger|profils.trg_profils_updated|CREATE TRIGGER trg_profils_updated BEFORE UP
 trigger|stocks.trg_stocks_sync_statut|CREATE TRIGGER trg_stocks_sync_statut BEFORE INSERT OR UPDATE ON public.stocks FOR EACH ROW EXECUTE FUNCTION stocks_sync_statut()
 view|drug_catalog|c0171bad55fddedd614b857920bc7d49
 view|stock_items|d5dc7dc5769f08e90b2d62619dcade2a
-view|v_meilleurs_prix|f23f5f94e18695b5d1e7ab313a58d166
+view|v_meilleurs_prix|861d269ec0f0dfbc829b707e1fd74550
 view|v_pharmacies|18d2a6b735b7767be3e423112efcd6c7
 view|vue_alertes_pharmacie|c67b75c6160c32d871a2cba3ad9db282

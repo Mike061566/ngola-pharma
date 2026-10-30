@@ -511,6 +511,7 @@
         .med-result-dci { font-size: 13px; color: #003366; font-weight: 500; margin-top: 4px; }
         .med-result-price { font-size: 18px; font-weight: 700; color: #003366; }
         .med-result-avail { margin-top: 10px; font-size: 13px; color: #555; }
+        .med-result-maj { margin-top: 6px; font-size: 13px; color: var(--ng-texte-2); display: flex; align-items: center; gap: 4px; }
         .med-result-stock { margin-top: 10px; display: flex; align-items: center; gap: 8px; font-size: 13px; }
         .med-result-nearest { margin-top: 8px; font-size: 13px; color: #555; display: flex; align-items: center; gap: 6px; }
         .med-result-freshness { font-size: 13px; color: var(--ng-texte-2); margin-top: 4px; }
@@ -2787,7 +2788,7 @@
                 // Le filtre garde n'est pas dans v_meilleurs_prix,
                 // on requête les stocks directement avec jointures
                 _sb.from('stocks')
-                    .select('medicament_id, prix_fcfa, en_stock, medicaments(id, nom, dci, dosage), pharmacies!inner(id, nom, est_de_garde, quartier_id, est_demo)')
+                    .select('medicament_id, prix_fcfa, en_stock, date_maj, medicaments(id, nom, dci, dosage), pharmacies!inner(id, nom, est_de_garde, quartier_id, est_demo)')
                     .eq('en_stock', true)
                     .eq('pharmacies.est_de_garde', true)
                     .order('prix_fcfa', { ascending: true })
@@ -2818,6 +2819,7 @@
                                 pharmacie_nom: r.pharmacies ? r.pharmacies.nom : '—',
                                 pharmacie_est_demo: r.pharmacies ? r.pharmacies.est_demo === true : false,
                                 prix_fcfa: r.prix_fcfa,
+                                date_maj: r.date_maj,
                                 est_de_garde: true
                             };
                         });
@@ -2870,6 +2872,8 @@
                         esc(s.pharmacie_nom) + (s.quartier_nom ? ' &bull; ' + esc(s.quartier_nom) : '') +
                         (s.pharmacie_est_demo ? ' <span class="badge badge-demo">' + tr('badge_demo') + '</span>' : '') +
                     '</div>' +
+                    // Date du prix retenu : absente tant que la migration 20261017000000 n'est pas appliquée (rien n'est affiché)
+                    (s.date_maj ? '<div class="med-result-maj">' + ic('horloge') + libelleMaj(s.date_maj) + '</div>' : '') +
                 '</div>';
             });
             inner.innerHTML = html;

@@ -36,7 +36,7 @@ Commit à déployer : **le dernier de la branche `claude/friendly-albattani-4yd1
 - [ ] **B3. Point de non-retour partiel.** Le retour arrière de B0 **n'est valable qu'avant** la phase C. Ensuite, le seul retour arrière est la **restauration de la sauvegarde** (A1).
 - [ ] **B4.** Les schémas `sauvegarde_remplacement` et `sauvegarde_fusion` ne sont purgés (`DROP SCHEMA … CASCADE;`) qu'après la fin du pilote.
 
-## Phase C — Migrations 20261004 → 20261016 (une par une, dans l'ordre)
+## Phase C — Migrations 20261004 → 20261017 (une par une, dans l'ordre)
 
 Méthode : SQL Editor, **un fichier à la fois**, en collant le contenu intégral (chaque fichier contient son propre `BEGIN … COMMIT` : en cas d'erreur, il n'a rien changé). Après **chaque** fichier : lancer `supabase/diagnostics/verification_post_migrations.sql` — les contrôles du fichier qui vient de passer doivent être `true` (les suivants sont `false` tant qu'ils ne sont pas appliqués : normal).
 
@@ -57,16 +57,17 @@ Méthode : SQL Editor, **un fichier à la fois**, en collant le contenu intégra
 | 13 | `20261014000000_rappels_onboarding` | rappels J+1/J+3/J+7 | n'envoie rien tant que le planificateur n'est pas créé |
 | 14 | `20261015000000_conditionnement_depublication` | colonne `conditionnement`, unicité nom + dosage + conditionnement, dépublication à l'annulation d'import | **recrée l'index `uq_medicaments_nom_dosage`** (plus permissif) ; ne touche à aucune classification |
 | 15 | `20261016000000_pharmacies_en_masse` | création en masse, vérification imposée, invitation | remplace `reinitialiser_demo` et `consommer_jeton_activation_interne`, rend `jetons_activation.demande_id` facultatif |
+| 16 | `20261017000000_meilleurs_prix_date` | ajoute `date_maj` en fin de vue `v_meilleurs_prix` (date affichée sous chaque « Meilleur prix ») | colonnes existantes et droits inchangés ; tant qu'elle n'est pas appliquée, le site n'affiche simplement pas la date |
 
-- [ ] **C1.** Les 15 fichiers appliqués, sans erreur, dans l'ordre.
+- [ ] **C1.** Les 16 fichiers appliqués, sans erreur, dans l'ordre.
 - [ ] **C2.** Si un fichier échoue : **ne pas passer au suivant**, ne pas « corriger à la main ». Copier le message d'erreur exact (sans valeur sensible) et me l'envoyer. Les fichiers déjà passés restent valables.
-- [ ] **C3. Aucun retour arrière par script** n'existe pour ces 15 migrations (elles sont additives ; seule la fusion en a un). Retour arrière = **restauration de la sauvegarde A1** (perte des écritures faites depuis). À décider *avant* de commencer : durée maximale acceptée ____ min, personne qui décide ____.
+- [ ] **C3. Aucun retour arrière par script** n'existe pour ces 16 migrations (elles sont additives ; seule la fusion en a un). Retour arrière = **restauration de la sauvegarde A1** (perte des écritures faites depuis). À décider *avant* de commencer : durée maximale acceptée ____ min, personne qui décide ____.
 
 ## Phase D — Vérifications après migrations
 
-- [ ] **D1.** `supabase/diagnostics/verification_post_migrations.sql` : la ligne **BILAN** doit afficher « **0 contrôle(s) en échec** » (≈ 298 contrôles : tables, RLS, fonctions, droits `anon`/`authenticated`, bucket privé, valeurs par défaut sûres). Les lignes « info » ne sont pas des échecs : relever `mode_application` (attendu `"demo"`), le nombre de fiches (attendu : toutes restreintes, 0 validée), les conditions de passage en production non remplies (attendu : `validation_pharmacien`, `pharmacie_reelle_verifiee`, `fournisseur_telegram_reel`).
+- [ ] **D1.** `supabase/diagnostics/verification_post_migrations.sql` : la ligne **BILAN** doit afficher « **0 contrôle(s) en échec** » (≈ 300 contrôles : tables, RLS, fonctions, droits `anon`/`authenticated`, bucket privé, valeurs par défaut sûres). Les lignes « info » ne sont pas des échecs : relever `mode_application` (attendu `"demo"`), le nombre de fiches (attendu : toutes restreintes, 0 validée), les conditions de passage en production non remplies (attendu : `validation_pharmacien`, `pharmacie_reelle_verifiee`, `fournisseur_telegram_reel`).
 - [ ] **D2.** Comparaison structurelle complète : `schema_inventory.sql` → CSV → `node scripts/compare-schema.js prod_inventory2.csv` (cette fois **sans** 2ᵉ argument : le fichier courant `inventory.expected.txt` décrit le schéma après toutes les migrations). Attendu : aucun manquant, aucune différence.
-- [ ] **D3. Le site actuel fonctionne encore** (les migrations sont rétro-compatibles) : recherche publique, connexion à l'Espace Pro (compte pharmacien et compte admin), « Mes Stocks ».
+- [ ] **D3. Le site actuel fonctionne encore** (les migrations sont rétro-compatibles) : recherche publique, « Meilleurs prix » (chaque prix porte « Mis à jour il y a … »), connexion à l'Espace Pro (compte pharmacien et compte admin), « Mes Stocks ».
 - [ ] **D4.** Bannière « MODE DÉMO » visible sur le site : **attendu pendant tout le pilote**.
 - [ ] **D5. Garde-fou réglementaire** : dans la console admin → Classification, **aucune fiche** n'est non restreinte (c'est à votre pharmacien validateur de décider, jamais à l'application).
 

@@ -1,6 +1,6 @@
 -- ============================================================
 -- N'Gola Pharma — VÉRIFICATION APRÈS LES MIGRATIONS (LECTURE SEULE) — docs/MISE-EN-PRODUCTION.md, phase D.
--- À exécuter dans le SQL Editor de PRODUCTION après les migrations 20261004000000 à 20261016000000 (peut être relancé après chacune : les contrôles
+-- À exécuter dans le SQL Editor de PRODUCTION après les migrations 20261004000000 à 20261017000000 (peut être relancé après chacune : les contrôles
 -- des migrations pas encore appliquées valent alors false, sans erreur). Un seul résultat : la ligne BILAN, puis une ligne par contrôle (colonne `ok`,
 -- tout doit être true), puis des lignes d'INFORMATION (ok vide) qui ne sont pas des échecs. Ne modifie RIEN : transaction en lecture seule, ROLLBACK final.
 -- Contrôles générés à partir des fichiers de supabase/migrations/ (tables, RLS, fonctions, droits d'exécution) puis complétés à la main (valeurs par
@@ -604,6 +604,10 @@ WITH controles(migration, controle, ok) AS (
     SELECT 'sécurité', 'anon : aucun droit de lecture sur journal_admin_alertes', (to_regclass('public.journal_admin_alertes') IS NOT NULL AND NOT has_table_privilege('anon', 'public.journal_admin_alertes', 'SELECT'))
     UNION ALL
     SELECT 'sécurité', 'anon : aucun droit de lecture sur ordres_admin_alertes', (to_regclass('public.ordres_admin_alertes') IS NOT NULL AND NOT has_table_privilege('anon', 'public.ordres_admin_alertes', 'SELECT'))
+    UNION ALL
+    SELECT '20261017000000', 'vue v_meilleurs_prix : colonne date_maj présente (date affichée sur « Meilleurs prix »)', (EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='v_meilleurs_prix' AND column_name='date_maj'))
+    UNION ALL
+    SELECT '20261017000000', 'vue v_meilleurs_prix : toujours lisible par anon', (to_regclass('public.v_meilleurs_prix') IS NOT NULL AND has_table_privilege('anon', 'public.v_meilleurs_prix', 'SELECT'))
 )
 SELECT 0 AS n, 'BILAN' AS migration,
        count(*) FILTER (WHERE NOT ok)::text || ' contrôle(s) en échec sur ' || count(*)::text AS controle,
