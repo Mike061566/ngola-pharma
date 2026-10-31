@@ -104,8 +104,15 @@ Dashboard → Edge Functions → Secrets. Les valeurs vont dans votre gestionnai
 
 Toutes ont `verify_jwt = false` dans `supabase/config.toml` (l'authentification est faite dans le code).
 
+**Méthode recommandée : bouton GitHub** (`.github/workflows/deployer-fonctions.yml`, rien à installer sur le poste) :
+1. Supabase → avatar → **Account → Access Tokens** → *Generate new token* (nom : `github-deploiement`). Copier le jeton dans votre gestionnaire de mots de passe.
+2. GitHub → dépôt → **Settings → Secrets and variables → Actions → New repository secret** : nom `SUPABASE_ACCESS_TOKEN`, valeur = le jeton. Jamais ailleurs.
+3. GitHub → **Actions → « Déployer les fonctions Supabase » → Run workflow** (branche `main`), taper `DEPLOYER`.
+4. Le workflow déploie les 14 fonctions puis fait lui-même le contrôle F2 (tableau en fin de journal). Vert = F1 et F2 faits.
+
+Méthode alternative (poste avec la CLI Supabase) :
 ```
-supabase functions deploy <nom> --project-ref <ref>
+supabase functions deploy <nom> --project-ref <ref> --use-api
 ```
 
 | Accès | Fonctions |
@@ -116,7 +123,7 @@ supabase functions deploy <nom> --project-ref <ref>
 | planificateurs (`x-cron-secret`) | `traiter-outbox`, `planifier-alertes`, `rappels-onboarding` |
 
 - [ ] **F1.** Les 14 fonctions déployées.
-- [ ] **F2. Fumée sans secret** (aucun accès ne doit être possible) : `curl -i -X POST https://<ref>.supabase.co/functions/v1/<nom>` →
+- [ ] **F2. Fumée sans secret** (aucun accès ne doit être possible ; **fait automatiquement par le bouton GitHub**, qui exige de chaque fonction un refus 400/401/403/404/405 émis par la fonction elle-même) : `curl -i -X POST https://<ref>.supabase.co/functions/v1/<nom>` →
   `traiter-outbox`, `planifier-alertes`, `rappels-onboarding`, `webhook-telegram` : **401** ; `decider-demande`, `url-document`, `inviter-pharmacie` : **403** ; `tester-contact` : **401** ; `creer-alerte`, `creer-demande`, `activer-compte`, `repondre-complements` : **400** (requête invalide) ; une requête `GET` sur les fonctions en POST : **405**.
 - [ ] **F3. Webhook Telegram** (depuis votre poste, secrets en variables d'environnement) :
   1. `WEBHOOK_URL=https://<ref>.supabase.co/functions/v1/webhook-telegram node scripts/telegram-set-webhook.js` → **simulation**, rien n'est envoyé ;
