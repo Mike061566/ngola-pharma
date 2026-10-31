@@ -58,25 +58,31 @@ jobs:
 
       # Fumée sans identifiants : chaque fonction doit répondre elle-même (corps JSON avec « erreur ») par un refus
       # 400/401/403/404/405. Échec si 2xx (accès anonyme), 5xx (secret manquant, erreur au démarrage) ou réponse
-      # de la plateforme sans « erreur » (fonction non déployée).
+      # de la plateforme sans « erreur » (fonction non déployée). Seule exception : creer-alerte répond
+      # 503 « routage_desactive » tant que ALERT_AUTO_ROUTING n'est pas true (garde-fou voulu jusqu'au GO).
       - name: Vérifier (appels anonymes refusés)
         run: |
           base="https://$PROJET.supabase.co/functions/v1"
           sleep 10
           echec=0
-          verifier() {  # $1 libellé, $2 méthode, $3 URL, $4 codes acceptés
+          verifier() {  # $1 libellé, $2 méthode, $3 URL, $4 codes acceptés, $5 (facultatif) erreur exigée pour un 503
             if [ "$2" = POST ]; then
               code=$(curl -s -o corps.txt -w '%{http_code}' -X POST -H 'content-type: application/json' --data-raw '{}' --max-time 30 "$3" || echo 000)
             else
               code=$(curl -s -o corps.txt -w '%{http_code}' -X "$2" --max-time 30 "$3" || echo 000)
             fi
-            if echo " $4 " | grep -q " $code " && grep -q '"erreur"' corps.txt; then etat=ok; else etat="ÉCHEC"; echec=1; fi
+            if [ "$code" = 503 ] && [ -n "${5:-}" ] && grep -q "\"erreur\":\"$5\"" corps.txt; then etat="ok ($5)"
+            elif echo " $4 " | grep -q " $code " && grep -q '"erreur"' corps.txt; then etat=ok
+            else etat="ÉCHEC"; echec=1; fi
             printf '%-24s %-6s %s\n' "$1" "$code" "$etat"
           }
           printf '%-24s %-6s %s\n' "FONCTION" "CODE" "RÉSULTAT"
           for f in $FONCTIONS; do
-            if [ "$f" = "suivi-alerte" ]; then verifier "$f" GET "$base/$f" "400 404"
-            else verifier "$f" POST "$base/$f" "400 401 403 404"; fi
+            case "$f" in
+              suivi-alerte) verifier "$f" GET "$base/$f" "400 404" ;;
+              creer-alerte) verifier "$f" POST "$base/$f" "400 401 403 404" routage_desactive ;;
+              *) verifier "$f" POST "$base/$f" "400 401 403 404" ;;
+            esac
           done
           verifier "creer-demande (GET)" GET "$base/creer-demande" "405"
           rm -f corps.txt
