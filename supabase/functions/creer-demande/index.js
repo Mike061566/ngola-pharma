@@ -29,7 +29,9 @@ Deno.serve(async (req) => {
     });
     return rep(r.status, r.corps);
   } catch (e) {
-    console.error(JSON.stringify({ evt: 'erreur_creer_demande', erreur: e?.name || 'inconnue' }));
+    // Étape et code seulement (messages « contexte : code » des magasins, sans valeur saisie), tronqués.
+    console.error(JSON.stringify({ evt: 'erreur_creer_demande', erreur: e?.name || 'inconnue',
+      etape: String(e?.message || '').split(' : ')[0].slice(0, 60) || null, code: e?.code ? String(e.code).slice(0, 20) : null }));
     const r = reponseErreur('erreur_interne');
     return rep(r.status, r.corps);
   }
