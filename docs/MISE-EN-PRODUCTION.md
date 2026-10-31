@@ -128,7 +128,7 @@ supabase functions deploy <nom> --project-ref <ref> --use-api
 - [ ] **F3. Webhook Telegram** (depuis votre poste, secrets en variables d'environnement) :
   1. `WEBHOOK_URL=https://<ref>.supabase.co/functions/v1/webhook-telegram node scripts/telegram-set-webhook.js` → **simulation**, rien n'est envoyé ;
   2. relire, puis `… node scripts/telegram-set-webhook.js --confirmer`.
-- [ ] **F4. Bot** : ouvrir `@ngola_pharma_Bot`, `/start` sans jeton → message d'aide du bot (aucune action).
+- [ ] **F4. Bot** : ouvrir `@ngola_pharma_Bot`, envoyer `/start` sans jeton puis `/aide` → Logs de `webhook-telegram` : deux appels **200** (dont `start_sans_jeton`) ; un **401** `webhook_refuse` signifie que le secret donné à Telegram diffère de `TELEGRAM_WEBHOOK_SECRET`. Les réponses du bot (« lien plus valable », aide) passent par la file d'envoi : elles n'arrivent qu'**après la phase G**, et en mode démo **seulement** sur un compte Telegram de la liste blanche (sinon `suppressed_demo`, comportement voulu).
 
 ## Phase G — Planificateurs (pg_cron + pg_net, secrets dans Vault)
 
@@ -153,7 +153,8 @@ Rien n'est lancé tant que vous n'exécutez pas ces scripts. **Ordre** :
 ## Phase I — Données de départ (mode démo)
 
 - [ ] **I1. Archivage des anciennes fiches de test** : **sans objet si B0 a été fait** (les 40 fiches ont déjà été retirées). Sinon : `supabase/ops/archiver_anciennes_fiches_test.sql` — **d'abord en simulation** (le rapport affiche fiches, stocks et alertes liés), puis remplacer `ROLLBACK` par `COMMIT`. Retour : `archiver_anciennes_fiches_test_retour.sql`.
-- [ ] **I2. Catalogue de démonstration** : `node scripts/demo-reset.js --confirmer --catalogue supabase/seed/demo_catalog.csv` (variables `SUPABASE_URL` et `SUPABASE_SERVICE_KEY` **dans votre terminal uniquement**).
+- [ ] **I2. Catalogue de démonstration** : SQL Editor → `supabase/ops/charger_catalogue_demo.sql` (sans Node.js ni clé service_role). Lancer tel quel = **simulation** ; rapport attendu au premier passage : `fiches_fichier` = `inserees` = 237, `restreintes` = 237 (aucune décision de classification dans le fichier : défaut sûr) ; puis remplacer `ROLLBACK` par `COMMIT`. Rejouable (second passage : 237 `inchangees`). Ensuite : console admin → « ↺ Remettre la démo à zéro » (pharmacies de démonstration et leurs stocks). Le script est généré depuis le CSV (`node scripts/catalogue-demo-sql.js`, contrôlé par les tests).
+  Alternative équivalente : `node scripts/demo-reset.js --confirmer --catalogue supabase/seed/demo_catalog.csv` (variables `SUPABASE_URL` et `SUPABASE_SERVICE_KEY` **dans votre terminal uniquement**).
   ⚠️ **Mise en garde `reinitialiser_demo` / bouton « Remettre la démo à zéro »** : elle efface alertes, messages, jetons et liste de blocage et rétablit les stocks des pharmacies de démonstration. Elle refuse hors mode démo et ne touche pas aux pharmacies réelles ni aux comptes de test, mais **ne la lancez plus une fois le pilote commencé** sans l'avoir décidé.
 - [ ] **I3. Classification** : votre pharmacien validateur remplit `supabase/seed/demo_classification.csv` (`restricted`, `requires_prescription`) ; **vous** le commitez ; puis console → « Classification du catalogue » (n° d'Ordre saisi dans le formulaire, jamais dans le dépôt). Sans cela, **aucune alerte n'est routable** (comportement voulu). Relecture : à chaque ajout au catalogue + chaque trimestre.
 - [ ] **I4. Comptes de test** : chaque participant ouvre `@ngola_pharma_Bot` via son lien d'activation (Espace Pro → Alertes) ; vous les ajoutez à la liste blanche (console → Comptes de test). Sans `/start`, le bot ne peut pas écrire.
