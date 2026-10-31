@@ -1,0 +1,84 @@
+# Déploiement des Edge Functions sur le projet Supabase (phase F de docs/MISE-EN-PRODUCTION.md).
+# Lancement MANUEL uniquement (onglet Actions → « Déployer les fonctions Supabase » → Run workflow), depuis main,
+# en tapant DEPLOYER. Rien ne se déclenche sur un push ou une PR.
+# Secret requis (Settings → Secrets and variables → Actions) : SUPABASE_ACCESS_TOKEN (jeton d'accès personnel Supabase).
+# Les secrets des fonctions (ENCRYPTION_KEY, TELEGRAM_BOT_TOKEN…) restent dans Supabase : ce workflow ne les lit ni ne les modifie.
+name: Déployer les fonctions Supabase
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: "Tapez DEPLOYER pour confirmer"
+        required: true
+      projet:
+        description: "Référence du projet Supabase"
+        required: true
+        default: ueycknsdwthmtmpzptqp
+
+concurrency:
+  group: deployer-fonctions
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deployer:
+    name: Déployer les 14 fonctions puis vérifier qu'elles refusent les appels anonymes
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event.inputs.confirmation == 'DEPLOYER'
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      PROJET: ${{ github.event.inputs.projet }}
+      FONCTIONS: >-
+        traiter-outbox creer-alerte suivi-alerte planifier-alertes webhook-telegram repondre-lien tester-contact
+        creer-demande decider-demande url-document activer-compte repondre-complements rappels-onboarding inviter-pharmacie
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Contrôles préalables
+        run: |
+          [ -n "$SUPABASE_ACCESS_TOKEN" ] || { echo "::error::Secret SUPABASE_ACCESS_TOKEN absent (Settings → Secrets and variables → Actions)."; exit 1; }
+          echo "$PROJET" | grep -Eq '^[a-z0-9]{20}$' || { echo "::error::Référence de projet invalide : $PROJET"; exit 1; }
+          for f in $FONCTIONS; do [ -f "supabase/functions/$f/index.js" ] || { echo "::error::Fonction introuvable : $f"; exit 1; }; done
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      # verify_jwt = false et les points d'entrée sont lus dans supabase/config.toml.
+      - name: Déployer
+        run: |
+          for f in $FONCTIONS; do
+            echo "::group::$f"
+            supabase functions deploy "$f" --project-ref "$PROJET" --use-api
+            echo "::endgroup::"
+          done
+
+      # Fumée sans identifiants : chaque fonction doit répondre elle-même (corps JSON avec « erreur ») par un refus
+      # 400/401/403/404/405. Échec si 2xx (accès anonyme), 5xx (secret manquant, erreur au démarrage) ou réponse
+      # de la plateforme sans « erreur » (fonction non déployée).
+      - name: Vérifier (appels anonymes refusés)
+        run: |
+          base="https://$PROJET.supabase.co/functions/v1"
+          sleep 10
+          echec=0
+          verifier() {  # $1 libellé, $2 méthode, $3 URL, $4 codes acceptés
+            if [ "$2" = POST ]; then
+              code=$(curl -s -o corps.txt -w '%{http_code}' -X POST -H 'content-type: application/json' --data-raw '{}' --max-time 30 "$3" || echo 000)
+            else
+              code=$(curl -s -o corps.txt -w '%{http_code}' -X "$2" --max-time 30 "$3" || echo 000)
+            fi
+            if echo " $4 " | grep -q " $code " && grep -q '"erreur"' corps.txt; then etat=ok; else etat="ÉCHEC"; echec=1; fi
+            printf '%-24s %-6s %s\n' "$1" "$code" "$etat"
+          }
+          printf '%-24s %-6s %s\n' "FONCTION" "CODE" "RÉSULTAT"
+          for f in $FONCTIONS; do
+            if [ "$f" = "suivi-alerte" ]; then verifier "$f" GET "$base/$f" "400 404"
+            else verifier "$f" POST "$base/$f" "400 401 403 404"; fi
+          done
+          verifier "creer-demande (GET)" GET "$base/creer-demande" "405"
+          rm -f corps.txt
+          [ "$echec" = 0 ] || { echo "::error::Au moins une fonction ne répond pas comme attendu : voir le tableau ci-dessus."; exit 1; }
+          echo "Les 14 fonctions sont déployées et refusent les appels sans identifiants."
