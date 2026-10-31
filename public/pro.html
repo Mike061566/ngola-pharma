@@ -47,6 +47,10 @@
         .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
         .form-group input { width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; transition: border .2s; }
         .form-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,51,102,.1); }
+        .mdp-champ { position: relative; } .mdp-champ input { padding-right: 104px; }
+        .btn-voir-mdp { background: none; border: 0; color: var(--primary); font-size: 13px; font-weight: 600; cursor: pointer; padding: 6px 8px; border-radius: 6px; }
+        .mdp-champ .btn-voir-mdp { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); }
+        .btn-voir-mdp:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
         .btn-primary { width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background .2s; }
         .btn-primary:hover { background: var(--primary-light); }
         .btn-primary:disabled { background: #999; cursor: not-allowed; }
@@ -292,7 +296,10 @@
             </div>
             <div class="form-group">
                 <label for="loginPassword">Mot de passe</label>
-                <input type="password" id="loginPassword" placeholder="••••••••" required>
+                <div class="mdp-champ">
+                    <input type="password" id="loginPassword" placeholder="••••••••" required autocomplete="current-password">
+                    <button type="button" class="btn-voir-mdp" aria-controls="loginPassword" aria-pressed="false" aria-label="Afficher le mot de passe" onclick="ProApp.voirMotDePasse(this, ['loginPassword'])">👁 Afficher</button>
+                </div>
             </div>
             <button type="submit" class="btn-primary" id="loginBtn">Se connecter</button>
         </form>
@@ -752,6 +759,8 @@ var ProApp = (function() {
             document.getElementById('loginBtn').disabled = false;
             document.getElementById('loginBtn').textContent = 'Se connecter';
             document.getElementById('loginPassword').value = '';
+            var voir = document.querySelector('[aria-controls="loginPassword"]');
+            if (document.getElementById('loginPassword').type !== 'password' && voir) voirMotDePasse(voir, ['loginPassword']);   // déconnexion : champ re-masqué
         });
     }
 
@@ -853,7 +862,9 @@ var ProApp = (function() {
         var taches = OnboardingUtils.tachesAffichables(etat);
         var actions = {
             mot_de_passe: '<div class="onb-mdp"><input type="password" id="onbMdp" placeholder="Nouveau mot de passe" autocomplete="new-password" aria-label="Nouveau mot de passe" aria-describedby="onbMdpRegles" oninput="ProApp.majReglesMdp()">' +
-                '<input type="password" id="onbMdp2" placeholder="Confirmer" autocomplete="new-password" aria-label="Confirmer le mot de passe"><button class="btn btn-add" onclick="ProApp.definirMotDePasse()">Enregistrer</button>' +
+                '<input type="password" id="onbMdp2" placeholder="Confirmer" autocomplete="new-password" aria-label="Confirmer le mot de passe">' +
+                '<button type="button" class="btn-voir-mdp" aria-controls="onbMdp onbMdp2" aria-pressed="false" aria-label="Afficher le mot de passe" onclick="ProApp.voirMotDePasse(this, [\'onbMdp\', \'onbMdp2\'])">👁 Afficher</button>' +
+                '<button class="btn btn-add" onclick="ProApp.definirMotDePasse()">Enregistrer</button>' +
                 '<ul class="onb-regles" id="onbMdpRegles" aria-label="Le mot de passe doit contenir">' + reglesMdpHtml('') + '</ul></div>',
             ma_pharmacie: '<button class="btn btn-secondary" onclick="ProApp.switchTab(\'pharmacy\')">Ouvrir Ma Pharmacie</button>' +
                 '<button class="btn btn-add" onclick="ProApp.confirmerPosition()">📍 Je confirme la position de mon officine</button>',
@@ -894,6 +905,16 @@ var ProApp = (function() {
     function majReglesMdp() {
         var liste = document.getElementById('onbMdpRegles');
         if (liste) liste.innerHTML = reglesMdpHtml(document.getElementById('onbMdp').value);
+    }
+    // « Afficher / Masquer » : bascule le ou les champs mot de passe liés au bouton (le second champ suit le premier).
+    function voirMotDePasse(bouton, ids) {
+        var champs = ids.map(function(id) { return document.getElementById(id); }).filter(Boolean);
+        if (!champs.length) return;
+        var e = ProUtils.basculeMotDePasse(champs[0].type);
+        champs.forEach(function(c) { c.type = e.type; });
+        bouton.textContent = e.libelle;
+        bouton.setAttribute('aria-pressed', String(e.presse));
+        bouton.setAttribute('aria-label', e.presse ? 'Masquer le mot de passe' : 'Afficher le mot de passe');
     }
     function definirMotDePasse() {
         var mdp = document.getElementById('onbMdp').value, conf = document.getElementById('onbMdp2').value;
@@ -1522,7 +1543,7 @@ var ProApp = (function() {
         validerClassification: validerClassification,
         passerEnProduction: passerEnProduction,
         loadStocks: loadStocks,
-        definirMotDePasse: definirMotDePasse, majReglesMdp: majReglesMdp,
+        definirMotDePasse: definirMotDePasse, majReglesMdp: majReglesMdp, voirMotDePasse: voirMotDePasse,
         confirmerPosition: confirmerPosition,
         sansTelegram: sansTelegram,
         avecTelegram: avecTelegram,
