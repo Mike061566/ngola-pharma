@@ -17,7 +17,10 @@ export function creerMagasinOnboarding(sb) {
     async mode() { return ok(await sb.rpc('mode_application'), 'mode'); },
     async deposer(chemin, octets, mime) {
       const { error } = await sb.storage.from(BUCKET).upload(chemin, octets, { contentType: mime, upsert: false });
-      if (error) throw new Error('deposer : erreur');
+      if (error) {   // code HTTP ou nom de l'erreur de stockage (ex. 400 type refusé, 404 bucket absent) : jamais le contenu
+        const code = String(error.statusCode || error.status || error.name || 'erreur').slice(0, 20);
+        throw Object.assign(new Error(`deposer : ${code}`), { code });
+      }
     },
     async supprimer(chemins) { if (chemins?.length) await sb.storage.from(BUCKET).remove(chemins); },
     async urlSignee(chemin, secondes = 300) {

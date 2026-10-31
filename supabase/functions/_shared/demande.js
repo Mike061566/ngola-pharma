@@ -142,7 +142,11 @@ export async function traiterDemande(entree, ctx) {
     const payload = { ...v.valeur };
     delete payload.captcha;
     const r = await magasin.soumettre({ ...payload, documents }, empreinteIp);
-    if (r.erreur) { await magasin.supprimer(chemins); return reponseErreur(r.erreur === 'limite_quotidienne' ? 'limite_quotidienne' : 'erreur_interne'); }
+    if (r.erreur) {
+      await magasin.supprimer(chemins);
+      if (r.erreur !== 'limite_quotidienne') ctx.journal?.({ evt: 'erreur_demande', etape: 'soumettre', code: String(r.erreur).slice(0, 40) });
+      return reponseErreur(r.erreur === 'limite_quotidienne' ? 'limite_quotidienne' : 'erreur_interne');
+    }
     // Accusé de réception (email, via l'outbox). Un échec d'enfilage ne perd pas la demande.
     try {
       await ctx.accuser?.({ demandeId: r.id, email: v.valeur.email_titulaire, nomOfficine: v.valeur.nom_pharmacie });
@@ -152,7 +156,9 @@ export async function traiterDemande(entree, ctx) {
       message: 'Demande reçue. Un accusé de réception vous est envoyé par email.' } };
   } catch (e) {
     if (chemins.length) { try { await magasin.supprimer(chemins); } catch { /* nettoyage au mieux */ } }
-    ctx.journal?.({ evt: 'erreur_demande', erreur: e?.name || 'inconnue' });
+    // Étape et code technique seulement (« deposer », « soumettre », code Postgres ou HTTP) : jamais de valeur saisie.
+    ctx.journal?.({ evt: 'erreur_demande', erreur: e?.name || 'inconnue', etape: String(e?.message || '').split(' : ')[0].slice(0, 40) || null,
+      code: e?.code ? String(e.code).slice(0, 20) : null });
     return reponseErreur('erreur_interne');
   }
 }
