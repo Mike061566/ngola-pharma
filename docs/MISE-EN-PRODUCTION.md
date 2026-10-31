@@ -97,6 +97,7 @@ Dashboard → Edge Functions → Secrets. Les valeurs vont dans votre gestionnai
 
 - [ ] **E1.** Toutes les variables posées (celles marquées « absent = mock » peuvent attendre).
 - [ ] **E2.** Supabase Auth → URL Configuration → **Redirect URLs** : ajouter `<APP_BASE_URL>/pro.html` (sinon le lien de connexion après activation de compte est refusé).
+- [ ] **E2bis.** Supabase Auth → **Policies / Password requirements** (selon la version du tableau de bord : Authentication → Providers → Email) : longueur minimale **10**, exiger **minuscules, majuscules, chiffres et symboles**. Mêmes règles que celles affichées dans l'Espace Pro (`public/onboarding-utils.js`), appliquées cette fois par le serveur à chaque nouveau mot de passe ; les mots de passe existants restent valables.
 - [ ] **E3.** Storage : le bucket `documents-demandes` existe et est **privé** (déjà contrôlé en D1).
 - [ ] **E4.** Cloudflare Turnstile : site créé pour votre domaine ; clé de site renseignée (voir ci-dessus).
 
