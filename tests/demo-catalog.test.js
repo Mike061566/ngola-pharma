@@ -53,10 +53,14 @@ describe('analyserCatalogueDemo : « restricted » est la décision du propriét
     expect(analyserCatalogueDemo(`${ENTETE}\nX,Y,1mg,cp,,false,false\n`).medicaments[0].categorie).toBe('démonstration');
   });
   test('catalogue livré (issu de drug_variant_catalog.csv) : valide, fiche fictive restreinte, AUCUNE classification inventée', () => {
-    const r = analyserCatalogueDemo(require('fs').readFileSync(require('path').join(__dirname, '../supabase/seed/demo_catalog.csv'), 'utf-8'));
+    const lire = (f) => require('fs').readFileSync(require('path').join(__dirname, '../supabase/seed', f), 'utf-8');
+    const r = analyserCatalogueDemo(lire('demo_catalog.csv'));
     expect(r.erreurs).toEqual([]);
     expect(r.medicaments).toHaveLength(237);
-    expect(r.medicaments.filter((m) => !m.restreint)).toEqual([]);                         // aucune décision du propriétaire : tout reste restreint
+    // Chaque fiche porte exactement la décision écrite pour sa DCI dans la feuille du propriétaire (rien de déduit par le code).
+    const decisions = new Map(lire('demo_classification.csv').trim().split('\n').slice(1)
+      .map((l) => l.split(',')).map((c) => [c[0], { ordonnance: c[c.length - 2] === 'true', restreint: c[c.length - 1] !== 'false' }]));
+    for (const m of r.medicaments.filter((x) => x.dci)) expect([m.dci, m.ordonnance, m.restreint]).toEqual([m.dci, decisions.get(m.dci).ordonnance, decisions.get(m.dci).restreint]);
     expect(r.medicaments.find((m) => m.nom === 'Exemple restreint (démo)').restreint).toBe(true);
     expect(new Set(r.medicaments.map((m) => m.categorie)).size).toBeGreaterThan(5);
     const cles = r.medicaments.map((m) => `${m.nom.toLowerCase()}|${(m.dosage || '').replace(/\s+/g, '')}`);

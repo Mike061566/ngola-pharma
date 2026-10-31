@@ -1,21 +1,21 @@
 dci,category,atc_code,requires_prescription,restricted
-Artéméther + Luméfantrine,Antipaludéens,P01BF01,,
-Paracétamol,Analgésiques,N02BE01,,
-Ibuprofène,Analgésiques,M01AE01,,
-Amoxicilline,Antibiotiques,J01CA04,,
-Fer + Acide Folique,Anti-anémiques,B03AE10,,
-Artésunate + Amodiaquine,Antipaludéens,P01BF05,,
-Augmentin (Amoxicilline + Ac. Clavulanique),Antibiotiques,J01CR02,,
-Azithromycine,Antibiotiques,J01FA10,,
-Captopril,Cardiovasculaire,C09AA01,,
-Nifédipine,Cardiovasculaire,C08CA05,,
-Amlodipine,Cardiovasculaire,C08CA01,,
-Hydrochlorothiazide,Cardiovasculaire,C03AA03,,
-Metformine,Métabolisme (Diabète),A10BA02,,
-Glibenclamide,Métabolisme (Diabète),A10BB01,,
-Oméprazole,Gastro-entérologie,A02BC01,,
-SRO (Sels de Réhydratation Orale),Réhydratation,A07CA,,
-Zinc (Sulfate de zinc),Suppléments,A12CB01,,
-Cotrimoxazole (SMX/TMP),Antibiotiques,J01EE01,,
-Doxycycline,Antibiotiques,J01AA02,,
-Quinine,Antipaludéens,P01BC01,,
+Artéméther + Luméfantrine,Antipaludéens,P01BF01,true,false
+Paracétamol,Analgésiques,N02BE01,false,false
+Ibuprofène,Analgésiques,M01AE01,false,false
+Amoxicilline,Antibiotiques,J01CA04,true,false
+Fer + Acide Folique,Anti-anémiques,B03AE10,false,false
+Artésunate + Amodiaquine,Antipaludéens,P01BF05,true,false
+Augmentin (Amoxicilline + Ac. Clavulanique),Antibiotiques,J01CR02,true,false
+Azithromycine,Antibiotiques,J01FA10,true,false
+Captopril,Cardiovasculaire,C09AA01,true,false
+Nifédipine,Cardiovasculaire,C08CA05,true,false
+Amlodipine,Cardiovasculaire,C08CA01,true,false
+Hydrochlorothiazide,Cardiovasculaire,C03AA03,true,false
+Metformine,Métabolisme (Diabète),A10BA02,true,false
+Glibenclamide,Métabolisme (Diabète),A10BB01,true,false
+Oméprazole,Gastro-entérologie,A02BC01,true,false
+SRO (Sels de Réhydratation Orale),Réhydratation,A07CA,false,false
+Zinc (Sulfate de zinc),Suppléments,A12CB01,false,false
+Cotrimoxazole (SMX/TMP),Antibiotiques,J01EE01,true,false
+Doxycycline,Antibiotiques,J01AA02,true,false
+Quinine,Antipaludéens,P01BC01,true,false
