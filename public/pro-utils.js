@@ -141,6 +141,12 @@
     return { moyenneMin: Math.round((ds.reduce(function (a, b) { return a + b; }, 0) / ds.length) * 10) / 10, n: ds.length };
   }
 
+  /** Bouton « Afficher / Masquer » d'un champ mot de passe : état suivant à partir du type actuel du champ. */
+  function basculeMotDePasse(typeActuel) {
+    var visible = typeActuel === 'password';
+    return { type: visible ? 'text' : 'password', libelle: visible ? '🙈 Masquer' : '👁 Afficher', presse: visible };
+  }
+
   /** Adresse d'un contact masquée à l'affichage (numéro : 2 derniers chiffres ; email : 1re lettre et domaine ; Telegram : fin du chat). */
   function masquerAdresse(canal, adresse) {
     var a = String(adresse || '');
@@ -167,5 +173,5 @@
   return { formatHoraires: formatHoraires, statutInfo: statutInfo, medIdentityKey: medIdentityKey,
     findOwnedStock: findOwnedStock, mapLinks: mapLinks, classificationChanges: classificationChanges,
     validationElements: validationElements, tempsMoyenReponse: tempsMoyenReponse, masquerAdresse: masquerAdresse,
-    statutContact: statutContact, lienTelegram: lienTelegram };
+    statutContact: statutContact, lienTelegram: lienTelegram, basculeMotDePasse: basculeMotDePasse };
 }));

@@ -120,7 +120,7 @@ describe('classification du catalogue (admin)', () => {
   });
 });
 
-const { tempsMoyenReponse, masquerAdresse, statutContact, lienTelegram } = require('../public/pro-utils');
+const { tempsMoyenReponse, masquerAdresse, statutContact, lienTelegram, basculeMotDePasse } = require('../public/pro-utils');
 
 describe('Alertes de l\'Espace Pro', () => {
   test('tempsMoyenReponse : moyenne des lignes répondues, dates invalides ou négatives ignorées', () => {
@@ -153,4 +153,10 @@ describe('Alertes de l\'Espace Pro', () => {
     expect(lienTelegram('NGolaBot', 'court')).toBeNull();
     expect(lienTelegram('NGolaBot', 'a b'.repeat(10))).toBeNull();
   });
+});
+
+test('basculeMotDePasse : « Afficher » rend le mot de passe lisible, « Masquer » le cache à nouveau', () => {
+  expect(basculeMotDePasse('password')).toEqual({ type: 'text', libelle: '🙈 Masquer', presse: true });
+  expect(basculeMotDePasse('text')).toEqual({ type: 'password', libelle: '👁 Afficher', presse: false });
+  expect(basculeMotDePasse(basculeMotDePasse('password').type).type).toBe('password');
 });
