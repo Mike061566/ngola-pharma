@@ -179,6 +179,8 @@
         .onb-tache .corps { flex:1; } .onb-tache .aide { color:var(--text-muted); font-size:13px; }
         .onb-tache .actions { margin-top:6px; display:flex; gap:6px; flex-wrap:wrap; }
         .onb-mdp input { padding:8px 10px; border:1px solid var(--border); border-radius:8px; margin:4px 6px 4px 0; }
+        .onb-regles { list-style:none; margin:6px 0 0; padding:0; font-size:13px; color:var(--text-muted); width:100%; }
+        .onb-regles li::before { content:'○ '; } .onb-regles li.ok { color:#1b7a3d; } .onb-regles li.ok::before { content:'✓ '; }
         .console-pastille { display: inline-block; padding: 4px 12px; border-radius: 14px; background: #eef0f2; font-size: 13px; font-weight: 600; margin: 0 6px 6px 0; }
         #consoleIndicateurs { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
         .console-carte { border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 13px; }
@@ -850,8 +852,9 @@ var ProApp = (function() {
         if (!OnboardingUtils.checklistVisible(etat)) { carte.style.display = 'none'; return; }
         var taches = OnboardingUtils.tachesAffichables(etat);
         var actions = {
-            mot_de_passe: '<div class="onb-mdp"><input type="password" id="onbMdp" placeholder="Nouveau mot de passe (10 caractères min.)" autocomplete="new-password" aria-label="Nouveau mot de passe">' +
-                '<input type="password" id="onbMdp2" placeholder="Confirmer" autocomplete="new-password" aria-label="Confirmer le mot de passe"><button class="btn btn-add" onclick="ProApp.definirMotDePasse()">Enregistrer</button></div>',
+            mot_de_passe: '<div class="onb-mdp"><input type="password" id="onbMdp" placeholder="Nouveau mot de passe" autocomplete="new-password" aria-label="Nouveau mot de passe" aria-describedby="onbMdpRegles" oninput="ProApp.majReglesMdp()">' +
+                '<input type="password" id="onbMdp2" placeholder="Confirmer" autocomplete="new-password" aria-label="Confirmer le mot de passe"><button class="btn btn-add" onclick="ProApp.definirMotDePasse()">Enregistrer</button>' +
+                '<ul class="onb-regles" id="onbMdpRegles" aria-label="Le mot de passe doit contenir">' + reglesMdpHtml('') + '</ul></div>',
             ma_pharmacie: '<button class="btn btn-secondary" onclick="ProApp.switchTab(\'pharmacy\')">Ouvrir Ma Pharmacie</button>' +
                 '<button class="btn btn-add" onclick="ProApp.confirmerPosition()">📍 Je confirme la position de mon officine</button>',
             telegram: '<button class="btn btn-add" onclick="ProApp.switchTab(\'alerts\')">Activer Telegram</button>' +
@@ -884,6 +887,13 @@ var ProApp = (function() {
             if (messageOk) showToast(messageOk);
             afficherOnboarding(res.data); return res.data;
         });
+    }
+    function reglesMdpHtml(mdp) {
+        return OnboardingUtils.reglesMotDePasse(mdp).map(function(r) { return '<li' + (r.ok ? ' class="ok"' : '') + '>' + esc(r.libelle) + '</li>'; }).join('');
+    }
+    function majReglesMdp() {
+        var liste = document.getElementById('onbMdpRegles');
+        if (liste) liste.innerHTML = reglesMdpHtml(document.getElementById('onbMdp').value);
     }
     function definirMotDePasse() {
         var mdp = document.getElementById('onbMdp').value, conf = document.getElementById('onbMdp2').value;
@@ -1512,7 +1522,7 @@ var ProApp = (function() {
         validerClassification: validerClassification,
         passerEnProduction: passerEnProduction,
         loadStocks: loadStocks,
-        definirMotDePasse: definirMotDePasse,
+        definirMotDePasse: definirMotDePasse, majReglesMdp: majReglesMdp,
         confirmerPosition: confirmerPosition,
         sansTelegram: sansTelegram,
         avecTelegram: avecTelegram,

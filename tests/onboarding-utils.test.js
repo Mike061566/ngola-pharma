@@ -53,10 +53,18 @@ test('code couleur de fraîcheur : vert ≤ 3 j, orange ≤ 7 j, rouge au-delà'
   expect(U.couleurCss('vert')).not.toBe(U.couleurCss('rouge'));
 });
 
-test('mot de passe : 10 caractères et confirmation', () => {
-  expect(U.erreurMotDePasse('court', 'court')).toMatch(/10 caractères/);
-  expect(U.erreurMotDePasse('assezlongmdp', 'autrechose1')).toMatch(/identiques/);
-  expect(U.erreurMotDePasse('assezlongmdp', 'assezlongmdp')).toBeNull();
+test('mot de passe : règles affichées (10 caractères, majuscule, minuscule, chiffre, caractère spécial) et confirmation', () => {
+  const etat = (m) => Object.fromEntries(U.reglesMotDePasse(m).map((r) => [r.cle, r.ok]));
+  expect(U.reglesMotDePasse('').map((r) => r.cle)).toEqual(['longueur', 'majuscule', 'minuscule', 'chiffre', 'special']);
+  expect(Object.values(etat(''))).toEqual([false, false, false, false, false]);
+  expect(etat('Pharmacie-2026')).toEqual({ longueur: true, majuscule: true, minuscule: true, chiffre: true, special: true });
+  expect(etat('Élégance 2026')).toMatchObject({ majuscule: true, minuscule: true, special: false });   // accents = lettres, espace ≠ spécial
+  expect(U.reglesMotDePasse(undefined).every((r) => !r.ok)).toBe(true);
+
+  expect(U.erreurMotDePasse('court', 'court')).toMatch(/10 caractères au minimum/);
+  expect(U.erreurMotDePasse('assezlongmdp', 'assezlongmdp')).toBe('Le mot de passe doit contenir : une lettre majuscule (A-Z), un chiffre (0-9), un caractère spécial (ex. ! ? @ # $ % & * - _).');
+  expect(U.erreurMotDePasse('Pharmacie-2026', 'Pharmacie-2025')).toMatch(/identiques/);
+  expect(U.erreurMotDePasse('Pharmacie-2026', 'Pharmacie-2026')).toBeNull();
 });
 
 test('liens des rappels : étape -> onglet, URL ?etape= validée', () => {

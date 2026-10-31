@@ -1,6 +1,6 @@
 /**
  * Fonctions pures de la checklist d'onboarding de l'Espace Pro (SPEC 1 §5, §5.2) : libellés, progression, prochaine tâche,
- * code couleur de fraîcheur des stocks, contrôle du mot de passe. Sans réseau ni DOM, testées avec Jest
+ * code couleur de fraîcheur des stocks, règles et contrôle du mot de passe. Sans réseau ni DOM, testées avec Jest
  * (tests/onboarding-utils.test.js). Chargées dans le navigateur sous `window.OnboardingUtils`.
  * L'état vient de la fonction SQL `etat_onboarding_mien` : le calcul fait foi côté base, ce fichier n'affiche que.
  */
@@ -73,9 +73,23 @@
   var COULEURS = { vert: '#1b7a3d', orange: '#8A4B00', rouge: '#b42318' };
   function couleurCss(cle) { return COULEURS[cle] || COULEURS.rouge; }
 
-  /** Mot de passe : 10 caractères au moins, confirmation identique. Renvoie un message d'erreur ou null. */
+  // Règles du mot de passe, affichées sous le champ et cochées pendant la saisie (lettres accentuées comprises).
+  var REGLES_MOT_DE_PASSE = [
+    { cle: 'longueur', libelle: '10 caractères au minimum', test: function (m) { return m.length >= 10; } },
+    { cle: 'majuscule', libelle: 'une lettre majuscule (A-Z)', test: function (m) { return /\p{Lu}/u.test(m); } },
+    { cle: 'minuscule', libelle: 'une lettre minuscule (a-z)', test: function (m) { return /\p{Ll}/u.test(m); } },
+    { cle: 'chiffre', libelle: 'un chiffre (0-9)', test: function (m) { return /\p{Nd}/u.test(m); } },
+    { cle: 'special', libelle: 'un caractère spécial (ex. ! ? @ # $ % & * - _)', test: function (m) { return /[^\p{L}\p{Nd}\s]/u.test(m); } }
+  ];
+  /** État de chaque règle pour le mot de passe saisi : [{ cle, libelle, ok }]. */
+  function reglesMotDePasse(mdp) {
+    var m = typeof mdp === 'string' ? mdp : '';
+    return REGLES_MOT_DE_PASSE.map(function (r) { return { cle: r.cle, libelle: r.libelle, ok: r.test(m) }; });
+  }
+  /** Mot de passe : toutes les règles respectées, confirmation identique. Renvoie un message d'erreur ou null. */
   function erreurMotDePasse(mdp, confirmation) {
-    if (typeof mdp !== 'string' || mdp.length < 10) return 'Le mot de passe doit contenir au moins 10 caractères.';
+    var manquantes = reglesMotDePasse(mdp).filter(function (r) { return !r.ok; });
+    if (manquantes.length) return 'Le mot de passe doit contenir : ' + manquantes.map(function (r) { return r.libelle; }).join(', ') + '.';
     if (mdp !== confirmation) return 'Les deux mots de passe ne sont pas identiques.';
     return null;
   }
@@ -93,5 +107,5 @@
 
   return { ongletPourEtape: ongletPourEtape, etapeDeLUrl: etapeDeLUrl, libelleEtape: libelleEtape, TACHES: TACHES, ORDRE: ORDRE, tachesAffichables: tachesAffichables, progression: progression, prochaineTache: prochaineTache,
     checklistVisible: checklistVisible, messagePublication: messagePublication, couleurFraicheur: couleurFraicheur, couleurCss: couleurCss,
-    erreurMotDePasse: erreurMotDePasse };
+    erreurMotDePasse: erreurMotDePasse, reglesMotDePasse: reglesMotDePasse };
 }));
