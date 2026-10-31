@@ -145,6 +145,23 @@ test('traiterDemande : un échec d\'accusé de réception ne perd pas la demande
   assert.equal(m.e.soumissions.length, 0);
 });
 
+test('traiterDemande : le journal d\'erreur indique l\'étape et le code technique, jamais une valeur saisie', async () => {
+  const lignes = [];
+  let m = magasinOnb();
+  m.deposer = async () => { throw Object.assign(new Error('deposer : 400'), { code: '400' }); };
+  assert.equal((await traiterDemande({ champs: champs(), fichiers: fichiersOk() }, ctx(m, { journal: (l) => lignes.push(l) }))).status, 500);
+  assert.deepEqual(lignes.at(-1), { evt: 'erreur_demande', erreur: 'Error', etape: 'deposer', code: '400' });
+  m = magasinOnb();
+  m.soumettre = async () => { throw Object.assign(new Error('soumettre : 42501'), { code: '42501', detail: 'permission denied for function x' }); };
+  await traiterDemande({ champs: champs(), fichiers: fichiersOk() }, ctx(m, { journal: (l) => lignes.push(l) }));
+  assert.deepEqual(lignes.at(-1), { evt: 'erreur_demande', erreur: 'Error', etape: 'soumettre', code: '42501' });
+  m = magasinOnb({ refus: 'autre' });
+  await traiterDemande({ champs: champs(), fichiers: fichiersOk() }, ctx(m, { journal: (l) => lignes.push(l) }));
+  assert.deepEqual(lignes.at(-1), { evt: 'erreur_demande', etape: 'soumettre', code: 'autre' });
+  const texte = JSON.stringify(lignes);
+  for (const v of Object.values(champs())) if (typeof v === 'string' && v.length > 3) assert.equal(texte.includes(v), false, `valeur journalisée : ${v}`);
+});
+
 // ── Décisions ──
 const dem = (s = {}) => ({ id: '11111111-1111-4111-8111-111111111111', statut: 'in_review', nom_pharmacie: 'Pharmacie Test', email_titulaire: 'jeanne@exemple.test', checklist: 5, ...s });
 async function decider(m, corps, jwt = 'jwt-admin') {
