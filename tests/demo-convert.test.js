@@ -62,11 +62,16 @@ describe('feuille de décisions', () => {
     const rempli = feuille.replace('Quinine,Antipaludéens,P01BC01,,', 'Quinine,Antipaludéens,P01BC01,true,false');
     expect(genererFeuilleDecisions(r.dcis, rempli)).toBe(rempli);
   });
-  test('la feuille LIVRÉE ne contient aucune décision : 20 DCI, cellules vides (elle est à remplir par le propriétaire)', () => {
+  // Décisions du propriétaire pour la démonstration (31/10/2026), non validées par un pharmacien : à relire avant la production.
+  test('la feuille LIVRÉE : 20 DCI, chaque décision écrite explicitement (true ou false), jamais déduite', () => {
     const t = fs.readFileSync(path.join(__dirname, '../supabase/seed/demo_classification.csv'), 'utf-8').trim().split('\n');
     expect(t[0]).toBe('dci,category,atc_code,requires_prescription,restricted');
     expect(t).toHaveLength(21);
-    for (const l of t.slice(1)) expect(l).toMatch(/,,$/);
+    for (const l of t.slice(1)) expect(l).toMatch(/,(true|false),(true|false)$/);
+  });
+  test('la fiche fictive « Exemple restreint (démo) » reste restreinte dans le catalogue livré', () => {
+    const c = fs.readFileSync(path.join(__dirname, '../supabase/seed/demo_catalog.csv'), 'utf-8');
+    expect(c.trim().split('\n').pop()).toBe(',Exemple restreint (démo),,fictif,,false,true,démonstration');
   });
   test('le catalogue livré correspond à la source et à la feuille livrée (régénération identique)', () => {
     const base = path.join(__dirname, '../supabase/seed');
