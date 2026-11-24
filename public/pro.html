@@ -1201,15 +1201,26 @@ var ProApp = (function() {
     });
 
     function searchMedsForModal() {
-        var q = document.getElementById('modalMedSearch').value.trim();
+        var brut = document.getElementById('modalMedSearch').value.trim();
         var sel = document.getElementById('modalMedSelect');
-        if (q.length < 2) { sel.style.display = 'none'; return; }
-        _sb.from('medicaments').select('id, nom, nom_commercial, dosage, dci, forme, conditionnement').ilike('nom', '%' + q + '%').limit(10)
+        if (brut.length < 2) { sel.style.display = 'none'; return; }
+        // Recherche sur nom, nom commercial et DCI : un pharmacien tape souvent la marque
+        // ("Doliprane") ou le principe actif ("Paracétamol"), pas le nom de fiche du catalogue.
+        var terme = ProUtils.sanitizeTermeRecherche(brut);
+        if (!terme) { sel.innerHTML = '<option disabled>Introuvable — demandez son ajout à l\'administrateur</option>'; sel.style.display = 'block'; return; }
+        var filtre = ProUtils.filtreOuIlike(['nom', 'nom_commercial', 'dci'], terme);
+        _sb.from('medicaments').select('id, nom, nom_commercial, dosage, dci, forme, conditionnement').or(filtre).order('nom').limit(10)
             .then(function(res) {
+                if (res.error) {
+                    sel.innerHTML = '<option disabled>Erreur de recherche : ' + esc(res.error.message) + '</option>';
+                    sel.style.display = 'block';
+                    return;
+                }
                 var meds = res.data || [];
                 lastSearchMeds = meds;
                 if (meds.length === 0) {
-                    sel.style.display = 'none';
+                    sel.innerHTML = '<option disabled>Introuvable — demandez son ajout à l\'administrateur</option>';
+                    sel.style.display = 'block';
                     return;
                 }
                 sel.innerHTML = meds.map(function(m) {
