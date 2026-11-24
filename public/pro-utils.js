@@ -54,6 +54,31 @@
 
   function norm(s) { return String(s == null ? '' : s).trim().toLowerCase(); }
 
+  var MAX_SEARCH_LENGTH = 100;
+
+  /**
+   * Termes de recherche utilisateur -> filtres PostgREST. Même logique que src/utils/search.js
+   * (côté serveur) : `query.or('nom.ilike.%' + q + '%,...')` est une chaîne analysée par
+   * PostgREST, où une virgule, une parenthèse ou un point dans `q` permet d'injecter des filtres
+   * supplémentaires (ex. `x%,id.not.is.null`). On ne laisse donc passer que des lettres, chiffres,
+   * espaces et quelques signes courants dans les noms de médicaments ; les jokers LIKE (% _ *) sont retirés.
+   */
+  function sanitizeTermeRecherche(brut) {
+    if (typeof brut !== 'string') return '';
+    return brut
+      .normalize('NFC')
+      .replace(/[^\p{L}\p{N}\s'’\-/.+]/gu, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, MAX_SEARCH_LENGTH)
+      .trim();
+  }
+
+  /** Filtre `or()` : le terme (déjà passé par sanitizeTermeRecherche) doit apparaître dans l'une des colonnes. */
+  function filtreOuIlike(colonnes, terme) {
+    return colonnes.map(function (c) { return c + '.ilike.%' + terme + '%'; }).join(',');
+  }
+
   /**
    * Identité d'un produit du catalogue : DCI + nom commercial + dosage + forme + conditionnement (minuscules, sans
    * espaces pour dosage et conditionnement) — la même clé que supabase/diagnostics/doublons_stocks.sql. Deux fiches distinctes pour le
@@ -173,5 +198,6 @@
   return { formatHoraires: formatHoraires, statutInfo: statutInfo, medIdentityKey: medIdentityKey,
     findOwnedStock: findOwnedStock, mapLinks: mapLinks, classificationChanges: classificationChanges,
     validationElements: validationElements, tempsMoyenReponse: tempsMoyenReponse, masquerAdresse: masquerAdresse,
-    statutContact: statutContact, lienTelegram: lienTelegram, basculeMotDePasse: basculeMotDePasse };
+    statutContact: statutContact, lienTelegram: lienTelegram, basculeMotDePasse: basculeMotDePasse,
+    sanitizeTermeRecherche: sanitizeTermeRecherche, filtreOuIlike: filtreOuIlike, MAX_SEARCH_LENGTH: MAX_SEARCH_LENGTH };
 }));

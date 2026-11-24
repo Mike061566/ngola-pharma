@@ -1,4 +1,5 @@
-const { formatHoraires, statutInfo, medIdentityKey, findOwnedStock, mapLinks, classificationChanges, validationElements } = require('../public/pro-utils');
+const { formatHoraires, statutInfo, medIdentityKey, findOwnedStock, mapLinks, classificationChanges, validationElements,
+  sanitizeTermeRecherche, filtreOuIlike, MAX_SEARCH_LENGTH } = require('../public/pro-utils');
 
 const jour = (ouv, fer) => ({ ouv, fer });
 
@@ -159,4 +160,41 @@ test('basculeMotDePasse : « Afficher » rend le mot de passe lisible, « Masque
   expect(basculeMotDePasse('password')).toEqual({ type: 'text', libelle: '🙈 Masquer', presse: true });
   expect(basculeMotDePasse('text')).toEqual({ type: 'password', libelle: '👁 Afficher', presse: false });
   expect(basculeMotDePasse(basculeMotDePasse('password').type).type).toBe('password');
+});
+
+// Même garde-fou que tests/search-injection.test.js côté serveur, appliqué cette fois à la
+// recherche de médicament dans l'Espace Pro (searchMedsForModal, public/pro.html).
+describe('sanitizeTermeRecherche / filtreOuIlike', () => {
+  const COLS = ['nom', 'nom_commercial', 'dci'];
+  const HOSTILE = [
+    'x%,id.not.is.null',
+    'a),(nom.eq.b',
+    'a"b\\c',
+    'doli*',
+    'x%,pharmacie_id.in.(1,2)',
+    'paracetamol,or(nom.ilike.%)',
+  ];
+  const splitOr = (filter) => filter.split(',');
+
+  test('conserve les noms de médicaments usuels, marque ou DCI, accents compris', () => {
+    expect(sanitizeTermeRecherche('Doliprane')).toBe('Doliprane');
+    expect(sanitizeTermeRecherche('Paracétamol 500mg')).toBe('Paracétamol 500mg');
+    expect(sanitizeTermeRecherche('Artémether-Lumefantrine 20/120mg')).toBe('Artémether-Lumefantrine 20/120mg');
+  });
+
+  test.each(HOSTILE)('retire les caractères de contrôle PostgREST : %s', (payload) => {
+    expect(sanitizeTermeRecherche(payload)).not.toMatch(/[,()"\\%*_:]/);
+  });
+
+  test('valeurs non textuelles, vides, trop longues', () => {
+    expect(sanitizeTermeRecherche(undefined)).toBe('');
+    expect(sanitizeTermeRecherche('%%%')).toBe('');
+    expect(sanitizeTermeRecherche('a'.repeat(500)).length).toBe(MAX_SEARCH_LENGTH);
+  });
+
+  test.each(HOSTILE)('le filtre or() produit exactement 3 filtres (nom, nom_commercial, dci) : %s', (payload) => {
+    const parts = splitOr(filtreOuIlike(COLS, sanitizeTermeRecherche(payload) || 'x'));
+    expect(parts).toHaveLength(3);
+    parts.forEach((p, i) => expect(p).toMatch(new RegExp(`^${COLS[i]}\\.ilike\\.%[^,()"\\\\*]*%$`)));
+  });
 });
